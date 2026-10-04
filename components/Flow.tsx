@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import type { FlowNode } from "@/data/portfolio";
 
 const tone = (t?: FlowNode["tone"]) =>
-  t === "arc" ? "border-arc/60 text-arc" : t === "red" ? "border-hot/60 text-hot" : t === "gold" ? "border-warm/60 text-warm" : "border-white/15 text-steel-100";
+  t === "red" ? "border-hot/70 text-hot" : t === "gold" ? "border-gold/60 text-gold" : "border-white/15 text-steel-100";
 
 // A pipeline diagram: nodes joined by a line with a data packet travelling along it.
 export default function Flow({ nodes, title, note }: { nodes: FlowNode[]; title: string; note?: string }) {
@@ -12,7 +12,7 @@ export default function Flow({ nodes, title, note }: { nodes: FlowNode[]; title:
     <figure className="hud-panel hud-corners p-5" aria-label={title}>
       <figcaption className="hud-label mb-5 flex items-center justify-between">
         <span>{title}</span>
-        <span className="text-arc">● live</span>
+        <span className="text-gold">● live</span>
       </figcaption>
       <ol className="relative flex flex-col gap-3 md:flex-row md:items-stretch md:gap-0">
         {nodes.map((n, i) => (
@@ -30,9 +30,9 @@ export default function Flow({ nodes, title, note }: { nodes: FlowNode[]; title:
             </motion.div>
             {i < nodes.length - 1 && (
               <>
-                <span className="absolute left-4 top-full h-3 w-px bg-arc/30 md:hidden" />
-                <span className="absolute right-[-4%] top-1/2 hidden h-px w-[8%] overflow-hidden bg-arc/25 md:block">
-                  <span className="absolute inset-y-0 w-1/2 bg-arc" style={{ animation: `packet 1.6s linear ${i * 0.25}s infinite` }} />
+                <span className="absolute left-4 top-full h-3 w-px bg-gold/30 md:hidden" />
+                <span className="absolute right-[-4%] top-1/2 hidden h-px w-[8%] overflow-hidden bg-gold/25 md:block">
+                  <span className="absolute inset-y-0 w-1/2 bg-gold" style={{ animation: `packet 1.6s linear ${i * 0.25}s infinite` }} />
                 </span>
               </>
             )}

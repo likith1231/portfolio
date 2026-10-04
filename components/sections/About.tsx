@@ -4,7 +4,9 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
-import { armory, diagnostics, principles, profile } from "@/data/portfolio";
+import { arsenal, diagnostics, principles, profile } from "@/data/portfolio";
+import ReactorActivity from "../ReactorActivity";
+import { sfx } from "@/lib/sfx";
 
 const GRADE = { S: 1, A: 0.8, B: 0.6 } as const;
 
@@ -19,7 +21,7 @@ function Radar() {
 
   return (
     <div className="hud-panel hud-corners p-5">
-      <div className="hud-label mb-2 flex justify-between"><span>suit diagnostics</span><span className="text-arc">scan complete</span></div>
+      <div className="hud-label mb-2 flex justify-between"><span>suit diagnostics</span><span className="text-gold">scan complete</span></div>
       <div className="grid items-center gap-4 sm:grid-cols-[1fr_1fr]">
         <svg viewBox="-40 -10 380 320" className="w-full" role="img" aria-label="Diagnostics radar chart">
           {[0.25, 0.5, 0.75, 1].map((k) => (
@@ -33,7 +35,7 @@ function Radar() {
             viewport={{ once: true }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             style={{ transformOrigin: "150px 150px" }}
-            className="fill-arc/15 stroke-arc"
+            className="fill-gold/15 stroke-gold"
             strokeWidth="1.5"
           />
           {diagnostics.map((d, i) => {
@@ -41,7 +43,7 @@ function Radar() {
             const [lx, ly] = pt(i, 1.22);
             return (
               <g key={d.stat} onMouseEnter={() => setHover(i)} onClick={() => setHover(i)} data-lock className="cursor-pointer">
-                <circle cx={x} cy={y} r={hover === i ? 6 : 4} className={hover === i ? "fill-hot" : "fill-arc"} />
+                <circle cx={x} cy={y} r={hover === i ? 6 : 4} className={hover === i ? "fill-hot" : "fill-gold"} />
                 <text x={lx} y={ly} textAnchor="middle" dominantBaseline="middle" className={`font-mono text-[13px] uppercase ${hover === i ? "fill-white" : "fill-steel-400"}`}>
                   {d.stat}
                 </text>
@@ -53,7 +55,7 @@ function Radar() {
           {diagnostics.map((d, i) => (
             <button key={d.stat} onMouseEnter={() => setHover(i)} onClick={() => setHover(i)}
               className={`flex w-full items-center gap-3 border-l-2 px-3 py-2 text-left transition-colors ${hover === i ? "border-hot bg-white/[0.03]" : "border-transparent"}`}>
-              <span className={`font-display text-2xl font-bold ${d.grade === "S" ? "text-warm" : "text-white"}`}>{d.grade}</span>
+              <span className={`font-display text-2xl font-bold ${d.grade === "S" ? "text-gold" : "text-white"}`}>{d.grade}</span>
               <span>
                 <span className="block font-mono text-[11px] uppercase tracking-[0.18em] text-steel-200">{d.stat}</span>
                 {hover === i && <span className="block text-xs text-steel-400">{d.why}</span>}
@@ -67,17 +69,18 @@ function Radar() {
 }
 
 export default function About() {
-  const all = armory.flatMap((g) => g.items);
+  const all = arsenal.flatMap((g) => g.items);
+  const [armed, setArmed] = useState<number | null>(null);
   return (
     <section id="about" className="relative py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
-        <SectionHead code="05" kicker="pilot profile" title="Behind the mask" />
+        <SectionHead code="07" kicker="pilot profile" title="Behind the mask" />
 
         <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr]">
           <Reveal>
             <div className="space-y-5 text-base leading-relaxed text-steel-300 md:text-lg">
               <p>
-                I'm <span className="text-white">{profile.name}</span>, a computer science engineer in {profile.location.split(",")[0]} who likes the part of software most people avoid: what happens <em className="font-serif text-xl text-arc">after</em> it ships.
+                I'm <span className="text-white">{profile.name}</span>, a computer science engineer in {profile.location.split(",")[0]} who likes the part of software most people avoid: what happens <em className="font-serif text-xl text-gold">after</em> it ships.
               </p>
               <p>
                 I build full-stack products, then armor them: containers, Kubernetes, GitOps, autoscaling, tracing. Lately I've been giving that infrastructure a brain, with AI agents that diagnose incidents and patch them, but only after a sandbox and a policy agree.
@@ -96,31 +99,47 @@ export default function About() {
           <Reveal delay={0.15}><Radar /></Reveal>
         </div>
 
+        <Reveal className="mt-16"><ReactorActivity /></Reveal>
+
         <Reveal className="mt-20">
-          <div className="hud-label mb-6 flex items-center gap-3"><span className="text-arc">◆</span> the armory</div>
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <div className="hud-label flex items-center gap-3"><span className="text-hot">◆</span> war machine arsenal</div>
+              <h3 className="mt-2 font-display text-3xl font-bold uppercase text-white">Weapon systems</h3>
+            </div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-steel-500">hover or tap a system to arm it</p>
+          </div>
           <div className="grid gap-px bg-white/[0.06] sm:grid-cols-2 lg:grid-cols-4">
-            {armory.map((g, i) => (
-              <motion.div key={g.group} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
-                className="group bg-void p-5 transition-colors hover:bg-void-800">
+            {arsenal.map((g, i) => (
+              <motion.button key={g.group} type="button" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
+                onMouseEnter={() => { if (armed !== i) { setArmed(i); sfx.lock(); } }} onClick={() => { setArmed(i); sfx.servo(); }}
+                className={`group relative overflow-hidden p-5 text-left transition-colors ${armed === i ? "bg-hot/[0.12]" : "bg-void hover:bg-void-800"}`}>
                 <div className="flex items-center justify-between">
-                  <span className="font-display text-sm font-semibold uppercase tracking-wider text-white">{g.group}</span>
-                  <span className="font-mono text-[10px] text-steel-500 group-hover:text-arc">0{i + 1}</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-steel-500">{g.system}</span>
+                  <span className={`font-mono text-[10px] uppercase tracking-[0.2em] ${armed === i ? "text-hot" : "text-steel-500"}`}>{armed === i ? "● armed" : "○ safe"}</span>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-1.5">{g.items.map((s) => <span key={s} className="chip">{s}</span>)}</div>
-              </motion.div>
+                <div className="mt-2 font-display text-lg font-semibold uppercase tracking-wider text-white">{g.group}</div>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {g.items.map((t, k) => (
+                    <motion.span key={t} className={`chip ${armed === i ? "border-gold/50 text-gold" : ""}`}
+                      animate={armed === i ? { opacity: [0.3, 1], y: [4, 0] } : { opacity: 1, y: 0 }} transition={{ delay: armed === i ? k * 0.05 : 0 }}>{t}</motion.span>
+                  ))}
+                </div>
+                {armed === i && <span className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-hot via-gold to-hot" />}
+              </motion.button>
             ))}
-            <div className="hidden items-center justify-center bg-void p-5 font-mono text-[11px] uppercase tracking-[0.2em] text-steel-500 lg:flex">+ always learning</div>
+            <div className="hidden items-center justify-center bg-void p-5 font-mono text-[11px] uppercase tracking-[0.2em] text-steel-500 lg:flex">+ always upgrading</div>
           </div>
         </Reveal>
 
         <div className="relative mt-10 overflow-hidden border-y border-white/[0.06] py-4 [mask-image:linear-gradient(90deg,transparent,black_10%,black_90%,transparent)]">
           <div className="flex w-max animate-marquee gap-10 whitespace-nowrap font-display text-2xl uppercase text-steel-500/60">
-            {[...all, ...all].map((s, i) => <span key={i} className="flex items-center gap-10">{s}<span className="text-arc/50">◆</span></span>)}
+            {[...all, ...all].map((s, i) => <span key={i} className="flex items-center gap-10">{s}<span className="text-gold/50">◆</span></span>)}
           </div>
         </div>
 
         <Reveal className="mt-20">
-          <div className="hud-label mb-6 flex items-center gap-3"><span className="text-arc">◆</span> operating protocols</div>
+          <div className="hud-label mb-6 flex items-center gap-3"><span className="text-hot">◆</span> operating protocols</div>
           <div className="grid gap-4 md:grid-cols-3">
             {principles.map((p) => (
               <div key={p.n} className="hud-panel hud-corners p-6">

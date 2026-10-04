@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useHUD } from "./Shell";
-import { armory, profile, projects, socials } from "@/data/portfolio";
+import { arsenal as armory, flagships as projects, profile, roman, socials } from "@/data/portfolio";
 
 // The whole portfolio, condensed to what a recruiter reads in 30 seconds.
 export default function RecruiterBrief() {
@@ -35,7 +35,7 @@ export default function RecruiterBrief() {
             className="hud-panel hud-corners w-full max-w-3xl bg-void-900/95 p-6 md:p-9" role="dialog" aria-label="Recruiter brief">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="hud-label text-arc">recruiter mode · 30-second brief</div>
+                <div className="hud-label text-gold">recruiter mode · 30-second brief for ms. potts</div>
                 <h2 className="mt-3 font-display text-3xl font-bold uppercase text-white md:text-4xl">{profile.name}</h2>
                 <p className="mt-1 text-steel-300">{profile.role}</p>
                 <p className="mt-1 text-sm text-steel-500">{profile.location} · {profile.education}</p>
@@ -51,10 +51,10 @@ export default function RecruiterBrief() {
               <div className="hud-label">top builds</div>
               {projects.map((p) => (
                 <Link key={p.slug} href={`/work/${p.slug}`} onClick={() => setBriefOpen(false)}
-                  className="group grid gap-1 border border-white/[0.07] p-4 transition-colors hover:border-arc/40 sm:grid-cols-[210px_1fr_auto] sm:items-center sm:gap-4">
-                  <span className="font-display font-semibold uppercase text-white">{p.name}</span>
+                  className="group grid gap-1 border border-white/[0.07] p-4 transition-colors hover:border-gold/40 sm:grid-cols-[210px_1fr_auto] sm:items-center sm:gap-4">
+                  <span className="font-display font-semibold uppercase text-white"><span className="mr-2 font-mono text-[10px] text-hot">MK {roman(p.mark)}</span>{p.name}</span>
                   <span className="text-sm text-steel-400">{p.tagline}</span>
-                  <span className="font-display text-sm font-bold text-arc">{p.stat.value}</span>
+                  <span className="font-display text-sm font-bold text-gold">{p.stat.value}</span>
                 </Link>
               ))}
             </div>

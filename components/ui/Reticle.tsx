@@ -42,12 +42,12 @@ export default function Reticle() {
     <>
       <div ref={ring} className="pointer-events-none fixed left-0 top-0 z-[100]">
         <div
-          className={`-translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${locked ? "h-11 w-11 rotate-45 border-arc" : "h-8 w-8 border-white/40"} border`}
+          className={`-translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${locked ? "h-11 w-11 rotate-45 border-gold" : "h-8 w-8 border-white/40"} border`}
           style={{ borderRadius: locked ? 2 : 999 }}
         />
       </div>
       <div ref={dot} className="pointer-events-none fixed left-0 top-0 z-[100]">
-        <div className="h-1 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-arc shadow-[0_0_8px_rgb(var(--arc))]" />
+        <div className="h-1 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold shadow-[0_0_8px_rgb(var(--gold))]" />
       </div>
     </>
   );

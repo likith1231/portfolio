@@ -5,7 +5,9 @@ export const profile = {
   short: "Likith",
   callsign: "LIKITH-L",
   role: "DevOps · Backend / Full-Stack · Applied AI",
-  roles: ["DevOps Engineer", "Backend / Full-Stack Developer", "Applied AI Builder", "SRE in training"],
+  roles: ["DevOps Engineer", "Backend / Full-Stack Developer", "Applied AI Builder", "Incident Slayer"],
+  // A riff on "Genius, billionaire, playboy, philanthropist."
+  riff: ["DevOps engineer", "backend builder", "AI tinkerer", "incident slayer"],
   headline: "I build systems that fix themselves.",
   intro:
     "Agents that patch production incidents, an IDE whose AI proves its code before you see it, and a booking app that scales out when everyone hits “Book Now” at once. Shipped first, then armored.",
@@ -27,20 +29,26 @@ export const socials = {
   githubUser: "likith1231",
 };
 
-export type FlowNode = { label: string; sub?: string; tone?: "arc" | "red" | "gold" | "steel" };
+export type FlowNode = { label: string; sub?: string; tone?: "red" | "gold" | "steel" };
 
-export type Project = {
+// Colours for the 3D armor plate of each suit.
+export type Armor = { primary: string; secondary: string; metal: number; rough: number; glow: number };
+
+export type Suit = {
   slug: string;
-  mark: string;
-  episode: string;
+  mark: number; // Higher mark = more advanced suit, like the films. Mark VI is the strongest build.
+  codename: string;
   name: string;
   tagline: string;
   summary: string;
   stat: { value: string; label: string };
+  power: number; // 0–100, shown as the suit's power rating
   stack: string[];
   repo: string;
-  // Set `live` to the deployed URL once it's hosted; the card switches from "Deploying" to "Live".
+  // Set `live` to the deployed URL once it's hosted; the suit switches from "Deploying" to "Live".
   live: string | null;
+  flagship: boolean;
+  armor: Armor;
   flowTitle: string;
   flow: FlowNode[];
   flowNote?: string;
@@ -48,28 +56,34 @@ export type Project = {
   how: string[];
   highlights: string[];
   lesson: { title: string; body: string };
+  gallery?: { src: string; alt: string }[];
 };
 
-export const projects: Project[] = [
+export const roman = (n: number) => ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"][n] ?? String(n);
+
+export const suits: Suit[] = [
   {
     slug: "ghostops",
-    mark: "MARK 01",
-    episode: "The Self-Repairing Suit",
+    mark: 6,
+    codename: "Ghost",
     name: "GhostOps",
     tagline: "Production incidents, patched on their own.",
     summary:
       "An autonomous AIOps platform that acts like an on-call SRE: it detects a real incident, finds the root cause, writes a minimal patch, proves it in a sandbox, and only then opens a pull request for a human.",
     stat: { value: "2", label: "real incidents fixed end to end, each with a validated PR: a memory leak and a failing CI test." },
+    power: 98,
     stack: ["CrewAI", "Claude API", "FastAPI", "Kubernetes", "Prometheus", "OPA / Gatekeeper", "Vault", "Chaos Mesh", "ArgoCD"],
     repo: "https://github.com/likith1231/ghostops",
     live: null,
+    flagship: true,
+    armor: { primary: "#c9182a", secondary: "#e8b04a", metal: 0.85, rough: 0.28, glow: 3.2 },
     flowTitle: "How an incident moves through GhostOps",
     flow: [
       { label: "Alertmanager", sub: "or a CI webhook", tone: "red" },
       { label: "FastAPI", sub: "starts the pipeline" },
-      { label: "Diagnostic Reasoner", sub: "logs · metrics · source", tone: "arc" },
-      { label: "Patch Generator", sub: "minimal diff", tone: "arc" },
-      { label: "Validation Officer", sub: "Docker sandbox + OPA", tone: "gold" },
+      { label: "Diagnostic Reasoner", sub: "logs · metrics · source", tone: "gold" },
+      { label: "Patch Generator", sub: "minimal diff", tone: "gold" },
+      { label: "Validation Officer", sub: "Docker sandbox + OPA", tone: "red" },
       { label: "GitHub PR", sub: "for human review" },
     ],
     flowNote: "A failed validation aborts and logs the incident. Nothing reaches GitHub unproven.",
@@ -94,23 +108,26 @@ export const projects: Project[] = [
   },
   {
     slug: "orbit-ide",
-    mark: "MARK 02",
-    episode: "Proof Before Paste",
+    mark: 5,
+    codename: "Orbit",
     name: "Orbit IDE",
     tagline: "The cloud IDE whose AI proves its code works before you see it.",
     summary:
       "Write, run and ship code from any browser: real Linux terminals, live previews, git, real-time collaboration, and a Claude agent that tests its own changes and fixes them until they pass.",
     stat: { value: "16", label: "languages run in a real Linux container per project, with terminals, previews and git." },
+    power: 95,
     stack: ["React 19", "Node.js", "Claude API", "Docker", "PostgreSQL", "Yjs", "Socket.IO", "Caddy"],
     repo: "https://github.com/likith1231/Orbit-IDE",
     live: null,
+    flagship: true,
+    armor: { primary: "#8e0f18", secondary: "#d9a440", metal: 0.9, rough: 0.22, glow: 2.6 },
     flowTitle: "The proof loop",
     flow: [
       { label: "You ask", sub: "in the agent panel" },
-      { label: "Claude edits", sub: "multi-file diff", tone: "arc" },
+      { label: "Claude edits", sub: "multi-file diff", tone: "gold" },
       { label: "Sandbox copy", sub: "your files untouched" },
-      { label: "Tests · run · compile", sub: "npm test, pytest…", tone: "gold" },
-      { label: "Verified", sub: "you review the diff", tone: "arc" },
+      { label: "Tests · run · compile", sub: "npm test, pytest…", tone: "red" },
+      { label: "Verified", sub: "you review the diff", tone: "gold" },
     ],
     flowNote: "On failure the real error goes back to Claude, which repairs its own code, up to 3 attempts. Otherwise: an honest “Not verified” badge with the log.",
     problem:
@@ -131,25 +148,34 @@ export const projects: Project[] = [
       title: "Honest badges beat confident text",
       body: "Users trust “Not verified, here's the log” more than a model that sounds sure of itself. Claude also writes better code when it knows it will be tested.",
     },
+    gallery: [
+      { src: "/suits/orbit-hero.webp", alt: "Orbit IDE: editor, explorer, Claude agent and terminal" },
+      { src: "/suits/orbit-proof-live.webp", alt: "A proof running live in the agent panel" },
+      { src: "/suits/orbit-run-tests.webp", alt: "Running tests from Run & Debug" },
+      { src: "/suits/orbit-preview.webp", alt: "Live preview of a dev server" },
+    ],
   },
   {
     slug: "resilient-commerce",
-    mark: "MARK 03",
-    episode: "Built for the Rush",
+    mark: 4,
+    codename: "War Machine",
     name: "ResilientCommerce",
-    tagline: "Traffic spikes, absorbed by autoscaling.",
+    tagline: "Heavy armor for a booking rush.",
     summary:
-      "AetherMed is a clinic booking platform; ResilientCommerce is the DevOps and SRE layer around it, built and load-tested to survive a CoWIN-style rush when everyone hits “Book Now” the moment slots open.",
-    stat: { value: "18.9s → 2.7s", label: "p95 latency under a 250-user rush, after tuning the database pool. Then the HPA started scaling." },
+      "AetherMed is a clinic booking platform; ResilientCommerce is the heavy DevOps and SRE armor around it, built and load-tested to survive a CoWIN-style rush when everyone hits “Book Now” the moment slots open.",
+    stat: { value: "18.9s → 2.7s", label: "p95 latency under a 250-user rush, after tuning the database pool. Then the autoscaler kicked in." },
+    power: 92,
     stack: ["Next.js", "Prisma", "PostgreSQL", "Docker", "Kubernetes", "Terraform", "AWS EKS", "ArgoCD", "k6", "Sentry", "OpenTelemetry"],
     repo: "https://github.com/likith1231/Aethermed",
     live: null,
+    flagship: true,
+    armor: { primary: "#3a3d43", secondary: "#9aa0a8", metal: 0.95, rough: 0.35, glow: 2.2 },
     flowTitle: "From git push to a scaled-out cluster",
     flow: [
       { label: "git push", sub: "to main" },
       { label: "GitHub Actions", sub: "build + test" },
-      { label: "ArgoCD", sub: "sync · prune · self-heal", tone: "arc" },
-      { label: "HPA", sub: "2 → 8 pods @ 60% CPU", tone: "gold" },
+      { label: "ArgoCD", sub: "sync · prune · self-heal", tone: "gold" },
+      { label: "HPA", sub: "2 → 8 pods @ 60% CPU", tone: "red" },
       { label: "Prometheus · Sentry", sub: "metrics · traces · errors" },
     ],
     flowNote: "Terraform manages the AWS EKS infrastructure; a k6 script simulates the slot-opening rush on /api/slots.",
@@ -172,43 +198,132 @@ export const projects: Project[] = [
       body: "Autoscaling on CPU does nothing if the bottleneck is a connection pool. The first fix was a config line, not more pods.",
     },
   },
-];
-
-export const otherBuilds = [
   {
+    slug: "sahayak",
+    mark: 3,
+    codename: "Harvest",
     name: "Sahayak",
     tagline: "Farm to market, minus the middlemen.",
-    body: "Farmers list produce by chatting with a Gemini agent that calls real tools; live mandi prices, pgvector search, Razorpay checkout and live order tracking.",
-    stack: ["Next.js", "FastAPI", "Gemini", "pgvector", "Razorpay"],
+    summary:
+      "A farmer-to-consumer marketplace for Karnataka. Farmers list produce by chatting with a Gemini agent, buyers get home delivery with live tracking, and NGOs coordinate food during emergencies.",
+    stat: { value: "4", label: "kinds of users served from one app: farmers, buyers, NGOs and admins." },
+    power: 84,
+    stack: ["Next.js", "FastAPI", "Gemini", "pgvector", "PostgreSQL", "Razorpay", "Three.js"],
     repo: "https://github.com/likith1231/sahayak",
-    live: null as string | null,
+    live: null,
+    flagship: false,
+    armor: { primary: "#b3121d", secondary: "#d9a440", metal: 0.8, rough: 0.3, glow: 2 },
+    flowTitle: "A listing, from voice to buyer",
+    flow: [
+      { label: "Farmer speaks", sub: "voice or chat" },
+      { label: "Gemini agent", sub: "calls real tools", tone: "gold" },
+      { label: "Mandi prices", sub: "Agmarknet, daily" },
+      { label: "pgvector search", sub: "buyers find it", tone: "red" },
+      { label: "Razorpay", sub: "card, UPI or COD" },
+    ],
+    problem:
+      "Farmers sell through layers of middlemen, which lowers what they earn and raises what buyers pay.",
+    how: [
+      "Farmers create listings by voice; a Gemini agent fills in the details and checks live mandi prices synced from Agmarknet.",
+      "Buyers search with pgvector-backed RAG and pay with Razorpay (card / UPI) or cash on delivery.",
+      "Orders get delivery slots, live tracking and a 4-digit handover code.",
+      "NGOs and community kitchens raise emergency food requests, grouped by area, with crisis windows triggered by weather alerts.",
+    ],
+    highlights: [
+      "AI chat assistant with RAG over listings and prices",
+      "Voice listings filled in by AI",
+      "Emergency food network for NGOs",
+      "FastAPI backend with an ML price-prediction microservice",
+    ],
+    lesson: {
+      title: "Build for the user who isn't online all day",
+      body: "Voice beats forms when your user is in a field. The AI earns its place by removing typing, not by adding chat.",
+    },
   },
   {
-    name: "GreenCart",
-    tagline: "Groceries with live order tracking.",
-    body: "A MERN grocery store inspired by Blinkit and Zepto, with a seller dashboard, Cloudinary images, Stripe or cash on delivery, and automatic refunds.",
-    stack: ["React", "Express", "MongoDB", "Stripe", "Tailwind"],
-    repo: "https://github.com/likith1231/greencart",
-    live: "https://greencart-frontend1.vercel.app",
-  },
-  {
+    slug: "project-management",
+    mark: 2,
+    codename: "Command",
     name: "Project Management",
     tagline: "Workspaces, tasks and progress in one app.",
-    body: "Multi-workspace project tracking with Clerk organizations, task comments, analytics, a calendar view, and email reminders through Inngest.",
-    stack: ["React 19", "Express 5", "Prisma", "Neon", "Clerk", "Inngest"],
+    summary:
+      "Multi-workspace project tracking with Clerk organizations and roles, task comments, analytics, a calendar view, and email reminders through Inngest background jobs.",
+    stat: { value: "2", label: "roles per workspace, ADMIN and MEMBER, with every protected API request JWT-verified." },
+    power: 74,
+    stack: ["React 19", "Redux Toolkit", "Express 5", "Prisma", "Neon Postgres", "Clerk", "Inngest"],
     repo: "https://github.com/likith1231/Project-Management",
     live: "https://project-mgt-client.vercel.app",
+    flagship: false,
+    armor: { primary: "#c9ccd3", secondary: "#8d929b", metal: 1, rough: 0.18, glow: 1.6 },
+    flowTitle: "A task assignment, end to end",
+    flow: [
+      { label: "Assign task", sub: "React + Redux" },
+      { label: "Express API", sub: "Clerk JWT check", tone: "gold" },
+      { label: "Prisma", sub: "Neon Postgres" },
+      { label: "Inngest event", sub: "background job", tone: "red" },
+      { label: "Email", sub: "assigned + due-date reminder" },
+    ],
+    problem: "Small teams juggle tasks across chats and spreadsheets, and nobody remembers what's due.",
+    how: [
+      "Each workspace is a Clerk Organization with its own projects, members and roles.",
+      "Projects carry status, priority, dates, progress and a team lead; tasks have a type, status, priority, assignee and due date.",
+      "Inngest runs event-driven jobs: an email when a task is assigned and a reminder on the due date if it isn't done.",
+      "Recharts analytics break tasks down by status, type and priority, with a calendar view by due date.",
+    ],
+    highlights: ["Multiple workspaces with roles", "Task comment threads", "Analytics and calendar views", "Dark mode"],
+    lesson: { title: "Push the boring work to the background", body: "Reminders belong in an event queue, not in a cron job someone forgets to run." },
+  },
+  {
+    slug: "greencart",
+    mark: 1,
+    codename: "Cart",
+    name: "GreenCart",
+    tagline: "Groceries with live order tracking.",
+    summary:
+      "A MERN grocery store inspired by Blinkit and Zepto, with a seller dashboard, Cloudinary images, Stripe or cash on delivery, live order tracking and automatic refunds.",
+    stat: { value: "0", label: "double charges: payments are confirmed with Stripe on return, with the webhook as a backup." },
+    power: 66,
+    stack: ["React 19", "Vite", "Express 5", "MongoDB", "Stripe", "Cloudinary", "Tailwind"],
+    repo: "https://github.com/likith1231/greencart",
+    live: "https://greencart-frontend1.vercel.app",
+    flagship: false,
+    armor: { primary: "#5a5b5e", secondary: "#2f3033", metal: 0.6, rough: 0.6, glow: 1.2 },
+    flowTitle: "An order's lifecycle",
+    flow: [
+      { label: "Checkout", sub: "Stripe or COD" },
+      { label: "Server pricing", sub: "never trusts the browser", tone: "gold" },
+      { label: "Seller dispatch", sub: "confirm → pack" },
+      { label: "Out for delivery", sub: "partner + countdown", tone: "red" },
+      { label: "Delivered", sub: "or refunded" },
+    ],
+    problem: "Grocery apps promise speed but leave you guessing where the order is.",
+    how: [
+      "Customers shop by category, keep a synced cart, manage addresses and pay by card or cash.",
+      "Prices and tax are calculated on the server; payments are double-checked with Stripe and a webhook so an order is never charged twice.",
+      "The seller moves each order through Confirm → Pack → Out for delivery → Delivered, or lets demo mode do it.",
+      "Customers get an arrival countdown, a step-by-step timeline and pop-up notifications on any page.",
+    ],
+    highlights: ["Live order tracking with countdown", "Cancel & automatic refund", "Reorder and printable invoices", "Seller dashboard with new-order alerts"],
+    lesson: { title: "Never trust the client with money", body: "Every price, tax and payment status is decided on the server. The first suit taught the basics." },
+    gallery: [
+      { src: "/suits/greencart-home.webp", alt: "GreenCart home page" },
+      { src: "/suits/greencart-order-tracking.webp", alt: "Live order tracking" },
+      { src: "/suits/greencart-seller-orders.webp", alt: "Seller orders dashboard" },
+    ],
   },
 ];
 
-export const armory: { group: string; items: string[] }[] = [
-  { group: "Languages", items: ["Python", "TypeScript", "JavaScript", "Java", "SQL"] },
-  { group: "Backend", items: ["FastAPI", "Node / Express", "Socket.IO", "Prisma", "PostgreSQL", "MongoDB"] },
-  { group: "Frontend", items: ["React", "Next.js", "Tailwind", "Three.js"] },
-  { group: "Applied AI", items: ["Claude", "Gemini", "CrewAI", "pgvector", "RAG"] },
-  { group: "Infrastructure", items: ["Kubernetes", "Terraform", "AWS EKS", "ArgoCD", "Docker", "Vault"] },
-  { group: "Observability", items: ["Prometheus", "Grafana", "OpenTelemetry", "Jaeger", "Sentry"] },
-  { group: "Shipping", items: ["GitHub Actions", "k6", "OPA / Gatekeeper", "Chaos Mesh", "Vercel"] },
+export const flagships = suits.filter((s) => s.flagship);
+
+// The War Machine arsenal: skills as weapon systems.
+export const arsenal: { group: string; system: string; items: string[] }[] = [
+  { group: "Languages", system: "Core firmware", items: ["Python", "TypeScript", "JavaScript", "Java", "SQL"] },
+  { group: "Backend", system: "Power systems", items: ["FastAPI", "Node / Express", "Socket.IO", "Prisma", "PostgreSQL", "MongoDB"] },
+  { group: "Frontend", system: "Heads-up display", items: ["React", "Next.js", "Tailwind", "Three.js"] },
+  { group: "Applied AI", system: "J.A.R.V.I.S. layer", items: ["Claude", "Gemini", "CrewAI", "pgvector", "RAG"] },
+  { group: "Infrastructure", system: "Heavy armor", items: ["Kubernetes", "Terraform", "AWS EKS", "ArgoCD", "Docker", "Vault"] },
+  { group: "Observability", system: "Sensors", items: ["Prometheus", "Grafana", "OpenTelemetry", "Jaeger", "Sentry"] },
+  { group: "Shipping", system: "Flight systems", items: ["GitHub Actions", "k6", "OPA / Gatekeeper", "Chaos Mesh", "Vercel"] },
 ];
 
 export const diagnostics: { stat: string; grade: "S" | "A" | "B"; why: string }[] = [
@@ -231,4 +346,27 @@ export const missions: { label: string; state: "done" | "running" | "queued" }[]
   { label: "Deploy Orbit IDE to the cloud", state: "running" },
   { label: "Deploy GhostOps to the cloud", state: "queued" },
   { label: "Deploy ResilientCommerce on AWS EKS", state: "queued" },
+];
+
+// Famous lines from the Iron Man films, used as interstitials around the site.
+export const quotes = {
+  intro: { text: "Sometimes you gotta run before you can walk.", by: "Tony Stark", film: "Iron Man (2008)" },
+  hero: { text: "I am Iron Man.", by: "Tony Stark", film: "Iron Man (2008)" },
+  armor: { text: "Heroes are made by the path they choose, not the powers they are graced with.", by: "Tony Stark", film: "Iron Man (2008)" },
+  suit: { text: "If you're nothing without the suit, then you shouldn't have it.", by: "Tony Stark", film: "Spider-Man: Homecoming (2017)" },
+  lab: { text: "Part of the journey is the end.", by: "Tony Stark", film: "Avengers: Endgame (2019)" },
+  heart: { text: "Proof that Tony Stark has a heart.", by: "Pepper Potts", film: "Iron Man (2008)" },
+  footer: { text: "I love you 3000.", by: "Morgan Stark", film: "Avengers: Endgame (2019)" },
+  notfound: { text: "I think I need to sleep now.", by: "J.A.R.V.I.S.", film: "Iron Man 3 (2013)" },
+};
+
+// What J.A.R.V.I.S. says while the suit boots.
+export const bootLines = [
+  "J.A.R.V.I.S. online. Good evening, sir.",
+  "Rerouting power from the Malibu workshop…",
+  "Telling DUM-E to put the fire extinguisher down…",
+  "Calibrating repulsors…",
+  "Polishing the Mark VI faceplate…",
+  "Asking Happy to bring the car around…",
+  "Power at 400%… and climbing.",
 ];
