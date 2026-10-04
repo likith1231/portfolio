@@ -16,9 +16,9 @@ export default function Contact() {
 
   return (
     <section id="contact" className="relative overflow-hidden py-28">
-      <div className="pointer-events-none absolute bottom-0 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-arc/[0.06] blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-gold/[0.06] blur-3xl" />
       <div className="relative mx-auto max-w-7xl px-4 md:px-8">
-        <SectionHead code="06" kicker="open a comm channel" title="Let's build something that stays up">
+        <SectionHead code="08" kicker="open a comm channel" title="Let's build something that stays up">
           Hiring for DevOps, SRE, backend or full-stack? Building with agents? Email is the fastest way to reach me.
         </SectionHead>
 
@@ -26,7 +26,7 @@ export default function Contact() {
           <Reveal>
             <button onClick={copy} className="group block w-full text-left" aria-label="Copy email address">
               <span className="hud-label">{copied ? "✓ copied to clipboard" : "click to copy"}</span>
-              <span className="mt-2 block break-all font-display text-3xl font-bold text-white transition-colors group-hover:text-arc md:text-5xl">
+              <span className="mt-2 block break-all font-display text-3xl font-bold text-white transition-colors group-hover:text-gold md:text-5xl">
                 {profile.email}
               </span>
             </button>
@@ -44,9 +44,9 @@ export default function Contact() {
             <form className="hud-panel hud-corners space-y-4 p-6" onSubmit={(e) => { e.preventDefault(); window.location.href = mailto; }}>
               <div className="hud-label">quick transmission</div>
               <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Your name / company"
-                className="w-full border border-white/10 bg-void px-4 py-3 text-sm text-white outline-none placeholder:text-steel-500 focus:border-arc/60" />
+                className="w-full border border-white/10 bg-void px-4 py-3 text-sm text-white outline-none placeholder:text-steel-500 focus:border-gold/60" />
               <textarea value={form.msg} onChange={(e) => setForm({ ...form, msg: e.target.value })} rows={5} placeholder="What are we building?"
-                className="w-full resize-none border border-white/10 bg-void px-4 py-3 text-sm text-white outline-none placeholder:text-steel-500 focus:border-arc/60" />
+                className="w-full resize-none border border-white/10 bg-void px-4 py-3 text-sm text-white outline-none placeholder:text-steel-500 focus:border-gold/60" />
               <button type="submit" className="btn-primary w-full justify-center">Transmit via email →</button>
               <p className="text-[11px] text-steel-500">Opens your email app with the message filled in.</p>
             </form>

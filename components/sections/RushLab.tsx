@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
+import { useHUD } from "../Shell";
+import { sfx } from "@/lib/sfx";
 
 const MIN = 2, MAX = 8, TARGET = 60, PER_POD = 40, HISTORY = 60;
 
@@ -35,6 +37,7 @@ function step(users: number, pods: number, tuned: boolean, calm: number) {
 }
 
 export default function RushLab() {
+  const { narrate } = useHUD();
   const [users, setUsers] = useState(20);
   const [tuned, setTuned] = useState(true);
   const [pods, setPods] = useState(MIN);
@@ -64,6 +67,8 @@ export default function RushLab() {
       if (r.pods !== s.pods) {
         const msg = `t+${s.tick * 15}s  HPA ${r.pods > s.pods ? "scaled up" : "scaled down"} ${s.pods} → ${r.pods} pods (cpu ${Math.round(r.cpu)}%)`;
         setEvents((ev) => [msg, ...ev].slice(0, 5));
+        sfx.servo();
+        narrate(`Stress test: autoscaler moved ${s.pods} → ${r.pods} pods`, r.pods > s.pods ? "warn" : "info");
       }
       s.pods = r.pods; s.calm = r.calm;
       setPods(r.pods); setCpu(r.cpu);
@@ -74,6 +79,8 @@ export default function RushLab() {
 
   const rush = () => {
     if (rushing) return;
+    sfx.alert();
+    narrate("Booking rush incoming: 250 virtual users. Bracing the cluster.", "bad");
     setRushing(true);
     const ramp = [60, 120, 180, 250, 250, 250, 250, 250, 250, 250, 250, 200, 140, 80, 40, 20];
     ramp.forEach((u, i) => setTimeout(() => { setUsers(u); if (i === ramp.length - 1) setRushing(false); }, i * 900));
@@ -87,7 +94,7 @@ export default function RushLab() {
 
   return (
     <section id="lab" ref={ref} className="relative mx-auto max-w-7xl px-4 py-28 md:px-8">
-      <SectionHead code="03" kicker="interactive · rush lab" title="Survive the rush">
+      <SectionHead code="04" kicker="stress test · rush lab" title="Survive the rush">
         Slots open, and everyone hits “Book Now” at once. This simulator runs a small model of the ResilientCommerce autoscaler: 2 to 8 pods at 60% CPU. Trigger a rush, then switch the database pool to the default and watch what really happened in the first load test.
       </SectionHead>
 
@@ -95,9 +102,9 @@ export default function RushLab() {
         <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
           <div className="hud-panel hud-corners flex flex-col gap-6 p-5">
             <div>
-              <div className="hud-label mb-3 flex justify-between"><span>virtual users</span><span className="text-arc">{users}</span></div>
+              <div className="hud-label mb-3 flex justify-between"><span>virtual users</span><span className="text-gold">{users}</span></div>
               <input type="range" min={0} max={300} value={users} onChange={(e) => setUsers(+e.target.value)} disabled={rushing}
-                className="w-full accent-[rgb(var(--arc))]" aria-label="Virtual users" />
+                className="w-full accent-[rgb(var(--gold))]" aria-label="Virtual users" />
             </div>
 
             <button onClick={rush} disabled={rushing} className="btn-primary justify-center disabled:opacity-50">
@@ -109,7 +116,7 @@ export default function RushLab() {
               <div className="grid grid-cols-2 border border-white/10">
                 {[{ v: false, l: "Default · 5" }, { v: true, l: "Tuned · 20" }].map((o) => (
                   <button key={o.l} onClick={() => setTuned(o.v)}
-                    className={`py-2 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors ${tuned === o.v ? (o.v ? "bg-arc/15 text-arc" : "bg-danger/15 text-danger") : "text-steel-400 hover:text-white"}`}>
+                    className={`py-2 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors ${tuned === o.v ? (o.v ? "bg-gold/15 text-gold" : "bg-danger/15 text-danger") : "text-steel-400 hover:text-white"}`}>
                     {o.l}
                   </button>
                 ))}
@@ -138,10 +145,10 @@ export default function RushLab() {
                 const on = i < pods;
                 return (
                   <motion.div key={i} animate={{ opacity: on ? 1 : 0.25, scale: on ? 1 : 0.94 }}
-                    className={`relative h-20 overflow-hidden border ${on ? "border-arc/50 bg-arc/[0.06]" : "border-dashed border-white/10"}`}>
+                    className={`relative h-20 overflow-hidden border ${on ? "border-gold/50 bg-gold/[0.06]" : "border-dashed border-white/10"}`}>
                     <div className="p-2 font-mono text-[10px] text-steel-400">pod-{i + 1}</div>
                     {on && (
-                      <motion.div className={`absolute inset-x-0 bottom-0 ${cpu > 80 ? "bg-danger/45" : cpu > TARGET ? "bg-caution/40" : "bg-arc/35"}`}
+                      <motion.div className={`absolute inset-x-0 bottom-0 ${cpu > 80 ? "bg-danger/45" : cpu > TARGET ? "bg-caution/40" : "bg-gold/35"}`}
                         animate={{ height: `${Math.min(100, cpu)}%` }} transition={{ type: "spring", stiffness: 80, damping: 20 }} />
                     )}
                     <div className={`absolute bottom-1.5 left-2 font-mono text-[10px] ${on ? "text-white" : "text-steel-500"}`}>{on ? "Running" : "—"}</div>
@@ -153,7 +160,7 @@ export default function RushLab() {
             <div className="mt-6">
               <div className="mb-2 flex gap-5 font-mono text-[10px] uppercase tracking-[0.18em]">
                 <span className="text-danger">— p95 latency</span>
-                <span className="text-arc">— pods</span>
+                <span className="text-gold">— pods</span>
                 <span className="text-steel-500">-- 60% target</span>
               </div>
               <svg viewBox={`0 0 ${W} ${H}`} className="h-40 w-full" preserveAspectRatio="none">
@@ -161,13 +168,13 @@ export default function RushLab() {
                 <polyline points={pts((s) => s.cpu, 100)} fill="none" className="stroke-white/15" strokeWidth="1" />
                 <line x1="0" x2={W} y1={H - 0.6 * (H - 10) - 4} y2={H - 0.6 * (H - 10) - 4} className="stroke-steel-500" strokeDasharray="4 6" />
                 <polyline points={pts((s) => s.p95, maxP)} fill="none" className="stroke-danger" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-                <polyline points={pts((s) => s.pods, MAX)} fill="none" className="stroke-arc" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+                <polyline points={pts((s) => s.pods, MAX)} fill="none" className="stroke-gold" strokeWidth="2" vectorEffect="non-scaling-stroke" />
               </svg>
             </div>
 
             <div className="mt-4 min-h-[92px] border-t border-white/[0.07] pt-3 font-mono text-[11px] text-steel-400">
               {events.length === 0 ? <span className="text-steel-500">kubectl get events -w · waiting for a scaling event…</span> :
-                events.map((e, i) => <div key={e + i} className={i === 0 ? "text-arc" : ""}>{e}</div>)}
+                events.map((e, i) => <div key={e + i} className={i === 0 ? "text-gold" : ""}>{e}</div>)}
             </div>
           </div>
         </div>

@@ -3,39 +3,61 @@
 import { useEffect, useState } from "react";
 import Clock from "./ui/Clock";
 import { useHUD } from "./Shell";
-import { profile, socials } from "@/data/portfolio";
+import { profile, quotes, socials } from "@/data/portfolio";
 
-// Session uptime counts only while the tab is visible.
-function Uptime() {
+// Flight time counts only while the tab is visible.
+function FlightTime() {
   const [s, setS] = useState(0);
   useEffect(() => {
     const id = setInterval(() => { if (document.visibilityState === "visible") setS((v) => v + 1); }, 1000);
     return () => clearInterval(id);
   }, []);
-  const hh = String(Math.floor(s / 3600)).padStart(2, "0");
-  const mm = String(Math.floor((s % 3600) / 60)).padStart(2, "0");
-  const ss = String(s % 60).padStart(2, "0");
-  return <span className="text-arc">{hh}:{mm}:{ss}</span>;
+  const p = (n: number) => String(n).padStart(2, "0");
+  return <span className="text-gold">{p(Math.floor(s / 3600))}:{p(Math.floor((s % 3600) / 60))}:{p(s % 60)}</span>;
+}
+
+// Roughly how much of the page the visitor has scrolled past, in words.
+function Scanned() {
+  const [w, setW] = useState(0);
+  useEffect(() => {
+    const total = (document.body.innerText || "").split(/\s+/).length;
+    const on = () => {
+      const k = Math.min(1, (window.scrollY + innerHeight) / document.documentElement.scrollHeight);
+      setW((x) => Math.max(x, Math.round(total * k)));
+    };
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+  return <span className="text-gold">{w.toLocaleString()}</span>;
 }
 
 export default function Footer() {
-  const { setPaletteOpen } = useHUD();
+  const { setJarvisOpen, emp, empActive, replayIntro } = useHUD();
   return (
-    <footer className="border-t border-white/[0.06] px-4 py-10 md:px-8">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 font-mono text-[11px] text-steel-500 md:flex-row md:items-center md:justify-between">
-        <div className="space-y-1">
-          <div className="text-steel-300">{profile.name} © {new Date().getFullYear()}</div>
-          <div>session uptime <Uptime /> · 0 incidents · it's <span className="text-steel-300"><Clock seconds={false} /></span> in Bengaluru</div>
-          <div>Built with Next.js. Set in Chakra Petch, Inter and JetBrains Mono.</div>
+    <footer className="relative border-t border-white/[0.06] px-4 pb-28 pt-14 md:px-8">
+      <div className="mx-auto max-w-7xl">
+        <p className="font-serif text-3xl italic text-white md:text-4xl">“{quotes.footer.text}”</p>
+        <p className="hud-label mt-2">{quotes.footer.by} · {quotes.footer.film}</p>
+
+        <div className="mt-10 flex flex-col gap-6 font-mono text-[11px] text-steel-500 md:flex-row md:items-end md:justify-between">
+          <div className="space-y-1">
+            <div className="text-steel-300">{profile.name} © {new Date().getFullYear()} · Stark-grade engineering, minus the billions</div>
+            <div>flight time <FlightTime /> · 0 incidents · it's <span className="text-steel-300"><Clock seconds={false} /></span> in Bengaluru</div>
+            <div>you've scanned about <Scanned /> words of this page</div>
+            <div>Built with Next.js, Three.js and Framer Motion. Set in Chakra Petch, Inter and Instrument Serif.</div>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3 uppercase tracking-[0.18em]">
+            <button onClick={emp} disabled={empActive} className="border border-danger/50 px-3 py-1.5 text-danger hover:bg-danger/10 disabled:opacity-40" title="Freeze every animation for 5 seconds">⚡ Fire EMP</button>
+            <button onClick={replayIntro} className="hover:text-gold">Replay intro</button>
+            <button onClick={() => setJarvisOpen(true)} className="hover:text-gold">J.A.R.V.I.S.</button>
+            <a href={socials.github} target="_blank" rel="noreferrer" className="hover:text-gold">GitHub</a>
+            <a href={socials.linkedin} target="_blank" rel="noreferrer" className="hover:text-gold">LinkedIn</a>
+            <a href="#top" className="hover:text-gold">Back to top ↑</a>
+          </div>
         </div>
-        <div className="flex flex-wrap items-center gap-5 uppercase tracking-[0.18em]">
-          <button onClick={() => setPaletteOpen(true)} className="hover:text-arc">Terminal /</button>
-          <a href={socials.github} target="_blank" rel="noreferrer" className="hover:text-arc">GitHub</a>
-          <a href={socials.linkedin} target="_blank" rel="noreferrer" className="hover:text-arc">LinkedIn</a>
-          <a href="#top" className="hover:text-arc">Back to top ↑</a>
-        </div>
+        <p className="mt-8 font-mono text-[10px] text-steel-500/60">psst: ↑ ↑ ↓ ↓ ← → ← → B A · or hold the mouse on empty space, then let go</p>
       </div>
-      <p className="mx-auto mt-6 max-w-7xl font-mono text-[10px] text-steel-500/60">psst: ↑ ↑ ↓ ↓ ← → ← → B A</p>
     </footer>
   );
 }

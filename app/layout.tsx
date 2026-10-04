@@ -10,10 +10,10 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 const serif = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-serif" });
 
 export const metadata: Metadata = {
-  title: `${profile.name}, DevOps & Applied AI`,
+  title: `${profile.name} · Hall of Armor`,
   description: `${profile.headline} ${profile.role}. Based in ${profile.location}.`,
   openGraph: {
-    title: `${profile.name}, DevOps & Applied AI`,
+    title: `${profile.name} · Hall of Armor`,
     description: profile.headline,
     type: "website",
   },

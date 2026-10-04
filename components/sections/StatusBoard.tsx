@@ -3,13 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
-import { missions, otherBuilds, projects } from "@/data/portfolio";
+import { missions, roman, suits } from "@/data/portfolio";
 
 type Check = { ok: boolean; ms: number };
-const services = [
-  ...projects.map((p) => ({ name: p.name, live: p.live, repo: p.repo, flagship: true })),
-  ...otherBuilds.map((b) => ({ name: b.name, live: b.live, repo: b.repo, flagship: false })),
-];
+const services = [...suits]
+  .sort((a, b) => b.mark - a.mark)
+  .map((p) => ({ name: p.name, mark: p.mark, live: p.live, repo: p.repo, flagship: p.flagship }));
 
 async function ping(url: string): Promise<Check> {
   const t0 = performance.now();
@@ -55,7 +54,7 @@ export default function StatusBoard() {
   return (
     <section id="status" className="relative border-y border-white/[0.05] bg-void-900/40 py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
-        <SectionHead code="04" kicker="live · checked from your browser" title="System status">
+        <SectionHead code="06" kicker="live · checked from your browser" title="Suit status">
           A status page for everything I've built. Live projects are pinged from your browser right now; the rest are on their way to the cloud.
         </SectionHead>
 
@@ -67,7 +66,7 @@ export default function StatusBoard() {
                 {allOk ? `${liveCount} live systems responding` : "Some systems are not responding"}
               </span>
             </div>
-            <button onClick={runChecks} disabled={busy} className="font-mono text-[11px] uppercase tracking-[0.18em] text-arc hover:underline disabled:opacity-50">
+            <button onClick={runChecks} disabled={busy} className="font-mono text-[11px] uppercase tracking-[0.18em] text-gold hover:underline disabled:opacity-50">
               {busy ? "checking…" : "↻ re-check now"}
             </button>
           </div>
@@ -80,10 +79,11 @@ export default function StatusBoard() {
                 <div key={s.name} className="grid items-center gap-3 px-5 py-4 md:grid-cols-[220px_1fr_170px]">
                   <div>
                     <div className="flex items-center gap-2">
+                      <span className="font-mono text-[10px] text-hot">MK {roman(s.mark)}</span>
                       <span className="font-display font-semibold uppercase text-white">{s.name}</span>
-                      {s.flagship && <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-arc">flagship</span>}
+                      {s.flagship && <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-gold">flagship</span>}
                     </div>
-                    <a href={s.live ?? s.repo} target="_blank" rel="noreferrer" className="font-mono text-[11px] text-steel-500 hover:text-arc">
+                    <a href={s.live ?? s.repo} target="_blank" rel="noreferrer" className="font-mono text-[11px] text-steel-500 hover:text-gold">
                       {(s.live ?? s.repo).replace(/^https:\/\//, "")}
                     </a>
                   </div>
@@ -126,7 +126,7 @@ export default function StatusBoard() {
             <ul className="hud-panel divide-y divide-white/[0.06] font-mono text-[12px]">
               {missions.map((m) => (
                 <li key={m.label} className="flex items-center gap-4 px-4 py-3">
-                  <span className={`w-20 shrink-0 uppercase tracking-[0.15em] ${m.state === "done" ? "text-ok" : m.state === "running" ? "text-arc" : "text-steel-500"}`}>
+                  <span className={`w-20 shrink-0 uppercase tracking-[0.15em] ${m.state === "done" ? "text-ok" : m.state === "running" ? "text-gold" : "text-steel-500"}`}>
                     {m.state === "done" ? "✓ done" : m.state === "running" ? "▶ running" : "… queued"}
                   </span>
                   <span className={m.state === "done" ? "text-steel-400 line-through decoration-white/20" : "text-steel-100"}>{m.label}</span>

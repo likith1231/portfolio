@@ -1,19 +1,19 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./data/**/*.ts"],
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./data/**/*.ts", "./lib/**/*.ts"],
   theme: {
     extend: {
       colors: {
-        void: { DEFAULT: "#030304", 900: "#07080a", 800: "#0c0d10", 700: "#121318", 600: "#1a1c22" },
-        steel: { 100: "#ececef", 200: "#c9cad1", 300: "#9a9ca6", 400: "#6d6f7a", 500: "#4a4c55" },
-        arc: { DEFAULT: "rgb(var(--arc) / <alpha-value>)", soft: "#a8f3ff", deep: "#0e7c93" },
-        // "hot" and "warm" are steel/silver in Stealth mode and red/gold in Mark mode.
+        void: { DEFAULT: "#050404", 900: "#0a0808", 800: "#110d0d", 700: "#181313", 600: "#221a1a" },
+        steel: { 100: "#efeae6", 200: "#cfc8c3", 300: "#a39b96", 400: "#77706c", 500: "#524c49" },
+        // Accent tokens. Classic mode: hot-rod red + gold. War Machine mode: gunmetal + silver.
+        gold: "rgb(var(--gold) / <alpha-value>)",
         hot: "rgb(var(--hot) / <alpha-value>)",
-        warm: "rgb(var(--warm) / <alpha-value>)",
+        // Blue lives only in the arc reactor.
+        reactor: "#8fefff",
         ok: "#4ade80",
-        // Status colours stay fixed in both modes so warnings always read as warnings.
-        danger: "#f05252",
+        danger: "#ff4d4d",
         caution: "#f2b84b",
       },
       fontFamily: {
@@ -24,15 +24,14 @@ const config: Config = {
       },
       keyframes: {
         marquee: { "0%": { transform: "translateX(0)" }, "100%": { transform: "translateX(-50%)" } },
-        scan: { "0%": { transform: "translateY(-100%)" }, "100%": { transform: "translateY(100%)" } },
         flicker: { "0%,100%": { opacity: "1" }, "92%": { opacity: "1" }, "93%": { opacity: ".4" }, "94%": { opacity: "1" } },
+        blast: { "0%": { transform: "translate(-50%,-50%) scale(.2)", opacity: "1" }, "100%": { transform: "translate(-50%,-50%) scale(2.6)", opacity: "0" } },
       },
       animation: {
         marquee: "marquee 40s linear infinite",
-        "marquee-slow": "marquee 60s linear infinite",
-        scan: "scan 3.5s linear infinite",
         flicker: "flicker 6s linear infinite",
         "spin-slow": "spin 30s linear infinite",
+        blast: "blast .6s ease-out forwards",
       },
     },
   },

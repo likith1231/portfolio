@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
+import { useHUD } from "../Shell";
+import { sfx } from "@/lib/sfx";
 
 type Line = { t: number; agent: string; text: string; tone?: "ok" | "bad" | "warn" };
 type Scenario = {
@@ -113,6 +115,7 @@ const toneClass = (t?: Line["tone"]) => (t === "ok" ? "text-ok" : t === "bad" ? 
 
 // A scripted replay of the GhostOps pipeline. Visitors pick a fault and watch the agents handle it.
 export default function IncidentDrill() {
+  const { narrate } = useHUD();
   const [sc, setSc] = useState<Scenario>(SCENARIOS[0]);
   const [shown, setShown] = useState(0);
   const [running, setRunning] = useState(false);
@@ -127,10 +130,16 @@ export default function IncidentDrill() {
 
   const run = (s: Scenario) => {
     clear();
+    sfx.alert();
+    narrate(`Threat detected: ${s.label.toLowerCase()} injected by visitor. Dispatching agents.`, "bad");
     setSc(s); setShown(0); setDone(false); setRunning(true); setElapsed(0);
     s.lines.forEach((l, i) => timers.current.push(setTimeout(() => { setShown(i + 1); setElapsed(l.t); }, l.t + 300)));
     const end = s.lines[s.lines.length - 1].t + 900;
-    timers.current.push(setTimeout(() => { setRunning(false); setDone(true); }, end));
+    timers.current.push(setTimeout(() => {
+      setRunning(false); setDone(true);
+      if (s.outcome === "pr") { sfx.success(); narrate(`Threat neutralised. Patch proven in sandbox, PR opened.`, "ok"); }
+      else { sfx.alert(); narrate("Patch blocked by policy. Nothing shipped. As designed.", "warn"); }
+    }, end));
   };
 
   const visible = sc.lines.slice(0, shown);
@@ -141,7 +150,7 @@ export default function IncidentDrill() {
   return (
     <section id="drill" className="relative border-y border-white/[0.05] bg-void-900/40 py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
-        <SectionHead code="02" kicker="interactive · incident drill" title="Break something">
+        <SectionHead code="03" kicker="threat response · incident drill" title="Break something">
           Pick a fault and inject it. Watch an agent pipeline, modelled on GhostOps, detect it, find the root cause, write a patch, and prove it in a sandbox before anything reaches GitHub. One of these is supposed to fail.
         </SectionHead>
 
@@ -164,19 +173,19 @@ export default function IncidentDrill() {
           <div className="hud-panel hud-corners overflow-hidden">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.07] px-4 py-3">
               <div className="flex items-center gap-2 font-mono text-[11px]">
-                <span className="h-2.5 w-2.5 rounded-full bg-hot/70" /><span className="h-2.5 w-2.5 rounded-full bg-warm/70" /><span className="h-2.5 w-2.5 rounded-full bg-ok/70" />
+                <span className="h-2.5 w-2.5 rounded-full bg-hot/70" /><span className="h-2.5 w-2.5 rounded-full bg-gold/70" /><span className="h-2.5 w-2.5 rounded-full bg-ok/70" />
                 <span className="ml-2 text-steel-400">ghostops://incident-drill</span>
               </div>
               <div className="font-mono text-[11px] text-steel-400">
-                t+<span className="text-arc">{(elapsed / 1000).toFixed(1)}s</span>
+                t+<span className="text-gold">{(elapsed / 1000).toFixed(1)}s</span>
               </div>
             </div>
 
             <div className="grid grid-cols-5 border-b border-white/[0.07]">
               {STAGES.map((s, i) => (
-                <div key={s.id} className={`relative px-2 py-3 text-center font-mono text-[10px] uppercase tracking-[0.15em] transition-colors sm:text-[11px] ${reached(i) ? (done && sc.outcome === "abort" && i >= 3 ? "text-danger" : "text-arc") : "text-steel-500"}`}>
+                <div key={s.id} className={`relative px-2 py-3 text-center font-mono text-[10px] uppercase tracking-[0.15em] transition-colors sm:text-[11px] ${reached(i) ? (done && sc.outcome === "abort" && i >= 3 ? "text-danger" : "text-gold") : "text-steel-500"}`}>
                   {s.label}
-                  <span className={`absolute inset-x-0 bottom-0 h-0.5 transition-all duration-500 ${reached(i) ? (done && sc.outcome === "abort" && i >= 3 ? "bg-danger" : "bg-arc") : "bg-transparent"}`} />
+                  <span className={`absolute inset-x-0 bottom-0 h-0.5 transition-all duration-500 ${reached(i) ? (done && sc.outcome === "abort" && i >= 3 ? "bg-danger" : "bg-gold") : "bg-transparent"}`} />
                 </div>
               ))}
             </div>
@@ -194,11 +203,11 @@ export default function IncidentDrill() {
                     {visible.map((l, i) => (
                       <motion.div key={`${sc.id}-${i}`} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} className="flex gap-3">
                         <span className="w-12 shrink-0 text-steel-500">{(l.t / 1000).toFixed(1)}s</span>
-                        <span className="w-24 shrink-0 text-arc/80">{l.agent}</span>
+                        <span className="w-24 shrink-0 text-gold/80">{l.agent}</span>
                         <span className={toneClass(l.tone)}>{l.text}</span>
                       </motion.div>
                     ))}
-                    {running && <span className="ml-[9.5rem] inline-block h-3.5 w-2 animate-pulse bg-arc align-middle" />}
+                    {running && <span className="ml-[9.5rem] inline-block h-3.5 w-2 animate-pulse bg-gold align-middle" />}
                   </>
                 )}
               </div>
@@ -229,8 +238,8 @@ export default function IncidentDrill() {
           </div>
           <p className="mt-4 text-xs text-steel-500">
             A scripted replay, so it runs in your browser with no API keys. The real pipeline uses CrewAI and Claude, and opened{" "}
-            <a className="text-arc hover:underline" href="https://github.com/likith1231/ghostops/pull/3" target="_blank" rel="noreferrer">PR #3</a> and{" "}
-            <a className="text-arc hover:underline" href="https://github.com/likith1231/ghostops/pull/4" target="_blank" rel="noreferrer">PR #4</a> on its own.
+            <a className="text-gold hover:underline" href="https://github.com/likith1231/ghostops/pull/3" target="_blank" rel="noreferrer">PR #3</a> and{" "}
+            <a className="text-gold hover:underline" href="https://github.com/likith1231/ghostops/pull/4" target="_blank" rel="noreferrer">PR #4</a> on its own.
           </p>
         </Reveal>
       </div>

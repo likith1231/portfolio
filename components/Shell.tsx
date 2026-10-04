@@ -1,23 +1,35 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import Boot from "./Boot";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import Intro from "./Intro";
 import Nav from "./Nav";
 import Reticle from "./ui/Reticle";
 import ScrollProgress from "./ui/ScrollProgress";
 import SmoothScroll from "./ui/SmoothScroll";
-import CommandPalette from "./CommandPalette";
+import FlightHUD from "./FlightHUD";
+import Repulsors from "./Repulsors";
+import Jarvis from "./Jarvis";
 import RecruiterBrief from "./RecruiterBrief";
+import { sfx, sound } from "@/lib/sfx";
 
-type Mode = "stealth" | "mark";
+export type Mode = "mark" | "warmachine";
+export type LogLine = { id: number; at: number; text: string; tone?: "ok" | "warn" | "bad" | "info" };
 type HUD = {
   mode: Mode;
   toggleMode: () => void;
-  paletteOpen: boolean;
-  setPaletteOpen: (v: boolean) => void;
+  soundOn: boolean;
+  setSound: (v: boolean) => void;
+  jarvisOpen: boolean;
+  setJarvisOpen: (v: boolean) => void;
   briefOpen: boolean;
   setBriefOpen: (v: boolean) => void;
   unibeam: () => void;
+  emp: () => void;
+  empActive: boolean;
+  narrate: (text: string, tone?: LogLine["tone"]) => void;
+  log: LogLine[];
+  introDone: boolean;
+  replayIntro: () => void;
 };
 
 const Ctx = createContext<HUD | null>(null);
@@ -30,16 +42,23 @@ export const useHUD = () => {
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
 export default function Shell({ children }: { children: React.ReactNode }) {
-  const [mode, setMode] = useState<Mode>("stealth");
-  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [mode, setMode] = useState<Mode>("mark");
+  const [soundOn, setSoundOn] = useState(false);
+  const [jarvisOpen, setJarvisOpen] = useState(false);
   const [briefOpen, setBriefOpen] = useState(false);
   const [beam, setBeam] = useState(0);
+  const [empActive, setEmpActive] = useState(false);
+  const [log, setLog] = useState<LogLine[]>([]);
+  const [introDone, setIntroDone] = useState(false);
+  const [introKey, setIntroKey] = useState(0);
+  const toastId = useRef(0);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem("hud-mode");
-      if (saved === "mark" || saved === "stealth") setMode(saved);
+      if (saved === "mark" || saved === "warmachine") setMode(saved);
     } catch {}
+    return sound.subscribe(setSoundOn);
   }, []);
 
   useEffect(() => {
@@ -47,8 +66,30 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     try { localStorage.setItem("hud-mode", mode); } catch {}
   }, [mode]);
 
-  const toggleMode = useCallback(() => setMode((m) => (m === "stealth" ? "mark" : "stealth")), []);
-  const unibeam = useCallback(() => setBeam((b) => b + 1), []);
+  const toggleMode = useCallback(() => { sfx.servo(); setMode((m) => (m === "mark" ? "warmachine" : "mark")); }, []);
+  const setSound = useCallback((v: boolean) => sound.set(v), []);
+  const unibeam = useCallback(() => { sfx.ignite(); setBeam((b) => b + 1); }, []);
+
+  const emp = useCallback(() => {
+    if (document.documentElement.classList.contains("emp")) return;
+    sfx.boom();
+    document.documentElement.classList.add("emp");
+    setEmpActive(true);
+    setTimeout(() => { document.documentElement.classList.remove("emp"); setEmpActive(false); sfx.boot(); }, 5000);
+  }, []);
+
+  // Everything J.A.R.V.I.S. does goes into one running log.
+  const narrate = useCallback((text: string, tone: LogLine["tone"] = "info") => {
+    const id = ++toastId.current;
+    setLog((l) => [...l.slice(-40), { id, at: Date.now(), text, tone }]);
+  }, []);
+
+  const replayIntro = useCallback(() => {
+    try { sessionStorage.removeItem("suited"); } catch {}
+    window.scrollTo(0, 0);
+    setIntroDone(false);
+    setIntroKey((k) => k + 1);
+  }, []);
 
   useEffect(() => {
     let seq: string[] = [];
@@ -56,9 +97,9 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       const typing = (e.target as HTMLElement)?.closest("input, textarea");
       if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !typing)) {
         e.preventDefault();
-        setPaletteOpen((v) => !v);
+        setJarvisOpen((v) => !v);
       }
-      if (e.key === "Escape") { setPaletteOpen(false); setBriefOpen(false); }
+      if (e.key === "Escape") { setJarvisOpen(false); setBriefOpen(false); }
       if (!typing) {
         seq = [...seq, e.key].slice(-KONAMI.length);
         if (seq.join() === KONAMI.join()) { unibeam(); seq = []; }
@@ -69,18 +110,31 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   }, [unibeam]);
 
   return (
-    <Ctx.Provider value={{ mode, toggleMode, paletteOpen, setPaletteOpen, briefOpen, setBriefOpen, unibeam }}>
+    <Ctx.Provider
+      value={{ mode, toggleMode, soundOn, setSound, jarvisOpen, setJarvisOpen, briefOpen, setBriefOpen, unibeam, emp, empActive, narrate, log, introDone, replayIntro }}
+    >
       <SmoothScroll />
-      <Boot />
+      <Intro key={introKey} onDone={() => setIntroDone(true)} />
       <ScrollProgress />
       <Reticle />
+      <Repulsors />
+      <FlightHUD />
       <Nav />
       {children}
-      <CommandPalette />
+      <Jarvis />
       <RecruiterBrief />
+
+      {empActive && (
+        <div className="pointer-events-none fixed inset-x-0 top-20 z-[85] flex justify-center">
+          <div className="border border-danger/60 bg-void/90 px-5 py-2 font-mono text-xs uppercase tracking-[0.25em] text-danger">
+            ⚡ EMP discharged · all systems frozen · rebooting in 5s
+          </div>
+        </div>
+      )}
+
       {beam > 0 && (
         <div key={beam} className="pointer-events-none fixed inset-0 z-[90] flex items-center justify-center">
-          <div className="unibeam h-[40vmin] w-[40vmin] rounded-full bg-arc blur-2xl" />
+          <div className="unibeam h-[40vmin] w-[40vmin] rounded-full bg-white blur-2xl" style={{ boxShadow: "0 0 200px 80px #8fefff" }} />
         </div>
       )}
     </Ctx.Provider>
