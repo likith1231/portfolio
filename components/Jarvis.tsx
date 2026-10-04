@@ -196,7 +196,7 @@ export default function Jarvis() {
                 <button onClick={() => protocol("Unibeam", unibeam)} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">◉ Unibeam</button>
                 <button onClick={() => protocol("EMP discharge", emp, "bad")} disabled={empActive} className="chip py-2 text-left hover:border-danger/50 hover:text-danger disabled:opacity-40">⚡ EMP</button>
                 <button onClick={() => protocol("Clean Slate: suit reboot", () => { setJarvisOpen(false); replayIntro(); })} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">↻ Reboot suit</button>
-                <button onClick={() => protocol("Infinity Gauntlet engaged", () => { setJarvisOpen(false); setTimeout(() => window.dispatchEvent(new Event("stark:snap")), 300); }, "bad")} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">✋ The Snap</button>
+                <button onClick={() => protocol("Infinity Gauntlet engaged", () => { setJarvisOpen(false); setTimeout(() => window.dispatchEvent(new CustomEvent("stark:snap", { detail: { x: innerWidth / 2, y: innerHeight / 2 } })), 300); }, "bad")} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">✋ The Snap</button>
                 <button onClick={() => protocol("Briefing for Ms. Potts", () => { setJarvisOpen(false); setBriefOpen(true); }, "info")} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">▤ Recruiter brief</button>
               </div>
             </div>
