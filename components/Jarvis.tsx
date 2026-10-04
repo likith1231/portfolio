@@ -119,7 +119,7 @@ export default function Jarvis() {
   return (
     <>
       {/* orb + ticker */}
-      <div className="fixed bottom-5 right-5 z-[76] flex items-center gap-3">
+      <div className="fixed bottom-5 right-5 z-[76] flex items-center gap-3" data-snap-ignore>
         <AnimatePresence>
           {ticker && !jarvisOpen && (
             <motion.button key={ticker.id} onClick={() => setJarvisOpen(true)} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
@@ -196,7 +196,8 @@ export default function Jarvis() {
                 <button onClick={() => protocol("Unibeam", unibeam)} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">◉ Unibeam</button>
                 <button onClick={() => protocol("EMP discharge", emp, "bad")} disabled={empActive} className="chip py-2 text-left hover:border-danger/50 hover:text-danger disabled:opacity-40">⚡ EMP</button>
                 <button onClick={() => protocol("Clean Slate: suit reboot", () => { setJarvisOpen(false); replayIntro(); })} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">↻ Reboot suit</button>
-                <button onClick={() => protocol("Briefing for Ms. Potts", () => { setJarvisOpen(false); setBriefOpen(true); }, "info")} className="chip col-span-2 py-2 text-left hover:border-gold/50 hover:text-gold">▤ Recruiter brief</button>
+                <button onClick={() => protocol("Infinity Gauntlet engaged", () => { setJarvisOpen(false); setTimeout(() => window.dispatchEvent(new Event("stark:snap")), 300); }, "bad")} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">✋ The Snap</button>
+                <button onClick={() => protocol("Briefing for Ms. Potts", () => { setJarvisOpen(false); setBriefOpen(true); }, "info")} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">▤ Recruiter brief</button>
               </div>
             </div>
             <style>{`@keyframes wave { from { height: 15% } to { height: 90% } }`}</style>
