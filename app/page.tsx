@@ -1,6 +1,5 @@
 import Hero from "@/components/sections/Hero";
 import HallOfArmor from "@/components/sections/HallOfArmor";
-import SnapSection from "@/components/sections/SnapSection";
 import Schematics from "@/components/sections/Schematics";
 import IncidentDrill from "@/components/sections/IncidentDrill";
 import RushLab from "@/components/sections/RushLab";
@@ -18,7 +17,6 @@ export default function Home() {
       <Hero />
       <QuoteBand {...quotes.armor} />
       <HallOfArmor />
-      <SnapSection />
       <Schematics />
       <QuoteBand {...quotes.suit} />
       <IncidentDrill />

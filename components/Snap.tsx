@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHUD } from "./Shell";
 import { sfx } from "@/lib/sfx";
-import { STONES, type SnapPhase } from "./Gauntlet";
+import Gauntlet, { STONES, triggerSnap, type SnapPhase } from "./Gauntlet";
 
 
 const DUSTABLE = [
@@ -43,7 +43,7 @@ function dustColors(el: Element): [number, number, number][] {
 
 // Endgame: half the page turns to dust, comes back, and ends on the line.
 export default function Snap() {
-  const { narrate } = useHUD();
+  const { narrate, introDone } = useHUD();
   const [phase, setPhase] = useState<Phase>("idle");
   const [lit, setLit] = useState(0);
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -198,6 +198,13 @@ export default function Snap() {
   return (
     <>
 
+
+      {/* the gauntlet, tucked in the corner */}
+      <button onClick={(e) => triggerSnap(e.currentTarget)} disabled={phase !== "idle"} data-snap-ignore aria-label="Snap the Infinity Gauntlet" title="Snap"
+        className={`group fixed bottom-5 left-5 z-[76] grid h-14 w-14 place-items-center rounded-full border border-gold/60 bg-void/90 shadow-[0_0_30px_rgb(var(--hot)/0.35)] backdrop-blur transition-opacity ${introDone ? "opacity-100" : "opacity-0"}`}>
+        <Gauntlet lit={lit} className="h-9 w-9" />
+        <span className="pointer-events-none absolute left-16 hidden whitespace-nowrap border border-white/10 bg-void/90 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-gold group-hover:block">snap</span>
+      </button>
 
       <canvas ref={canvas} className="pointer-events-none fixed inset-0 z-[91] h-full w-full" aria-hidden />
 

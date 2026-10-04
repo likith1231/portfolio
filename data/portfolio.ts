@@ -381,6 +381,5 @@ export const modelCredits = [
   { title: "War Machine (Textured) (Rigged)", author: "CAPTAAINR", url: "https://sketchfab.com/3d-models/war-machinetexturedrigged-ed775c63303c4d358394d40dc9d0be19", usedFor: "War Machine, Hulkbuster" },
   { title: "Iron Man MK7", author: "CHANG747", url: "https://sketchfab.com/3d-models/iron-man-mk7-ad4776eea8184283a3e49cf5487df754", usedFor: "Mark 7" },
   { title: "Iron Man (Mark-I) (Textured) (Rigged)", author: "CAPTAAINR", url: "https://sketchfab.com/3d-models/iron-man-mark-i-textured-rigged-5664593af9d94c2e97c1365788b88202", usedFor: "Mark 1" },
-  { title: "Infinity Gauntlet", author: "tralex2011", url: "https://sketchfab.com/3d-models/infinity-gauntlet-5e5cbaaa4098413e89bb516d481e1126", usedFor: "Nano gauntlet" },
   { title: "Arc Reactor", author: "Ludus101", url: "https://sketchfab.com/3d-models/arc-reactor-7daf892988e54cdcb8bfd7dff3ed5d23", usedFor: "Arc reactor" },
 ];
