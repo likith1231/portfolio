@@ -1,9 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import { useRef } from "react";
 import Gauntlet, { STONES, triggerSnap, useSnapState } from "../Gauntlet";
 import Reveal from "../ui/Reveal";
+
+const Gauntlet3D = dynamic(() => import("../three/Gauntlet3D"), { ssr: false, loading: () => <div className="grid h-full place-items-center hud-label">forging gauntlet…</div> });
 
 const NAMES = ["Space", "Mind", "Reality", "Power", "Time", "Soul"];
 
@@ -17,13 +19,10 @@ export default function SnapSection() {
     <section id="snap" className="relative overflow-hidden py-28">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgb(var(--hot)/0.16),transparent_60%)]" />
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 md:px-8 lg:grid-cols-[1fr_1.1fr]">
-        <div ref={hand} data-snap-ignore className="relative mx-auto aspect-square w-full max-w-[420px]">
+        <div ref={hand} data-snap-ignore className="relative mx-auto aspect-[4/5] w-full max-w-[460px]">
           <div className="absolute inset-[12%] rounded-full blur-3xl transition-colors duration-500"
             style={{ background: lit ? `${STONES[lit - 1]}55` : "rgb(var(--gold) / 0.12)" }} />
-          <motion.div className="relative h-full w-full" animate={busy ? { rotate: [0, -4, 4, 0], scale: [1, 1.03, 1] } : { y: [0, -10, 0] }}
-            transition={busy ? { duration: 0.4 } : { duration: 5, repeat: Infinity, ease: "easeInOut" }}>
-            <Gauntlet lit={lit} pulse={!busy} className="h-full w-full drop-shadow-[0_20px_60px_rgba(0,0,0,0.6)]" />
-          </motion.div>
+          <div className="relative h-full w-full"><Gauntlet3D lit={lit} phase={phase} /></div>
         </div>
 
         <Reveal>
