@@ -8,6 +8,7 @@ import { useGo } from "../Nav";
 import { useHUD } from "../Shell";
 import { profile, quotes } from "@/data/portfolio";
 import SocialButtons from "../ui/SocialButtons";
+import Gauntlet, { triggerSnap } from "../Gauntlet";
 
 const Reactor3D = dynamic(() => import("../three/Reactor3D"), { ssr: false, loading: () => <div className="h-full w-full" /> });
 
@@ -30,7 +31,7 @@ function Rotator() {
 
 export default function Hero() {
   const go = useGo();
-  const { setJarvisOpen, introDone } = useHUD();
+  const { introDone } = useHUD();
   const words = profile.headline.split(" ");
   const show = introDone;
 
@@ -68,7 +69,9 @@ export default function Hero() {
 
           <motion.div initial={{ opacity: 0, y: 16 }} animate={show ? { opacity: 1, y: 0 } : {}} transition={{ delay: 1.1 }} className="mt-9 flex flex-wrap gap-3">
             <button onClick={() => go("armor")} className="btn-hot">Enter the Hall of Armor →</button>
-            <button onClick={() => setJarvisOpen(true)} className="btn-primary">J.A.R.V.I.S. systems</button>
+            <button data-snap-ignore onClick={(e) => triggerSnap(e.currentTarget)} className="btn-primary group">
+              <Gauntlet lit={6} className="h-5 w-5 transition-transform group-hover:rotate-[-12deg]" /> Snap the gauntlet
+            </button>
           </motion.div>
 
           <motion.div initial={{ opacity: 0 }} animate={show ? { opacity: 1 } : {}} transition={{ delay: 1.3 }} className="mt-10 flex flex-wrap gap-2">

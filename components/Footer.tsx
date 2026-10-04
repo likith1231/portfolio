@@ -68,7 +68,7 @@ export default function Footer() {
           </ul>
           <p className="mt-3">Iron Man and related characters are owned by Marvel. This is a non-commercial fan tribute.</p>
         </details>
-        <p className="mt-8 font-mono text-[10px] text-steel-500/60">psst: try the gauntlet in the corner · ↑ ↑ ↓ ↓ ← → ← → B A · or hold the mouse on empty space, then let go</p>
+        <p className="mt-8 font-mono text-[10px] text-steel-500/60">psst: ↑ ↑ ↓ ↓ ← → ← → B A · or hold the mouse on empty space, then let go</p>
       </div>
     </footer>
   );
