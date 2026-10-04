@@ -8,6 +8,8 @@ import { useHUD } from "./Shell";
 import { scrollToId } from "./ui/SmoothScroll";
 import { profile } from "@/data/portfolio";
 import { sfx } from "@/lib/sfx";
+import { GitHubIcon, LinkedInIcon } from "./ui/SocialButtons";
+import { socials } from "@/data/portfolio";
 
 export const SECTIONS = [
   { id: "armor", label: "Armor" },
@@ -83,9 +85,11 @@ export default function Nav() {
         </div>
 
         <div className="flex items-center gap-2">
+          <a href={socials.github} target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub" className="hidden h-8 w-8 place-items-center border border-white/10 text-steel-200 hover:border-gold hover:text-gold md:grid"><GitHubIcon /></a>
+          <a href={socials.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn" className="hidden h-8 w-8 place-items-center border border-white/10 text-steel-200 hover:border-gold hover:text-gold md:grid"><LinkedInIcon /></a>
           <button onClick={() => setSound(!soundOn)} aria-label={soundOn ? "Mute suit sounds" : "Turn suit sounds on"} title={soundOn ? "Sound on" : "Sound off"}
             className={`flex h-8 items-center gap-1.5 border px-2 font-mono text-[10px] uppercase tracking-[0.12em] ${soundOn ? "border-gold/60 text-gold" : "border-white/10 text-steel-500"} hover:border-gold`}>
-            <SoundIcon on={soundOn} /><span>{soundOn ? "SFX" : "Muted"}</span>
+            <SoundIcon on={soundOn} /><span className="hidden 2xl:inline">{soundOn ? "SFX" : "Muted"}</span>
           </button>
           <button onClick={toggleMode} title={mode === "mark" ? "Switch to War Machine (black & gunmetal)" : "Back to classic red & gold"}
             className="flex h-8 items-center gap-2 border border-white/10 px-2.5 font-mono text-[11px] uppercase tracking-[0.12em] text-steel-200 hover:border-gold/60">
@@ -93,7 +97,7 @@ export default function Nav() {
               <span className="h-2.5 w-2.5 bg-hot" />
               <span className="h-2.5 w-2.5 bg-gold" />
             </span>
-            <span className="hidden whitespace-nowrap sm:inline">{mode === "mark" ? "War Machine" : "Classic"}</span>
+            <span className="hidden whitespace-nowrap sm:inline xl:hidden 2xl:inline">{mode === "mark" ? "War Machine" : "Classic"}</span>
           </button>
           <button onClick={() => { sfx.lock(); setJarvisOpen(true); }} className="flex h-8 items-center gap-2 border border-gold/50 bg-gold/10 px-3 font-mono text-[11px] uppercase tracking-[0.12em] text-gold hover:bg-gold hover:text-void">
             <span className="h-1.5 w-1.5 rounded-full bg-reactor shadow-[0_0_6px_#8fefff]" /> <span className="hidden md:inline">J.A.R.V.I.S.</span><span className="md:hidden">AI</span>

@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
-import { missions, roman, suits } from "@/data/portfolio";
+import { missions, suits } from "@/data/portfolio";
 
 type Check = { ok: boolean; ms: number };
 const services = [...suits]
   .sort((a, b) => b.mark - a.mark)
-  .map((p) => ({ name: p.name, mark: p.mark, live: p.live, repo: p.repo, flagship: p.flagship }));
+  .map((p) => ({ name: p.name, short: p.short, live: p.live, repo: p.repo, flagship: p.flagship }));
 
 async function ping(url: string): Promise<Check> {
   const t0 = performance.now();
@@ -79,7 +79,7 @@ export default function StatusBoard() {
                 <div key={s.name} className="grid items-center gap-3 px-5 py-4 md:grid-cols-[220px_1fr_170px]">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-[10px] text-hot">MK {roman(s.mark)}</span>
+                      <span className="font-mono text-[10px] uppercase text-hot">{s.short}</span>
                       <span className="font-display font-semibold uppercase text-white">{s.name}</span>
                       {s.flagship && <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-gold">flagship</span>}
                     </div>

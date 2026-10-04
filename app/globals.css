@@ -32,7 +32,7 @@ html.emp *, html.emp *::before, html.emp *::after { animation-play-state: paused
 html.emp body { filter: grayscale(.85) contrast(1.1); }
 
 @layer components {
-  .hud-panel { @apply relative border border-white/[0.07] bg-void-900/80 backdrop-blur-sm; }
+  .hud-panel { @apply relative border border-white/[0.07] bg-void-900/90; }
   .hud-corners::before, .hud-corners::after {
     content: ""; position: absolute; width: 14px; height: 14px; pointer-events: none;
     border-color: rgb(var(--gold) / 0.75); transition: all .3s;
@@ -61,10 +61,7 @@ html.emp body { filter: grayscale(.85) contrast(1.1); }
   background-size: 56px 56px;
 }
 .scanlines { background: repeating-linear-gradient(0deg, rgb(255 255 255 / 0.02) 0 1px, transparent 1px 3px); }
-.noise::after {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+
 .unibeam { animation: unibeam 1.6s ease-out forwards; }
 @keyframes unibeam { 0% { opacity: 0; transform: scale(.2); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(3); } }
 

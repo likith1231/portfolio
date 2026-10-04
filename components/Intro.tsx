@@ -147,7 +147,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
                 <AssemblingReactor p={p} />
               </motion.div>
               <div className="hidden w-44 font-mono text-[10px] uppercase tracking-[0.2em] text-steel-400 lg:block">
-                <div className="text-gold">Mark VI</div>
+                <div className="text-gold">Mark 85</div>
                 <div className="mt-1">serial 0x{(48879 + p * 97).toString(16).toUpperCase()}</div>
                 <div className="mt-4">core temp {Math.round(30 + p * 2.6)}°C</div>
                 <div>output {(p * 0.04).toFixed(2)} GJ/s</div>

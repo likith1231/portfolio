@@ -10,6 +10,7 @@ import FlightHUD from "./FlightHUD";
 import Repulsors from "./Repulsors";
 import Jarvis from "./Jarvis";
 import RecruiterBrief from "./RecruiterBrief";
+import Snap from "./Snap";
 import { sfx, sound } from "@/lib/sfx";
 
 export type Mode = "mark" | "warmachine";
@@ -122,6 +123,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       <Nav />
       {children}
       <Jarvis />
+      <Snap />
       <RecruiterBrief />
 
       {empActive && (

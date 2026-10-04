@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useHUD } from "./Shell";
 
 const NARRATION: Record<string, string> = {
-  armor: "Visitor entered the Hall of Armor. 6 suits on display, Mark VI powered.",
+  armor: "Visitor entered the Hall of Armor. 6 suits on display, Mark 85 powered.",
   schematics: "Projecting blueprints for 3 flagship suits.",
   drill: "Threat response armed. Fault injection is available to the visitor.",
   lab: "Stress test bay open. Autoscaler model loaded: 2–8 pods @ 60% CPU.",
@@ -16,27 +16,32 @@ const NARRATION: Record<string, string> = {
 };
 
 // Flight instruments on the left edge: altitude follows the scroll, speed follows scroll velocity.
+// Updated straight on the DOM (no React re-renders) and only on wide screens where it shows.
 export default function FlightHUD() {
   const { narrate, introDone } = useHUD();
   const path = usePathname();
-  const [alt, setAlt] = useState(0);
-  const [spd, setSpd] = useState(0);
-  const last = useRef({ y: 0, t: 0 });
+  const altEl = useRef<HTMLSpanElement>(null);
+  const spdEl = useRef<HTMLSpanElement>(null);
+  const barEl = useRef<HTMLDivElement>(null);
   const said = useRef(new Set<string>());
 
   useEffect(() => {
-    let id = 0;
+    const wide = window.matchMedia("(min-width: 1536px)");
+    let id = 0, lastY = window.scrollY, lastT = performance.now(), spd = 0;
     const loop = (t: number) => {
       const y = window.scrollY;
-      const dt = Math.max(1, t - last.current.t);
-      const v = Math.abs(y - last.current.y) / dt;
-      last.current = { y, t };
-      setSpd((s) => s + (v * 900 - s) * 0.12);
-      setAlt(y * 3.2);
+      const v = Math.abs(y - lastY) / Math.max(1, t - lastT);
+      lastY = y; lastT = t;
+      spd += (v * 900 - spd) * 0.12;
+      if (altEl.current) altEl.current.textContent = Math.round(y * 3.2).toLocaleString();
+      if (spdEl.current) spdEl.current.textContent = `${Math.round(spd)} kn`;
+      if (barEl.current) barEl.current.style.width = `${Math.min(100, spd / 30)}%`;
       id = requestAnimationFrame(loop);
     };
-    id = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(id);
+    const start = () => { cancelAnimationFrame(id); if (wide.matches) id = requestAnimationFrame(loop); };
+    start();
+    wide.addEventListener("change", start);
+    return () => { cancelAnimationFrame(id); wide.removeEventListener("change", start); };
   }, []);
 
   useEffect(() => {
@@ -53,24 +58,13 @@ export default function FlightHUD() {
     return () => { clearTimeout(t); io.disconnect(); };
   }, [introDone, path, narrate]);
 
-  const ticks = Array.from({ length: 9 }, (_, i) => Math.round((alt / 100 + (i - 4)) ) * 100);
-
   return (
     <div className="pointer-events-none fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 select-none font-mono text-[10px] text-steel-500 2xl:block" aria-hidden>
-      <div className="mb-2 tracking-[0.2em] text-gold">ALT</div>
-      <div className="relative h-56 w-14 overflow-hidden border-l border-white/10">
-        <div className="absolute inset-x-0 top-1/2 z-10 flex -translate-y-1/2 items-center gap-1 bg-void/90 py-0.5 text-white">
-          <span className="text-hot">▶</span>{Math.round(alt).toLocaleString()}
-        </div>
-        {ticks.map((v, i) => (
-          <div key={i} className="absolute left-0 flex items-center gap-1" style={{ top: `${(i / 8) * 100 - ((alt % 100) / 100) * 12.5}%` }}>
-            <span className="h-px w-2 bg-white/20" />{v >= 0 ? v.toLocaleString() : ""}
-          </div>
-        )).reverse()}
-      </div>
+      <div className="mb-1 tracking-[0.2em] text-gold">ALT</div>
+      <div className="flex items-center gap-1 text-white"><span className="text-hot">▶</span><span ref={altEl}>0</span> ft</div>
       <div className="mt-4 tracking-[0.2em] text-gold">SPD</div>
-      <div className="text-white">{Math.round(spd)} kn</div>
-      <div className="mt-1 h-1 w-14 bg-white/10"><div className="h-full bg-hot" style={{ width: `${Math.min(100, spd / 30)}%` }} /></div>
+      <span ref={spdEl} className="text-white">0 kn</span>
+      <div className="mt-1 h-1 w-14 bg-white/10"><div ref={barEl} className="h-full bg-hot" style={{ width: "0%" }} /></div>
       <div className="mt-4 tracking-[0.2em] text-gold">PWR</div>
       <div className="text-ok">100%</div>
     </div>

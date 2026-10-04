@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Clock from "./ui/Clock";
 import { useHUD } from "./Shell";
-import { profile, quotes, socials } from "@/data/portfolio";
+import { modelCredits, profile, quotes, socials } from "@/data/portfolio";
 
 // Flight time counts only while the tab is visible.
 function FlightTime() {
@@ -56,7 +56,19 @@ export default function Footer() {
             <a href="#top" className="hover:text-gold">Back to top ↑</a>
           </div>
         </div>
-        <p className="mt-8 font-mono text-[10px] text-steel-500/60">psst: ↑ ↑ ↓ ↓ ← → ← → B A · or hold the mouse on empty space, then let go</p>
+        <details className="mt-10 border-t border-white/[0.06] pt-5 font-mono text-[11px] text-steel-500">
+          <summary className="cursor-pointer uppercase tracking-[0.18em] hover:text-gold">3D model credits · CC BY 4.0</summary>
+          <ul className="mt-3 space-y-1.5">
+            {modelCredits.map((c) => (
+              <li key={c.title}>
+                <span className="text-steel-300">{c.usedFor}</span>: based on “<a href={c.url} target="_blank" rel="noreferrer" className="text-gold hover:underline">{c.title}</a>” by {c.author}, licensed under{" "}
+                <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer" className="hover:text-gold">CC BY 4.0</a>. Repainted, rescaled and compressed for this site.
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3">Iron Man and related characters are owned by Marvel. This is a non-commercial fan tribute.</p>
+        </details>
+        <p className="mt-8 font-mono text-[10px] text-steel-500/60">psst: try the gauntlet in the corner · ↑ ↑ ↓ ↓ ← → ← → B A · or hold the mouse on empty space, then let go</p>
       </div>
     </footer>
   );
