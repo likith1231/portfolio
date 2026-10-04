@@ -134,10 +134,18 @@ export default function TrainingRoom() {
         ctx.beginPath(); ctx.arc(b.x, b.y, 8 + k * (b.big ? 70 : 40), 0, Math.PI * 2); ctx.stroke();
         ctx.restore();
       }
-      id = requestAnimationFrame(loop);
+      if (onScreen) id = requestAnimationFrame(loop);
     };
-    id = requestAnimationFrame(loop);
-    return () => { cancelAnimationFrame(id); window.removeEventListener("resize", resize); };
+    // Only animate while the game is on screen.
+    let onScreen = false;
+    const io = new IntersectionObserver(([e]) => {
+      const was = onScreen;
+      onScreen = e.isIntersecting;
+      if (onScreen && !was) { prev = performance.now(); id = requestAnimationFrame(loop); }
+      if (!onScreen) cancelAnimationFrame(id);
+    });
+    io.observe(c);
+    return () => { cancelAnimationFrame(id); io.disconnect(); window.removeEventListener("resize", resize); };
   }, []);
 
   const start = () => {

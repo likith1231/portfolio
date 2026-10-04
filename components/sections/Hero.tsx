@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import Clock from "../ui/Clock";
 import { useGo } from "../Nav";
 import { useHUD } from "../Shell";
-import { profile, quotes, socials } from "@/data/portfolio";
+import { profile, quotes } from "@/data/portfolio";
+import SocialButtons from "../ui/SocialButtons";
 
 const Reactor3D = dynamic(() => import("../three/Reactor3D"), { ssr: false, loading: () => <div className="h-full w-full" /> });
 
@@ -70,16 +71,13 @@ export default function Hero() {
             <button onClick={() => setJarvisOpen(true)} className="btn-primary">J.A.R.V.I.S. systems</button>
           </motion.div>
 
-          <motion.p initial={{ opacity: 0 }} animate={show ? { opacity: 1 } : {}} transition={{ delay: 1.3 }} className="mt-10 max-w-xl border-l-2 border-hot pl-4 font-serif text-lg italic text-steel-300">
-            {profile.riff.slice(0, -1).join(", ")}, {profile.riff.at(-1)}.
-            <span className="block font-mono text-[10px] not-italic uppercase tracking-[0.2em] text-steel-500">— not quite “genius, billionaire, playboy, philanthropist”, yet</span>
-          </motion.p>
+          <motion.div initial={{ opacity: 0 }} animate={show ? { opacity: 1 } : {}} transition={{ delay: 1.3 }} className="mt-10 flex flex-wrap gap-2">
+            {profile.roles.map((r) => (
+              <span key={r} className="border border-gold/40 bg-gold/[0.06] px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-gold">{r}</span>
+            ))}
+          </motion.div>
 
-          <div className="mt-8 flex gap-5 font-mono text-xs uppercase tracking-[0.2em]">
-            <a href={socials.github} target="_blank" rel="noreferrer" className="text-steel-400 hover:text-gold">GitHub ↗</a>
-            <a href={socials.linkedin} target="_blank" rel="noreferrer" className="text-steel-400 hover:text-gold">LinkedIn ↗</a>
-            <a href={`mailto:${profile.email}`} className="text-steel-400 hover:text-gold">Email ↗</a>
-          </div>
+          <div className="mt-8"><SocialButtons /></div>
         </div>
 
         <div className="relative order-1 mx-auto aspect-square w-full max-w-[560px] lg:order-2">

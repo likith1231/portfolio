@@ -3,7 +3,8 @@
 import { useState } from "react";
 import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
-import { profile, socials } from "@/data/portfolio";
+import SocialButtons from "../ui/SocialButtons";
+import { profile } from "@/data/portfolio";
 
 export default function Contact() {
   const [copied, setCopied] = useState(false);
@@ -19,7 +20,7 @@ export default function Contact() {
       <div className="pointer-events-none absolute bottom-0 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-gold/[0.06] blur-3xl" />
       <div className="relative mx-auto max-w-7xl px-4 md:px-8">
         <SectionHead code="08" kicker="open a comm channel" title="Let's build something that stays up">
-          Hiring for DevOps, SRE, backend or full-stack? Building with agents? Email is the fastest way to reach me.
+          Hiring a DevOps, Full Stack or AI/ML engineer? Email is the fastest way to reach me.
         </SectionHead>
 
         <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
@@ -30,11 +31,7 @@ export default function Contact() {
                 {profile.email}
               </span>
             </button>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a href={socials.github} target="_blank" rel="noreferrer" className="btn-ghost">GitHub ↗</a>
-              <a href={socials.linkedin} target="_blank" rel="noreferrer" className="btn-ghost">LinkedIn ↗</a>
-              {profile.resume && <a href={profile.resume} target="_blank" rel="noreferrer" className="btn-primary">Résumé ↓</a>}
-            </div>
+            <div className="mt-10"><SocialButtons /></div>
             <div className="mt-10 hud-label flex items-center gap-2 text-ok">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ok" />{profile.available}
             </div>

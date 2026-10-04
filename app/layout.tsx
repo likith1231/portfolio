@@ -24,7 +24,7 @@ export const viewport: Viewport = { themeColor: "#030304" };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-mode="stealth" className={`${display.variable} ${inter.variable} ${mono.variable} ${serif.variable}`}>
-      <body className="noise font-sans">
+      <body className="font-sans">
         <Shell>{children}</Shell>
       </body>
     </html>

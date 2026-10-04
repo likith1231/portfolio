@@ -8,6 +8,7 @@ export default function Reticle() {
   const dot = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
   const [locked, setLocked] = useState(false);
+  const lockedRef = useRef(false);
   const [moved, setMoved] = useState(false);
 
   useEffect(() => {
@@ -21,7 +22,8 @@ export default function Reticle() {
       x = e.clientX; y = e.clientY;
       setMoved(true);
       if (dot.current) dot.current.style.transform = `translate(${x}px, ${y}px)`;
-      setLocked(!!(e.target as HTMLElement)?.closest("a, button, input, textarea, [data-lock]"));
+      const l = !!(e.target as HTMLElement)?.closest("a, button, input, textarea, [data-lock]");
+      if (l !== lockedRef.current) { lockedRef.current = l; setLocked(l); }
     };
     const loop = () => {
       rx += (x - rx) * 0.2; ry += (y - ry) * 0.2;
