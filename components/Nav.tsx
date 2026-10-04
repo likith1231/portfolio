@@ -13,7 +13,6 @@ import { socials } from "@/data/portfolio";
 
 export const SECTIONS = [
   { id: "armor", label: "Armor" },
-  { id: "snap", label: "Snap" },
   { id: "schematics", label: "Schematics" },
   { id: "drill", label: "Threats" },
   { id: "lab", label: "Stress" },
