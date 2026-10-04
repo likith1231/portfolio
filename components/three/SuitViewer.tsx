@@ -24,8 +24,9 @@ export default function SuitViewer({ suit }: { suit: Suit }) {
   const wrap = useRef<HTMLDivElement>(null);
   const visible = useVisible(wrap);
   return (
-    <div ref={wrap} className="h-full w-full">
+    <div ref={wrap} className="h-full w-full [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_72%)]">
       <Canvas frameloop={visible ? "always" : "never"} dpr={[1, 1.75]} camera={{ position: [0, 0.4, 5.2], fov: 40 }} gl={{ alpha: true }}>
+        <color attach="background" args={["#050404"]} />
         <Studio />
         <Spin suit={suit} />
         <EffectComposer><Bloom mipmapBlur intensity={0.9} luminanceThreshold={0.9} /></EffectComposer>

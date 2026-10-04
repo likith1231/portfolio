@@ -75,7 +75,7 @@ function Reactor() {
     if (ringA.current) ringA.current.rotation.z += dt * 0.25;
     if (ringB.current) ringB.current.rotation.z -= dt * 0.6;
     if (coils.current) coils.current.rotation.z += dt * 0.12;
-    if (core.current) core.current.emissiveIntensity = 4 + Math.sin(t * 2.4) * 0.8 + Math.min(3, scroll * 2);
+    if (core.current) core.current.emissiveIntensity = 2.4 + Math.sin(t * 2.4) * 0.5 + Math.min(2, scroll * 1.5);
   });
 
   const gold = <meshStandardMaterial color="#e2a845" metalness={1} roughness={0.22} />;
@@ -86,7 +86,8 @@ function Reactor() {
     <group ref={root}>
       <Part from={[0, 0, -6]} delay={0} t0={t0}>
         <mesh><torusGeometry args={[2.25, 0.14, 24, 120]} />{gold}</mesh>
-        <mesh position={[0, 0, -0.15]}><cylinderGeometry args={[2.3, 2.3, 0.2, 96, 1, true]} />{steel}</mesh>
+        <mesh position={[0, 0, -0.15]} rotation={[Math.PI / 2, 0, 0]}><cylinderGeometry args={[2.3, 2.3, 0.3, 96, 1, true]} />{steel}</mesh>
+        <mesh position={[0, 0, -0.3]}><circleGeometry args={[2.3, 96]} /><meshStandardMaterial color="#120d0d" metalness={0.9} roughness={0.5} /></mesh>
       </Part>
       <Part from={[4, 3, 2]} delay={0.15} t0={t0}>
         <group ref={ringA}>
@@ -150,8 +151,9 @@ export default function Reactor3D() {
   const wrap = useRef<HTMLDivElement>(null);
   const visible = useVisible(wrap);
   return (
-    <div ref={wrap} className="h-full w-full">
+    <div ref={wrap} className="h-full w-full [mask-image:radial-gradient(circle_at_center,black_55%,transparent_72%)]">
       <Canvas frameloop={visible ? "always" : "never"} dpr={[1, 1.75]} camera={{ position: [0, 0, 7.2], fov: 40 }} gl={{ antialias: true, alpha: true }}>
+        <color attach="background" args={["#050404"]} />
         <Studio />
         <Reactor />
         <Sparks />

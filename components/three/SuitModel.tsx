@@ -3,6 +3,7 @@
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
+import { RoundedBox } from "@react-three/drei";
 import type { Armor } from "@/data/portfolio";
 
 const REACTOR = new THREE.Color("#8fefff");
@@ -30,7 +31,7 @@ export default function SuitModel({ armor, active = true, mark = 6 }: { armor: A
     const pec = extrude(pecL, 0.08, 0.03);
     const pecR = extrude(mirror(pecL), 0.08, 0.03);
     const abs = [0, 1, 2].map((i) => extrude([[-0.42 + i * 0.05, 0], [0.42 - i * 0.05, 0], [0.38 - i * 0.05, -0.2], [-0.38 + i * 0.05, -0.2]], 0.16, 0.03));
-    const face = extrude([[-0.36, 0.3], [0.36, 0.3], [0.4, -0.05], [0.24, -0.42], [0, -0.5], [-0.24, -0.42], [-0.4, -0.05]], 0.08, 0.03);
+    const face = extrude([[-0.34, 0.32], [0.34, 0.32], [0.38, -0.02], [0.22, -0.4], [0, -0.46], [-0.22, -0.4], [-0.38, -0.02]], 0.06, 0.025);
     const eye = extrude([[-0.13, 0.03], [0.02, 0.0], [0.0, -0.04], [-0.12, -0.03]], 0.02, 0.005);
     return { chest, pec, pecR, abs, face, eye };
   }, []);
@@ -48,20 +49,18 @@ export default function SuitModel({ armor, active = true, mark = 6 }: { armor: A
 
   return (
     <group>
-      {/* helmet */}
-      <group position={[0, 1.95, 0.05]}>
-        <mesh scale={[0.55, 0.66, 0.6]} castShadow>
-          <sphereGeometry args={[1, 48, 48]} />
-          {primary}
-        </mesh>
-        <mesh geometry={geo.face} position={[0, -0.05, 0.56]} rotation={[-0.08, 0, 0]}>{secondary}</mesh>
+      {/* helmet: rounded shell, gold faceplate, glowing eyes */}
+      <group position={[0, 2.05, 0]}>
+        <RoundedBox args={[0.95, 1.12, 1.0]} radius={0.34} smoothness={6} castShadow>{primary}</RoundedBox>
+        <mesh geometry={geo.face} position={[0, -0.06, 0.5]}>{secondary}</mesh>
         {[-1, 1].map((s) => (
-          <mesh key={s} geometry={geo.eye} position={[s * 0.15, 0.06, 0.62]} scale={[s, 1, 1]}>
+          <mesh key={s} geometry={geo.eye} position={[s * 0.15, 0.06, 0.57]} scale={[s, 1, 1]}>
             <meshStandardMaterial ref={s === 1 ? eyes : undefined} color="#ffffff" emissive="#ffffff" emissiveIntensity={2.4} toneMapped={false} />
           </mesh>
         ))}
+        <mesh position={[0, -0.36, 0.56]}><boxGeometry args={[0.26, 0.02, 0.02]} /><meshStandardMaterial color="#000" /></mesh>
         <mesh position={[0, -0.62, -0.05]}>
-          <cylinderGeometry args={[0.28, 0.34, 0.3, 24]} />
+          <cylinderGeometry args={[0.26, 0.32, 0.3, 24]} />
           {dark}
         </mesh>
       </group>
@@ -74,12 +73,19 @@ export default function SuitModel({ armor, active = true, mark = 6 }: { armor: A
         <mesh key={i} geometry={g} position={[0, -0.42 - i * 0.26, 0.05]}>{i % 2 ? primary : secondary}</mesh>
       ))}
 
-      {/* shoulders */}
+      {/* shoulders and arms */}
       {[-1, 1].map((s) => (
-        <mesh key={s} position={[s * 1.32, 1.28, -0.05]} rotation={[0, 0, s * -0.5]} scale={[0.5, 0.42, 0.55]}>
-          <sphereGeometry args={[1, 32, 24, 0, Math.PI * 2, 0, Math.PI / 2]} />
-          {primary}
-        </mesh>
+        <group key={s}>
+          <RoundedBox args={[0.72, 0.44, 0.82]} radius={0.18} smoothness={4} position={[s * 1.32, 1.22, -0.05]} rotation={[0, 0, s * -0.32]}>{primary}</RoundedBox>
+          <mesh position={[s * 1.45, 0.3, -0.05]} rotation={[0, 0, s * 0.1]}>
+            <cylinderGeometry args={[0.27, 0.23, 1.25, 24]} />
+            {primary}
+          </mesh>
+          <mesh position={[s * 1.5, -0.08, -0.05]} rotation={[0, 0, s * 0.1]}>
+            <cylinderGeometry args={[0.25, 0.25, 0.16, 24]} />
+            {secondary}
+          </mesh>
+        </group>
       ))}
 
       {/* arc reactor */}

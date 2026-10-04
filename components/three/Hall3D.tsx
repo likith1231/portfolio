@@ -29,14 +29,7 @@ function Pod({ suit, angle, active }: { suit: Suit; angle: number; active: boole
         <ringGeometry args={[1.0, 1.12, 6]} />
         <meshStandardMaterial ref={ring} color="#ffb84d" emissive="#ffb84d" emissiveIntensity={0.25} toneMapped={false} side={THREE.DoubleSide} />
       </mesh>
-      {/* glass case edges */}
-      {active && (
-        <mesh position={[0, 0.6, 0]}>
-          <cylinderGeometry args={[1.3, 1.3, 4.4, 6, 1, true]} />
-          <meshStandardMaterial color="#ffffff" transparent opacity={0.04} metalness={1} roughness={0} side={THREE.DoubleSide} />
-        </mesh>
-      )}
-      <group ref={spin} scale={0.62} position={[0, -0.55, 0]}>
+      <group ref={spin} scale={0.56} position={[0, -0.45, 0]}>
         <SuitModel armor={suit.armor} active={active} mark={suit.mark} />
       </group>
     </group>
@@ -68,7 +61,7 @@ export default function Hall3D({ suits, index }: { suits: Suit[]; index: number 
   const visible = useVisible(wrap);
   return (
     <div ref={wrap} className="h-full w-full">
-      <Canvas frameloop={visible ? "always" : "never"} dpr={[1, 1.6]} camera={{ position: [0, 0.6, 3.6], fov: 42 }} gl={{ antialias: true, alpha: true }}>
+      <Canvas frameloop={visible ? "always" : "never"} dpr={[1, 1.6]} camera={{ position: [0, 0.7, 5.4], fov: 38 }} gl={{ antialias: true, alpha: true }}>
         <fog attach="fog" args={["#050404", 5, 14]} />
         <Studio />
         <spotLight position={[0, 6, 2]} angle={0.45} penumbra={0.8} intensity={60} color="#ffe2b8" />
