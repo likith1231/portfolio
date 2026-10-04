@@ -7,7 +7,7 @@ import LiveBadge from "@/components/ui/LiveBadge";
 import Footer from "@/components/Footer";
 import SuitStage from "@/components/SuitStage";
 import Gallery from "@/components/Gallery";
-import { profile, roman, suits } from "@/data/portfolio";
+import { profile, suits } from "@/data/portfolio";
 
 const ordered = [...suits].sort((a, b) => b.mark - a.mark);
 
@@ -18,7 +18,7 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const p = suits.find((x) => x.slug === params.slug);
   if (!p) return {};
-  return { title: `Mark ${roman(p.mark)} · ${p.name} · ${profile.name}`, description: `${p.tagline} ${p.summary}` };
+  return { title: `${p.name} · ${p.suit} · ${profile.name}`, description: `${p.tagline} ${p.summary}` };
 }
 
 export default function CaseStudy({ params }: { params: { slug: string } }) {
@@ -36,7 +36,7 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
         <div className="mt-8 grid items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
           <Reveal>
             <div className="hud-label flex flex-wrap items-center gap-3">
-              <span className="text-hot">Mark {roman(p.mark)}</span><span>· codename “{p.codename}”</span><LiveBadge live={p.live} />
+              <span className="text-hot">{p.suit}</span><span>· rank {7 - p.mark} of 6</span><LiveBadge live={p.live} />
             </div>
             <h1 className="mt-4 font-display text-5xl font-bold uppercase text-white md:text-7xl">{p.name}</h1>
             <p className="mt-3 font-serif text-2xl italic text-gold md:text-3xl">{p.tagline}</p>
@@ -54,7 +54,7 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
           <div className="relative h-[380px] md:h-[460px]">
             <div className="pointer-events-none absolute inset-0 rounded-full bg-hot/10 blur-3xl" />
             <SuitStage slug={p.slug} />
-            <div className="hud-label absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap">mark {roman(p.mark)} · turntable</div>
+            <div className="hud-label absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap">{p.suit} · turntable</div>
           </div>
         </div>
 
@@ -111,7 +111,7 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
         </section>
 
         <Link href={`/work/${next.slug}`} className="group mb-16 mt-24 block border-t border-white/[0.07] pt-10">
-          <div className="hud-label">next suit · mark {roman(next.mark)}</div>
+          <div className="hud-label">next suit · {next.suit}</div>
           <div className="mt-2 font-display text-4xl font-bold uppercase text-steel-400 transition-colors group-hover:text-gold md:text-6xl">{next.name} →</div>
         </Link>
       </article>

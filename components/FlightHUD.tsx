@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useHUD } from "./Shell";
 
 const NARRATION: Record<string, string> = {
-  armor: "Visitor entered the Hall of Armor. 6 suits on display, Mark VI powered.",
+  armor: "Visitor entered the Hall of Armor. 6 suits on display, Mark 85 powered.",
   schematics: "Projecting blueprints for 3 flagship suits.",
   drill: "Threat response armed. Fault injection is available to the visitor.",
   lab: "Stress test bay open. Autoscaler model loaded: 2–8 pods @ 60% CPU.",

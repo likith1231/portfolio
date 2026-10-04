@@ -5,7 +5,7 @@ import Flow from "../Flow";
 import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
 import LiveBadge from "../ui/LiveBadge";
-import { flagships, roman } from "@/data/portfolio";
+import { flagships } from "@/data/portfolio";
 
 // The three flagship suits, opened up: what's inside and how the parts connect.
 export default function Schematics() {
@@ -20,7 +20,7 @@ export default function Schematics() {
           <article key={p.slug} className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-12">
             <Reveal className={idx % 2 ? "lg:order-2" : ""}>
               <div className="hud-label flex flex-wrap items-center gap-3">
-                <span className="text-hot">Mark {roman(p.mark)}</span><span>· “{p.codename}”</span><LiveBadge live={p.live} />
+                <span className="text-hot">{p.suit}</span><LiveBadge live={p.live} />
               </div>
               <h3 className="mt-4 font-display text-4xl font-bold uppercase text-white md:text-5xl">{p.name}</h3>
               <p className="mt-2 font-serif text-2xl italic text-gold">{p.tagline}</p>

@@ -7,12 +7,12 @@ import { useEffect, useRef, useState } from "react";
 import SectionHead from "../ui/SectionHead";
 import LiveBadge from "../ui/LiveBadge";
 import { useHUD } from "../Shell";
-import { roman, suits } from "@/data/portfolio";
+import { suits } from "@/data/portfolio";
 import { sfx } from "@/lib/sfx";
 
 const Hall3D = dynamic(() => import("../three/Hall3D"), { ssr: false, loading: () => <div className="grid h-full place-items-center hud-label">powering up the hall…</div> });
 
-// Strongest first: Mark VI down to Mark I.
+// Strongest first: Mark 85 down to Mark 1.
 const order = [...suits].sort((a, b) => b.mark - a.mark);
 
 export default function HallOfArmor() {
@@ -41,7 +41,7 @@ export default function HallOfArmor() {
 
   useEffect(() => {
     if (i === 0) return;
-    narrate(`Hall of Armor: Mark ${roman(s.mark)} “${s.codename}” on the stand. Power rating ${s.power}.`);
+    narrate(`Hall of Armor: ${s.suit} on the stand for ${s.name}. Power rating ${s.power}.`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i]);
 
@@ -49,7 +49,7 @@ export default function HallOfArmor() {
     <section id="armor" className="relative py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
         <SectionHead code="01" kicker="the hall of armor" title="Six suits. One engineer.">
-          Every project is a suit, numbered like the films: the higher the Mark, the more advanced the build. Drag, use the arrows, or pick a Mark.
+          Every project wears a suit from the films. The more advanced the build, the higher the Mark. Drag, use the arrows, or pick a suit.
         </SectionHead>
       </div>
 
@@ -70,7 +70,7 @@ export default function HallOfArmor() {
           {order.map((x, k) => (
             <button key={x.slug} onClick={() => { sfx.click(); setI(k); }}
               className={`border px-3 py-2 font-mono text-[11px] uppercase tracking-[0.18em] transition-colors ${k === i ? "border-hot bg-hot/15 text-white" : "border-white/10 text-steel-400 hover:border-gold/50 hover:text-gold"}`}>
-              Mk {roman(x.mark)}
+              {x.short}
             </button>
           ))}
         </div>
@@ -81,7 +81,7 @@ export default function HallOfArmor() {
               className="hud-panel hud-corners grid gap-8 p-6 md:grid-cols-[1.2fr_1fr] md:p-8">
               <div>
                 <div className="hud-label flex flex-wrap items-center gap-3">
-                  <span className="text-hot">Mark {roman(s.mark)}</span><span>· codename “{s.codename}”</span><LiveBadge live={s.live} />
+                  <span className="text-hot">{s.suit}</span><span>· rank {7 - s.mark} of 6</span><LiveBadge live={s.live} />
                 </div>
                 <h3 className="mt-3 font-display text-4xl font-bold uppercase text-white md:text-5xl">{s.name}</h3>
                 <p className="mt-2 font-serif text-xl italic text-gold">{s.tagline}</p>

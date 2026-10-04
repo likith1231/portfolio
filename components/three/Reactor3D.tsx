@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { PerformanceMonitor } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import RealReactor from "./RealReactor";
+import ArcReactorGLB from "./ArcReactorGLB";
 import Studio from "./Studio";
 import useVisible from "./useVisible";
 
@@ -33,7 +34,12 @@ export default function Reactor3D() {
         <PerformanceMonitor onDecline={() => { setDpr(1); setBloom(false); }} onIncline={() => setDpr(1.5)} />
         <color attach="background" args={["#050404"]} />
         <Studio />
-        <Rig><RealReactor variant="classic" /></Rig>
+        <Rig>
+          {/* the coded reactor shows while the real model downloads */}
+          <Suspense fallback={<RealReactor variant="classic" assemble={false} />}>
+            <ArcReactorGLB />
+          </Suspense>
+        </Rig>
         {bloom && (
           <EffectComposer multisampling={0}>
             <Bloom mipmapBlur intensity={0.8} luminanceThreshold={1} luminanceSmoothing={0.15} radius={0.6} />

@@ -8,7 +8,7 @@ import { useHUD } from "../Shell";
 
 const BUGS = ["NullPointer", "MemoryLeak", "HTTP 500", "CORS", "Race cond.", "N+1 query", "Flaky test", "OOMKilled", "Deadlock", "Timeout"];
 const ROUND = 30;
-const RANKS: [number, string][] = [[0, "DUM-E"], [80, "Mark I"], [200, "Mark III"], [350, "War Machine"], [550, "Mark VI"], [800, "Iron Legion"]];
+const RANKS: [number, string][] = [[0, "DUM-E"], [80, "Mark 1"], [200, "Mark 7"], [350, "War Machine"], [550, "Hulkbuster"], [700, "Mark 85"], [900, "Iron Legion"]];
 const rankFor = (s: number) => [...RANKS].reverse().find(([min]) => s >= min)![1];
 
 type Drone = { x: number; y: number; vx: number; vy: number; r: number; label: string; hp: number; boss: boolean; hit: number };
@@ -210,7 +210,7 @@ export default function TrainingRoom() {
                       <>
                         <div className="hud-label">simulation ready</div>
                         <div className="mt-2 font-display text-3xl font-bold uppercase text-white">Repulsor training</div>
-                        <div className="mt-2 font-mono text-xs text-steel-400">ranks: DUM-E → Mark I → Mark III → War Machine → Mark VI → Iron Legion</div>
+                        <div className="mt-2 font-mono text-xs text-steel-400">ranks: DUM-E → Mark 1 → Mark 7 → War Machine → Hulkbuster → Mark 85 → Iron Legion</div>
                       </>
                     )}
                     <button onClick={start} className="btn-hot mt-6">{state === "over" ? "Run it again" : "▶ Start training"}</button>

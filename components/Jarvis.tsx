@@ -4,15 +4,15 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useHUD, type LogLine } from "./Shell";
 import { SECTIONS } from "./Nav";
-import { roman, suits } from "@/data/portfolio";
+import { suits } from "@/data/portfolio";
 import { sfx } from "@/lib/sfx";
 
 // Background chores J.A.R.V.I.S. reports while the visitor reads. Purely ambient.
 const IDLE = [
-  () => `Repulsor calibration on Mark ${roman(1 + Math.floor(Math.random() * 6))}: nominal`,
+  () => `Repulsor calibration on the ${suits[Math.floor(Math.random() * suits.length)].suit}: nominal`,
   () => `Arc reactor output steady at ${(3.2 + Math.random() * 0.3).toFixed(2)} GJ/s`,
   () => "Rerouting auxiliary power to the HUD",
-  () => "Polishing the Mark VI faceplate",
+  () => "Polishing the Mark 85 faceplate",
   () => "DUM-E is holding the fire extinguisher again. Monitoring.",
   () => `Thruster temperature ${Math.round(410 + Math.random() * 60)}°C, within limits`,
   () => "Scanning visitor… friendly. Probably a recruiter.",
@@ -80,9 +80,9 @@ export default function Jarvis() {
       const t0 = performance.now();
       try {
         await fetch(s.live!, { mode: "no-cors", cache: "no-store" });
-        narrate(`Pinged Mark ${roman(s.mark)} ${s.name}: ${Math.round(performance.now() - t0)} ms`, "ok");
+        narrate(`Pinged ${s.suit} · ${s.name}: ${Math.round(performance.now() - t0)} ms`, "ok");
       } catch {
-        narrate(`Mark ${roman(s.mark)} ${s.name} did not answer the ping`, "warn");
+        narrate(`${s.suit} · ${s.name} did not answer the ping`, "warn");
       }
     };
     const first = setTimeout(ping, 4000);

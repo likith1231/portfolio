@@ -29,13 +29,13 @@ export const socials = {
 
 export type FlowNode = { label: string; sub?: string; tone?: "red" | "gold" | "steel" };
 
-// Colours for the 3D armor plate of each suit.
-export type Armor = { primary: string; secondary: string; metal: number; rough: number; glow: number };
 
 export type Suit = {
   slug: string;
-  mark: number; // Higher mark = more advanced suit, like the films. Mark VI is the strongest build.
-  codename: string;
+  mark: number; // Strength rank, 6 = strongest. Decides the order in the Hall of Armor.
+  suit: string; // The armor this project wears, e.g. "Mark 85"
+  short: string; // Short label for buttons
+  model: string; // 3D model in /public/models
   name: string;
   tagline: string;
   summary: string;
@@ -46,7 +46,6 @@ export type Suit = {
   // Set `live` to the deployed URL once it's hosted; the suit switches from "Deploying" to "Live".
   live: string | null;
   flagship: boolean;
-  armor: Armor;
   flowTitle: string;
   flow: FlowNode[];
   flowNote?: string;
@@ -57,13 +56,14 @@ export type Suit = {
   gallery?: { src: string; alt: string }[];
 };
 
-export const roman = (n: number) => ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"][n] ?? String(n);
 
 export const suits: Suit[] = [
   {
     slug: "ghostops",
     mark: 6,
-    codename: "Ghost",
+    suit: "Mark 85",
+    short: "Mk 85",
+    model: "/models/mark85.glb",
     name: "GhostOps",
     tagline: "Production incidents, patched on their own.",
     summary:
@@ -74,7 +74,6 @@ export const suits: Suit[] = [
     repo: "https://github.com/likith1231/ghostops",
     live: null,
     flagship: true,
-    armor: { primary: "#c9182a", secondary: "#e8b04a", metal: 0.85, rough: 0.28, glow: 3.2 },
     flowTitle: "How an incident moves through GhostOps",
     flow: [
       { label: "Alertmanager", sub: "or a CI webhook", tone: "red" },
@@ -107,7 +106,9 @@ export const suits: Suit[] = [
   {
     slug: "orbit-ide",
     mark: 5,
-    codename: "Orbit",
+    suit: "Mark 50",
+    short: "Mk 50",
+    model: "/models/mark50.glb",
     name: "Orbit IDE",
     tagline: "The cloud IDE whose AI proves its code works before you see it.",
     summary:
@@ -118,7 +119,6 @@ export const suits: Suit[] = [
     repo: "https://github.com/likith1231/Orbit-IDE",
     live: null,
     flagship: true,
-    armor: { primary: "#8e0f18", secondary: "#d9a440", metal: 0.9, rough: 0.22, glow: 2.6 },
     flowTitle: "The proof loop",
     flow: [
       { label: "You ask", sub: "in the agent panel" },
@@ -156,7 +156,9 @@ export const suits: Suit[] = [
   {
     slug: "resilient-commerce",
     mark: 4,
-    codename: "War Machine",
+    suit: "Mark 44 Hulkbuster",
+    short: "Hulkbuster",
+    model: "/models/hulkbuster.glb",
     name: "ResilientCommerce",
     tagline: "Heavy armor for a booking rush.",
     summary:
@@ -167,7 +169,6 @@ export const suits: Suit[] = [
     repo: "https://github.com/likith1231/Aethermed",
     live: null,
     flagship: true,
-    armor: { primary: "#3a3d43", secondary: "#9aa0a8", metal: 0.95, rough: 0.35, glow: 2.2 },
     flowTitle: "From git push to a scaled-out cluster",
     flow: [
       { label: "git push", sub: "to main" },
@@ -199,7 +200,9 @@ export const suits: Suit[] = [
   {
     slug: "sahayak",
     mark: 3,
-    codename: "Harvest",
+    suit: "War Machine",
+    short: "War Machine",
+    model: "/models/warmachine.glb",
     name: "Sahayak",
     tagline: "Farm to market, minus the middlemen.",
     summary:
@@ -210,7 +213,6 @@ export const suits: Suit[] = [
     repo: "https://github.com/likith1231/sahayak",
     live: "https://sahayak-two-tau.vercel.app",
     flagship: false,
-    armor: { primary: "#b3121d", secondary: "#d9a440", metal: 0.8, rough: 0.3, glow: 2 },
     flowTitle: "A listing, from voice to buyer",
     flow: [
       { label: "Farmer speaks", sub: "voice or chat" },
@@ -241,7 +243,9 @@ export const suits: Suit[] = [
   {
     slug: "project-management",
     mark: 2,
-    codename: "Command",
+    suit: "Mark 7",
+    short: "Mk 7",
+    model: "/models/mark7.glb",
     name: "Project Management",
     tagline: "Workspaces, tasks and progress in one app.",
     summary:
@@ -252,7 +256,6 @@ export const suits: Suit[] = [
     repo: "https://github.com/likith1231/Project-Management",
     live: "https://project-mgt-client.vercel.app",
     flagship: false,
-    armor: { primary: "#c9ccd3", secondary: "#8d929b", metal: 1, rough: 0.18, glow: 1.6 },
     flowTitle: "A task assignment, end to end",
     flow: [
       { label: "Assign task", sub: "React + Redux" },
@@ -274,7 +277,9 @@ export const suits: Suit[] = [
   {
     slug: "greencart",
     mark: 1,
-    codename: "Cart",
+    suit: "Mark 1",
+    short: "Mk 1",
+    model: "/models/mark1.glb",
     name: "GreenCart",
     tagline: "Groceries with live order tracking.",
     summary:
@@ -285,7 +290,6 @@ export const suits: Suit[] = [
     repo: "https://github.com/likith1231/greencart",
     live: "https://greencart-frontend1.vercel.app",
     flagship: false,
-    armor: { primary: "#5a5b5e", secondary: "#2f3033", metal: 0.6, rough: 0.6, glow: 1.2 },
     flowTitle: "An order's lifecycle",
     flow: [
       { label: "Checkout", sub: "Stripe or COD" },
@@ -364,7 +368,18 @@ export const bootLines = [
   "Rerouting power from the Malibu workshop…",
   "Telling DUM-E to put the fire extinguisher down…",
   "Calibrating repulsors…",
-  "Polishing the Mark VI faceplate…",
+  "Polishing the Mark 85 faceplate…",
   "Asking Happy to bring the car around…",
   "Power at 400%… and climbing.",
+];
+
+// 3D models used on the site, all CC BY 4.0. They were repainted to match the site,
+// rescaled, simplified and compressed. Mark 85 and the Hulkbuster are built from the models below.
+export const modelCredits = [
+  { title: "Iron Man", author: "Vfx Boy", url: "https://sketchfab.com/3d-models/iron-man-1a21e1b8f2844956a30d28838d5f816a", usedFor: "Mark 85" },
+  { title: "Iron Man (Infinity) (Textured) (Rigged)", author: "CAPTAAINR", url: "https://sketchfab.com/3d-models/iron-man-infinity-textured-rigged-7434cf03a4b34b4ca232a141fadad976", usedFor: "Mark 50" },
+  { title: "War Machine (Textured) (Rigged)", author: "CAPTAAINR", url: "https://sketchfab.com/3d-models/war-machinetexturedrigged-ed775c63303c4d358394d40dc9d0be19", usedFor: "War Machine, Hulkbuster" },
+  { title: "Iron Man MK7", author: "CHANG747", url: "https://sketchfab.com/3d-models/iron-man-mk7-ad4776eea8184283a3e49cf5487df754", usedFor: "Mark 7" },
+  { title: "Iron Man (Mark-I) (Textured) (Rigged)", author: "CAPTAAINR", url: "https://sketchfab.com/3d-models/iron-man-mark-i-textured-rigged-5664593af9d94c2e97c1365788b88202", usedFor: "Mark 1" },
+  { title: "Arc Reactor", author: "Ludus101", url: "https://sketchfab.com/3d-models/arc-reactor-7daf892988e54cdcb8bfd7dff3ed5d23", usedFor: "Arc reactor" },
 ];

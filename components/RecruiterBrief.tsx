@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useHUD } from "./Shell";
-import { arsenal as armory, flagships as projects, profile, roman, socials } from "@/data/portfolio";
+import { arsenal as armory, flagships as projects, profile, socials } from "@/data/portfolio";
 
 // The whole portfolio, condensed to what a recruiter reads in 30 seconds.
 export default function RecruiterBrief() {
@@ -52,7 +52,7 @@ export default function RecruiterBrief() {
               {projects.map((p) => (
                 <Link key={p.slug} href={`/work/${p.slug}`} onClick={() => setBriefOpen(false)}
                   className="group grid gap-1 border border-white/[0.07] p-4 transition-colors hover:border-gold/40 sm:grid-cols-[210px_1fr_auto] sm:items-center sm:gap-4">
-                  <span className="font-display font-semibold uppercase text-white"><span className="mr-2 font-mono text-[10px] text-hot">MK {roman(p.mark)}</span>{p.name}</span>
+                  <span className="font-display font-semibold uppercase text-white"><span className="mr-2 font-mono text-[10px] text-hot">{p.short}</span>{p.name}</span>
                   <span className="text-sm text-steel-400">{p.tagline}</span>
                   <span className="font-display text-sm font-bold text-gold">{p.stat.value}</span>
                 </Link>

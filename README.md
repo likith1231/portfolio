@@ -41,3 +41,9 @@ npm run build    # production build
 2. On [vercel.com](https://vercel.com) → **Add New → Project** → import the repo.
 3. Framework preset: **Next.js** (auto-detected). No environment variables needed.
 4. Deploy.
+
+## 3D models
+
+The suits and the arc reactor are fan-made models from Sketchfab, all **CC BY 4.0**. They were repainted to the site's palette, rescaled and compressed (credits are in the site footer and in `data/portfolio.ts` → `modelCredits`). Mark 85 and the Hulkbuster are built from those models. Iron Man and related characters are owned by Marvel; this is a non-commercial fan tribute.
+
+To swap a suit: put a `.glb` in `public/models/` and point the project's `model` field at it.
