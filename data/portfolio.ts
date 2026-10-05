@@ -383,3 +383,77 @@ export const modelCredits = [
   { title: "Iron Man (Mark-I) (Textured) (Rigged)", author: "CAPTAAINR", url: "https://sketchfab.com/3d-models/iron-man-mark-i-textured-rigged-5664593af9d94c2e97c1365788b88202", usedFor: "Mark 1" },
   { title: "Arc Reactor", author: "Ludus101", url: "https://sketchfab.com/3d-models/arc-reactor-7daf892988e54cdcb8bfd7dff3ed5d23", usedFor: "Arc reactor" },
 ];
+
+// Certifications, strongest for a DevOps / Full Stack / AI-ML career first.
+// `url` is the issuer's own verification page, so anyone can check it at the source.
+export type Cert = {
+  name: string;
+  issuer: string;
+  issued?: string;
+  expires?: string;
+  credentialId?: string;
+  url: string;
+  verifiedVia: string; // who hosts the verification page
+  tier: "Professional" | "Industry" | "Course";
+  why: string; // why it matters for the roles he's after
+};
+
+export const certifications: Cert[] = [
+  {
+    name: "AWS Certified AI Practitioner",
+    issuer: "Amazon Web Services",
+    issued: "Sep 2026",
+    expires: "Sep 2029",
+    credentialId: "15423736-cd54-47de-8db1-9734be88cee1",
+    url: "https://www.credly.com/badges/15423736-cd54-47de-8db1-9734be88cee1",
+    verifiedVia: "Credly",
+    tier: "Professional",
+    why: "Proctored AWS exam on AI/ML and generative AI services",
+  },
+  {
+    name: "AWS Certified Cloud Practitioner",
+    issuer: "Amazon Web Services",
+    issued: "Oct 2026",
+    expires: "Oct 2029",
+    credentialId: "6e478082-fc9c-4f8a-83bf-5ed3f07633ae",
+    url: "https://www.credly.com/badges/6e478082-fc9c-4f8a-83bf-5ed3f07633ae",
+    verifiedVia: "Credly",
+    tier: "Professional",
+    why: "Proctored AWS exam on cloud, security, pricing and core services",
+  },
+  {
+    name: "Oracle Agentic AI Certified Foundations Associate",
+    issuer: "Oracle",
+    issued: "Jul 2026",
+    url: "https://catalog-education.oracle.com/pls/certview/sharebadge?id=1E2117DD9FC2FB3A7EE64696BA6313651EC01E7594244C181FFF695C4210163F",
+    verifiedVia: "Oracle CertView",
+    tier: "Professional",
+    why: "Oracle certification exam on agentic AI and AI agents",
+  },
+  {
+    name: "Introduction to Generative AI",
+    issuer: "IBM",
+    issued: "Mar 2024",
+    url: "https://tinyurl.com/39jnjbm",
+    verifiedVia: "IBM certificate link",
+    tier: "Industry",
+    why: "Generative AI fundamentals from IBM",
+  },
+  {
+    name: "Introduction to Computer Networking Basics",
+    issuer: "Simplilearn",
+    issued: "Oct 2025",
+    url: "https://tinyurl.com/bdex8see",
+    verifiedVia: "Simplilearn certificate link",
+    tier: "Course",
+    why: "Networking basics behind cloud and DevOps work",
+  },
+  {
+    name: "UML: Unified Modeling Language Training",
+    issuer: "Infosys Springboard",
+    url: "https://www.linkedin.com/in/likith-lochan-2ab93b290/details/certifications/",
+    verifiedVia: "LinkedIn",
+    tier: "Course",
+    why: "Software design and modelling",
+  },
+];

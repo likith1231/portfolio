@@ -19,7 +19,7 @@ export default function Contact() {
     <section id="contact" className="relative overflow-hidden py-28">
       <div className="pointer-events-none absolute bottom-0 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-gold/[0.06] blur-3xl" />
       <div className="relative mx-auto max-w-7xl px-4 md:px-8">
-        <SectionHead code="08" kicker="open a comm channel" title="Let's build something that stays up">
+        <SectionHead code="09" kicker="open a comm channel" title="Let's build something that stays up">
           Hiring a DevOps, Full Stack or AI/ML engineer? Email is the fastest way to reach me.
         </SectionHead>
 

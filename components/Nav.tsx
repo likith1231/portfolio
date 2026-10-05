@@ -19,6 +19,7 @@ export const SECTIONS = [
   { id: "training", label: "Training" },
   { id: "status", label: "Status" },
   { id: "about", label: "Pilot" },
+  { id: "certs", label: "Certs" },
   { id: "contact", label: "Contact" },
 ];
 
