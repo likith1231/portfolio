@@ -12,6 +12,7 @@ const NARRATION: Record<string, string> = {
   training: "Training room online. Bug-drone simulation on standby.",
   status: "Running health checks on every suit.",
   about: "Pilot profile decrypted. Weapon systems on safe.",
+  certs: "Credentials on file. Every one verifiable at the source.",
   contact: "Comm channel open. Encryption: not needed, he's friendly.",
 };
 

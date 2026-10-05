@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useHUD } from "./Shell";
-import { arsenal as armory, flagships as projects, profile, socials } from "@/data/portfolio";
+import { arsenal as armory, certifications, flagships as projects, profile, socials } from "@/data/portfolio";
 
 // The whole portfolio, condensed to what a recruiter reads in 30 seconds.
 export default function RecruiterBrief() {
@@ -18,6 +18,7 @@ export default function RecruiterBrief() {
     "",
     ...projects.map((p) => `• ${p.name}: ${p.tagline} (${p.stat.value} ${p.stat.label.split(",")[0]}) ${p.repo}`),
     "",
+    `Certified: ${certifications.filter((c) => c.tier === "Professional").map((c) => `${c.name} (verify: ${c.url})`).join("; ")}`,
     `Stack: ${armory.slice(0, 5).map((g) => g.items.slice(0, 3).join(", ")).join("; ")}`,
     `Email: ${profile.email} · GitHub: ${socials.github} · LinkedIn: ${socials.linkedin}`,
   ].join("\n");
@@ -57,6 +58,18 @@ export default function RecruiterBrief() {
                   <span className="font-display text-sm font-bold text-gold">{p.stat.value}</span>
                 </Link>
               ))}
+            </div>
+
+            <div className="mt-8">
+              <div className="hud-label mb-3">certified</div>
+              <div className="flex flex-col gap-2">
+                {certifications.filter((c) => c.tier === "Professional").map((c) => (
+                  <a key={c.name} href={c.url} target="_blank" rel="noreferrer" className="group flex items-center justify-between gap-3 border border-white/[0.07] px-4 py-2.5 hover:border-ok/40">
+                    <span className="text-sm text-white">{c.name} <span className="text-steel-500">· {c.issuer}</span></span>
+                    <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.16em] text-ok">verify ↗</span>
+                  </a>
+                ))}
+              </div>
             </div>
 
             <div className="mt-8">
