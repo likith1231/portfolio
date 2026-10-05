@@ -8,7 +8,7 @@ import { useHUD } from "./Shell";
 import { scrollToId } from "./ui/SmoothScroll";
 import { profile } from "@/data/portfolio";
 import { sfx } from "@/lib/sfx";
-import { GitHubIcon, LinkedInIcon } from "./ui/SocialButtons";
+import { FileIcon, GitHubIcon, LinkedInIcon } from "./ui/SocialButtons";
 import { socials } from "@/data/portfolio";
 
 export const SECTIONS = [
@@ -88,6 +88,12 @@ export default function Nav() {
         <div className="flex items-center gap-2">
           <a href={socials.github} target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub" className="hidden h-8 w-8 place-items-center border border-white/10 text-steel-200 hover:border-gold hover:text-gold md:grid"><GitHubIcon /></a>
           <a href={socials.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn" className="hidden h-8 w-8 place-items-center border border-white/10 text-steel-200 hover:border-gold hover:text-gold md:grid"><LinkedInIcon /></a>
+          {profile.resume && (
+            <a href={profile.resume} target="_blank" rel="noreferrer" title="Résumé (PDF)"
+              className="hidden h-8 items-center gap-1.5 border border-white/10 px-2.5 font-mono text-[11px] uppercase tracking-[0.12em] text-steel-200 hover:border-gold hover:text-gold md:flex">
+              <FileIcon className="h-3.5 w-3.5" /><span className="hidden 2xl:inline">Résumé</span>
+            </a>
+          )}
           <button onClick={() => setSound(!soundOn)} aria-label={soundOn ? "Mute suit sounds" : "Turn suit sounds on"} title={soundOn ? "Sound on" : "Sound off"}
             className={`flex h-8 items-center gap-1.5 border px-2 font-mono text-[10px] uppercase tracking-[0.12em] ${soundOn ? "border-gold/60 text-gold" : "border-white/10 text-steel-500"} hover:border-gold`}>
             <SoundIcon on={soundOn} /><span className="hidden 2xl:inline">{soundOn ? "SFX" : "Muted"}</span>
@@ -121,6 +127,7 @@ export default function Nav() {
               </button>
             ))}
             <button onClick={() => { setOpen(false); setBriefOpen(true); }} className="btn-hot mt-4 w-full justify-center">Recruiter mode</button>
+            {profile.resume && <a href={profile.resume} target="_blank" rel="noreferrer" className="btn-ghost mt-2 w-full justify-center">Résumé (PDF) ↗</a>}
           </motion.div>
         )}
       </AnimatePresence>
