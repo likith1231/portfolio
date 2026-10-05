@@ -18,7 +18,7 @@ export const profile = {
   next: "Making GhostOps handle more kinds of incidents",
   email: "likithlu3@gmail.com",
   // Drop a PDF into /public and set this to "/your-file.pdf" to show the Resume links.
-  resume: "",
+  resume: "/Likith_Lochan_Resume.pdf",
 };
 
 export const socials = {
