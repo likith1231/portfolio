@@ -81,10 +81,5 @@ export const sfx = {
   stone: (i: number) => tone(330 * Math.pow(1.19, i), 0.35, "sine", 0.05),
   snap: () => { noise(0.06, 0.5, 6000, 3000); tone(1800, 0.05, "square", 0.08, 400); tone(55, 1.6, "sine", 0.18, 30, 0.05); noise(1.4, 0.08, 800, 60, 0.08); },
   dust: () => noise(2.6, 0.07, 3000, 300),
-  // Doom: a low bell for "Kneel", and a crackling hex for mystic bolts.
-  toll: () => { tone(98, 2.2, "sine", 0.16, 92); tone(196, 1.6, "sine", 0.05, 190, 0.02); tone(49, 2.4, "triangle", 0.08, 46); },
-  hex: () => { tone(520, 0.22, "sawtooth", 0.03, 1400); noise(0.25, 0.08, 7000, 1200); },
-  hexBig: () => { tone(110, 0.9, "sawtooth", 0.05, 40); noise(0.9, 0.14, 5000, 200); tone(880, 0.4, "sine", 0.03, 2200, 0.05); },
-  portal: () => { noise(0.9, 0.09, 200, 5000); tone(60, 1.0, "sawtooth", 0.05, 30); tone(740, 0.5, "sine", 0.03, 220, 0.3); },
   reform: () => { noise(1.4, 0.06, 300, 3000); tone(140, 1.4, "sine", 0.05, 420); },
 };

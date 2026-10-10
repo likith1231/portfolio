@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHUD } from "./Shell";
+import { quote } from "@/data/portfolio";
 import { sfx } from "@/lib/sfx";
 import Gauntlet, { STONES, triggerSnap, type SnapPhase } from "./Gauntlet";
 
@@ -179,7 +180,7 @@ export default function Snap() {
     // 5. the line
     setPhase("final");
     sfx.ignite();
-    narrate("I am Iron Man.", "ok");
+    narrate(quote.text, "ok");
     await wait(3600);
 
     setPhase("idle");
@@ -222,14 +223,14 @@ export default function Snap() {
             className="pointer-events-none fixed inset-0 z-[93] flex items-center justify-center bg-black/85">
             <div className="absolute h-[50vmin] w-[50vmin] rounded-full blur-3xl" style={{ background: "radial-gradient(circle, #9ff3ff55, transparent 70%)" }} />
             <div className="relative text-center">
-              <p className="font-serif text-5xl italic text-white md:text-8xl">
-                {["I", "am", "Iron", "Man."].map((w, i) => (
-                  <motion.span key={w} initial={{ opacity: 0, y: 20, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    transition={{ delay: 0.3 + i * 0.35, duration: 0.7 }} className="mr-[0.25em] inline-block">{w}</motion.span>
+              <p className="max-w-5xl px-4 font-serif text-5xl italic text-white md:text-7xl">
+                {quote.text.split(" ").map((w, i) => (
+                  <motion.span key={i} initial={{ opacity: 0, y: 20, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ delay: 0.3 + i * 0.18, duration: 0.7 }} className="mr-[0.25em] inline-block">{w}</motion.span>
                 ))}
               </p>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.9 }} className="hud-label mt-6 text-gold">
-                Tony Stark · Avengers: Endgame (2019)
+                {quote.by} · {quote.film}
               </motion.p>
             </div>
           </motion.div>

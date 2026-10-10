@@ -11,12 +11,10 @@ import Repulsors from "./Repulsors";
 import Jarvis from "./Jarvis";
 import RecruiterBrief from "./RecruiterBrief";
 import Snap from "./Snap";
-import Portal from "./Portal";
-import Kneel from "./Kneel";
 import Embers from "./ui/Embers";
 import { sfx, sound } from "@/lib/sfx";
 
-export type Mode = "stark" | "doom";
+export type Mode = "mark" | "warmachine";
 export type LogLine = { id: number; at: number; text: string; tone?: "ok" | "warn" | "bad" | "info" };
 type HUD = {
   mode: Mode;
@@ -46,9 +44,7 @@ export const useHUD = () => {
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
 export default function Shell({ children }: { children: React.ReactNode }) {
-  const [mode, setMode] = useState<Mode>("stark");
-  const [kneelN, setKneelN] = useState(0);
-  const [portal, setPortal] = useState<{ n: number; to: Mode } | null>(null);
+  const [mode, setMode] = useState<Mode>("mark");
   const [soundOn, setSoundOn] = useState(false);
   const [jarvisOpen, setJarvisOpen] = useState(false);
   const [briefOpen, setBriefOpen] = useState(false);
@@ -62,8 +58,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("hud-mode");
-      // Older visits saved "mark" / "warmachine"; War Machine mode is gone, so both land on Stark.
-      if (saved === "doom") setMode("doom");
+      if (saved === "mark" || saved === "warmachine") setMode(saved);
     } catch {}
     return sound.subscribe(setSoundOn);
   }, []);
@@ -73,32 +68,9 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     try { localStorage.setItem("hud-mode", mode); } catch {}
   }, [mode]);
 
-  // Switching universes plays a glitch/portal transition; the skin swaps while the screen is covered.
-  const busy = useRef(false);
-  const toggleMode = useCallback(() => {
-    if (busy.current) return;
-    busy.current = true;
-    const to: Mode = document.documentElement.dataset.mode === "doom" ? "stark" : "doom";
-    sfx.portal();
-    setPortal((p) => ({ n: (p?.n ?? 0) + 1, to }));
-    setTimeout(() => setMode(to), 480);
-    setTimeout(() => {
-      setPortal(null);
-      busy.current = false;
-      // The first visit to each universe in a session plays its entry: the suit-up for Stark,
-      // the forming of the mask for Doom.
-      let seen = true;
-      try { seen = !!sessionStorage.getItem(`entered-${to}`); } catch {}
-      if (!seen) replayRef.current();
-    }, 1250);
-  }, []);
+  const toggleMode = useCallback(() => { sfx.servo(); setMode((m) => (m === "mark" ? "warmachine" : "mark")); }, []);
   const setSound = useCallback((v: boolean) => sound.set(v), []);
-  // Tony fires the Unibeam; in Doom's universe the same trigger makes the page kneel.
-  const unibeam = useCallback(() => {
-    if (document.documentElement.dataset.mode === "doom") { sfx.toll(); setKneelN((n) => n + 1); return; }
-    sfx.ignite();
-    setBeam((b) => b + 1);
-  }, []);
+  const unibeam = useCallback(() => { sfx.ignite(); setBeam((b) => b + 1); }, []);
 
   const emp = useCallback(() => {
     if (document.documentElement.classList.contains("emp")) return;
@@ -120,8 +92,6 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     setIntroDone(false);
     setIntroKey((k) => k + 1);
   }, []);
-  const replayRef = useRef(replayIntro);
-  replayRef.current = replayIntro;
 
   useEffect(() => {
     let seq: string[] = [];
@@ -155,14 +125,13 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       <Nav />
       {children}
       <Jarvis />
-      {mode === "doom" ? <Kneel n={kneelN} onKneel={unibeam} /> : <Snap />}
+      <Snap />
       <RecruiterBrief />
-      {portal && <Portal key={portal.n} to={portal.to} />}
 
       {empActive && (
         <div className="pointer-events-none fixed inset-x-0 top-20 z-[85] flex justify-center">
-          <div className={`border bg-void/90 px-5 py-2 font-mono text-xs uppercase tracking-[0.25em] ${mode === "doom" ? "border-gold/60 text-gold" : "border-danger/60 text-danger"}`}>
-            {mode === "doom" ? "⧗ Time halted by Doom's Time Platform · resuming in 5s" : "⚡ EMP discharged · all systems frozen · rebooting in 5s"}
+          <div className="border border-danger/60 bg-void/90 px-5 py-2 font-mono text-xs uppercase tracking-[0.25em] text-danger">
+            ⚡ EMP discharged · all systems frozen · rebooting in 5s
           </div>
         </div>
       )}

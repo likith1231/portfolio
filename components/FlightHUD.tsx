@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useHUD } from "./Shell";
-import { doom } from "@/data/portfolio";
 
 const NARRATION: Record<string, string> = {
   armor: "Visitor entered the Hall of Armor. 6 suits on display, Mark 85 powered.",
@@ -21,7 +20,7 @@ const NARRATION: Record<string, string> = {
 // Flight instruments on the left edge: altitude follows the scroll, speed follows scroll velocity.
 // Updated straight on the DOM (no React re-renders) and only on wide screens where it shows.
 export default function FlightHUD() {
-  const { narrate, introDone, mode } = useHUD();
+  const { narrate, introDone } = useHUD();
   const path = usePathname();
   const altEl = useRef<HTMLSpanElement>(null);
   const spdEl = useRef<HTMLSpanElement>(null);
@@ -53,7 +52,7 @@ export default function FlightHUD() {
       for (const e of entries) {
         if (e.isIntersecting && !said.current.has(e.target.id) && NARRATION[e.target.id]) {
           said.current.add(e.target.id);
-          narrate(document.documentElement.dataset.mode === "doom" ? doom.narration[e.target.id] ?? NARRATION[e.target.id] : NARRATION[e.target.id]);
+          narrate(NARRATION[e.target.id]);
         }
       }
     }, { threshold: 0.25 });
@@ -61,8 +60,6 @@ export default function FlightHUD() {
     return () => { clearTimeout(t); io.disconnect(); };
   }, [introDone, path, narrate]);
 
-  // Flight instruments are Tony's; in Doom's universe they are hidden.
-  if (mode === "doom") return null;
   return (
     <div className="pointer-events-none fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 select-none font-mono text-[10px] text-steel-500 2xl:block" aria-hidden>
       <div className="mb-1 tracking-[0.2em] text-gold">ALT</div>

@@ -2,8 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { bootLines, doom, profile, quotes } from "@/data/portfolio";
-import { useHUD } from "./Shell";
+import { bootLines, profile } from "@/data/portfolio";
 import { sfx, sound } from "@/lib/sfx";
 
 type Phase = "off" | "boot" | "ready" | "close" | "open";
@@ -51,61 +50,8 @@ function AssemblingReactor({ p }: { p: number }) {
   );
 }
 
-// The Doom loader: a rune circle is drawn, the iron mask forms inside it, then the eyes ignite.
-const MASK = "M200 92 C150 92 122 120 120 170 C118 215 128 262 152 292 C168 312 184 322 200 324 C216 322 232 312 248 292 C272 262 282 215 280 170 C278 120 250 92 200 92 Z";
-function FormingMask({ p }: { p: number }) {
-  const lit = p >= 100;
-  const glyphs = 24;
-  return (
-    <svg viewBox="0 0 400 400" className="h-full w-full overflow-visible" aria-hidden>
-      <defs>
-        <linearGradient id="doom-iron" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#b9bec4" />
-          <stop offset="45%" stopColor="#6b6f75" />
-          <stop offset="100%" stopColor="#24272a" />
-        </linearGradient>
-        <radialGradient id="doom-eye"><stop offset="0%" stopColor="#fff" /><stop offset="45%" stopColor="#3cff9a" /><stop offset="100%" stopColor="#3cff9a" stopOpacity="0" /></radialGradient>
-      </defs>
-      <g style={{ filter: "drop-shadow(0 0 6px #3cff9a)" }}>
-        <circle cx="200" cy="200" r="186" fill="none" stroke="#3cff9a" strokeOpacity=".85" strokeWidth="2"
-          pathLength={100} strokeDasharray="100" strokeDashoffset={100 - p} transform="rotate(-90 200 200)" />
-        <circle cx="200" cy="200" r="150" fill="none" stroke="#3cff9a" strokeOpacity=".5" strokeWidth="1.5"
-          pathLength={100} strokeDasharray="100" strokeDashoffset={-(100 - p)} transform="rotate(90 200 200)" />
-        {Array.from({ length: glyphs }).map((_, i) => (
-          <g key={i} transform={`rotate(${(i * 360) / glyphs} 200 200)`} opacity={i / glyphs <= p / 100 ? 1 : 0.06}>
-            <path d={`M200 22 L200 44 M200 ${26 + (i % 4) * 3} L${i % 2 ? 208 : 192} ${34 + (i % 3) * 3}${i % 3 === 0 ? " M200 36 L206 42" : ""}`} stroke="#3cff9a" strokeWidth="2" strokeLinecap="round" fill="none" />
-          </g>
-        ))}
-      </g>
-      <motion.g animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }} style={{ originX: "200px", originY: "200px" }}>
-        <circle cx="200" cy="200" r="168" fill="none" stroke="#b08d3c" strokeOpacity=".45" strokeDasharray="2 10" />
-      </motion.g>
-      {/* the mask: its outline is traced by the sorcery, then the iron fills in */}
-      <path d={MASK} fill="url(#doom-iron)" opacity={Math.max(0, (p - 45) / 55)} />
-      <path d={MASK} fill="none" stroke="#3cff9a" strokeWidth="2" pathLength={100} strokeDasharray="100" strokeDashoffset={100 - Math.min(100, p * 1.6)} style={{ filter: "drop-shadow(0 0 8px #3cff9a)" }} />
-      <g opacity={Math.max(0, (p - 60) / 40)} stroke="#1b1d1f" strokeWidth="3" fill="none">
-        <path d="M150 150 Q200 136 250 150" />
-        <path d="M200 182 L200 250" />
-        <path d="M168 280 L232 280" strokeWidth="5" />
-      </g>
-      {[-1, 1].map((s) => (
-        <g key={s} transform={`translate(${200 + s * 34} 176) rotate(${s * 11})`}>
-          <ellipse rx="22" ry="7" fill="#050605" opacity={Math.max(0, (p - 55) / 45)} />
-          <motion.ellipse rx="18" ry="4.5" fill="#3cff9a" initial={false} animate={{ opacity: lit ? [0.6, 1, 0.8, 1] : 0 }} transition={lit ? { duration: 1.6, repeat: Infinity } : {}}
-            style={{ filter: "drop-shadow(0 0 10px #3cff9a) drop-shadow(0 0 22px #3cff9a)" }} />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-function Telemetry({ p, isDoom }: { p: number; isDoom?: boolean }) {
-  const rows = isDoom ? [
-    ["SORCERY", Math.min(100, p * 1.2)],
-    ["IRON", Math.min(100, Math.max(0, p * 1.4 - 20))],
-    ["RUNES", Math.min(100, Math.max(0, p * 1.6 - 50))],
-    ["THRONE", Math.min(100, p * 1.05)],
-  ] as const : [
+function Telemetry({ p }: { p: number }) {
+  const rows = [
     ["REPULSORS", Math.min(100, p * 1.2)],
     ["THRUSTERS", Math.min(100, Math.max(0, p * 1.4 - 20))],
     ["FLAPS", Math.min(100, Math.max(0, p * 1.6 - 50))],
@@ -129,16 +75,11 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   const [line, setLine] = useState(0);
   const [mobile, setMobile] = useState(false);
   const done = useRef(false);
-  const isDoom = useHUD().mode === "doom";
-  const lines = isDoom ? doom.bootLines : bootLines;
 
   const finish = () => {
     if (done.current) return;
     done.current = true;
-    try {
-      sessionStorage.setItem("suited", "1");
-      sessionStorage.setItem(`entered-${document.documentElement.dataset.mode === "doom" ? "doom" : "stark"}`, "1");
-    } catch {}
+    try { sessionStorage.setItem("suited", "1"); } catch {}
     document.documentElement.style.overflow = "";
     setPhase("off");
     onDone();
@@ -173,10 +114,10 @@ export default function Intro({ onDone }: { onDone: () => void }) {
 
   const suitUp = (withSound: boolean) => {
     sound.set(withSound);
-    if (withSound) (isDoom ? sfx.toll : sfx.ignite)();
+    if (withSound) sfx.ignite();
     setPhase("close");
-    setTimeout(() => (isDoom ? sfx.hex : sfx.faceplate)(), 80);
-    setTimeout(() => { setPhase("open"); (isDoom ? sfx.hexBig : sfx.servo)(); }, 1250);
+    setTimeout(() => sfx.faceplate(), 80);
+    setTimeout(() => { setPhase("open"); sfx.servo(); }, 1250);
     setTimeout(finish, 2150);
   };
 
@@ -192,25 +133,25 @@ export default function Intro({ onDone }: { onDone: () => void }) {
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgb(var(--hot)/0.12),transparent_60%)]" />
 
             <div className="absolute left-4 top-4 font-mono text-[10px] uppercase tracking-[0.3em] text-steel-500 md:left-8 md:top-8">
-              {isDoom ? `castle doom // ${profile.callsign} // the mask awakens` : `stark industries // ${profile.callsign} // suit boot`}
+              stark industries // {profile.callsign} // suit boot
             </div>
             <button onClick={finish} className="absolute right-4 top-4 font-mono text-[10px] uppercase tracking-[0.3em] text-steel-500 hover:text-gold md:right-8 md:top-8">
               skip intro · esc
             </button>
 
             <div className="relative flex w-full max-w-5xl items-center justify-center gap-10">
-              <div className="hidden lg:block"><Telemetry p={p} isDoom={isDoom} /></div>
+              <div className="hidden lg:block"><Telemetry p={p} /></div>
               <motion.div className="relative h-[min(62vw,340px)] w-[min(62vw,340px)]"
                 animate={phase === "ready" ? { scale: [1, 1.04, 1] } : {}} transition={{ duration: 2, repeat: Infinity }}>
-                <div className="absolute inset-[22%] rounded-full blur-3xl" style={{ background: isDoom ? "#3cff9a" : "#8fefff", opacity: p / (isDoom ? 420 : 260) }} />
-                {isDoom ? <FormingMask p={p} /> : <AssemblingReactor p={p} />}
+                <div className="absolute inset-[22%] rounded-full blur-3xl" style={{ background: "#8fefff", opacity: p / 260 }} />
+                <AssemblingReactor p={p} />
               </motion.div>
               <div className="hidden w-44 font-mono text-[10px] uppercase tracking-[0.2em] text-steel-400 lg:block">
-                <div className="text-gold">{isDoom ? "The Iron Mask" : "Mark 85"}</div>
+                <div className="text-gold">Mark 85</div>
                 <div className="mt-1">serial 0x{(48879 + p * 97).toString(16).toUpperCase()}</div>
-                <div className="mt-4">{isDoom ? `forge temp ${Math.round(30 + p * 14)}°C` : `core temp ${Math.round(30 + p * 2.6)}°C`}</div>
-                <div>{isDoom ? `works sealed ${Math.round(p * 0.06)} / 6` : `output ${(p * 0.04).toFixed(2)} GJ/s`}</div>
-                <div className="mt-4 text-steel-500">{isDoom ? "science and sorcery" : "palladium-free core"}</div>
+                <div className="mt-4">core temp {Math.round(30 + p * 2.6)}°C</div>
+                <div>output {(p * 0.04).toFixed(2)} GJ/s</div>
+                <div className="mt-4 text-steel-500">palladium-free core</div>
               </div>
             </div>
 
@@ -221,7 +162,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
               <div className="mt-3 h-5 font-mono text-xs text-steel-300 md:text-sm">
                 <AnimatePresence mode="wait">
                   <motion.span key={phase === "ready" ? "ready" : line} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}>
-                    {phase === "ready" ? (isDoom ? "Doom has awakened. Latveria awaits." : "Welcome home, sir. Suit is ready.") : lines[line]}
+                    {phase === "ready" ? "Suit is ready." : bootLines[line]}
                   </motion.span>
                 </AnimatePresence>
               </div>
@@ -232,13 +173,10 @@ export default function Intro({ onDone }: { onDone: () => void }) {
                 {phase === "ready" && (
                   <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-3">
                     <div className="flex flex-wrap justify-center gap-3">
-                      <button onClick={() => suitUp(true)} className="btn-hot">{isDoom ? "▶ Don the mask · sound on" : "▶ Suit up · sound on"}</button>
+                      <button onClick={() => suitUp(true)} className="btn-hot">▶ Suit up · sound on</button>
                       <button onClick={() => suitUp(false)} className="btn-ghost">Enter silently</button>
                     </div>
                     {mobile && <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-steel-500">Best on desktop. The suit still fits your phone.</p>}
-                    {isDoom
-                      ? <p className="font-serif text-base text-steel-400">“{doom.quotes.intro.text}” <span className="text-steel-500">— {doom.quotes.intro.by}, {doom.quotes.intro.film}</span></p>
-                      : <p className="font-serif text-base italic text-steel-400">“{quotes.intro.text}” <span className="not-italic text-steel-500">— {quotes.intro.by}</span></p>}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -247,27 +185,8 @@ export default function Intro({ onDone }: { onDone: () => void }) {
         )}
       </AnimatePresence>
 
-      {/* Doom's entry: the mask rushes at the viewer, its eyes flare, and the site opens through a green flash */}
-      {isDoom && (phase === "close" || phase === "open") && (
-        <motion.div className="absolute inset-0 flex items-center justify-center overflow-hidden bg-[#020403]"
-          initial={{ opacity: 0 }} animate={{ opacity: phase === "close" ? 1 : 0 }} transition={{ duration: phase === "close" ? 0.25 : 0.8, delay: phase === "open" ? 0.15 : 0 }}>
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgb(31_107_71/.45),transparent_60%)]" />
-          <motion.div className="relative h-[min(70vw,420px)] w-[min(70vw,420px)]"
-            initial={{ scale: 0.7, opacity: 0.6 }} animate={phase === "close" ? { scale: [0.7, 1.05, 1.25], opacity: 1 } : { scale: 6, opacity: 0 }}
-            transition={phase === "close" ? { duration: 1.2, times: [0, 0.6, 1], ease: "easeOut" } : { duration: 0.8, ease: [0.7, 0, 0.84, 0] }}>
-            <FormingMask p={100} />
-          </motion.div>
-          <motion.p className="absolute bottom-[14%] font-display text-2xl uppercase tracking-[0.4em] text-white md:text-4xl"
-            initial={{ opacity: 0, y: 12 }} animate={{ opacity: phase === "close" ? 1 : 0, y: 0 }} transition={{ delay: 0.45, duration: 0.5 }}
-            style={{ textShadow: "0 0 24px rgb(60 255 154 / .7)" }}>
-            Doom has arrived
-          </motion.p>
-          <motion.div className="pointer-events-none absolute inset-0 bg-[#3cff9a]" initial={{ opacity: 0 }} animate={{ opacity: phase === "open" ? [0, 0.55, 0] : 0 }} transition={{ duration: 0.6 }} />
-        </motion.div>
-      )}
-
       {/* faceplate: closes over the screen, eyes light up, then opens onto the site */}
-      {!isDoom && (phase === "close" || phase === "open") && (
+      {(phase === "close" || phase === "open") && (
         <>
           <motion.div className="absolute inset-x-0 top-0 h-1/2 overflow-hidden"
             initial={{ y: "-100%" }} animate={{ y: phase === "close" ? "0%" : "-105%" }}

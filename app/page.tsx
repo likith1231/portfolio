@@ -10,22 +10,21 @@ import Contact from "@/components/sections/Contact";
 import Certifications from "@/components/sections/Certifications";
 import FlightLog from "@/components/sections/FlightLog";
 import Footer from "@/components/Footer";
-import QuoteBand from "@/components/ui/QuoteBand";
-import { quotes } from "@/data/portfolio";
+import PilotNote from "@/components/sections/PilotNote";
+import Interlude from "@/components/sections/Interlude";
 
 export default function Home() {
   return (
     <main>
       <Hero />
-      <QuoteBand {...quotes.armor} doomKey="armor" />
+      <PilotNote />
       <HallOfArmor />
+      <Interlude />
       <Schematics />
-      <QuoteBand {...quotes.suit} doomKey="suit" />
       <IncidentDrill />
       <RushLab />
       <TrainingRoom />
       <StatusBoard />
-      <QuoteBand {...quotes.lab} doomKey="lab" />
       <About />
       <FlightLog />
       <Certifications />

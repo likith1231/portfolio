@@ -4,13 +4,25 @@ import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Clock from "../ui/Clock";
+import DotMatrix from "../ui/DotMatrix";
+import Typewriter from "../ui/Typewriter";
 import { useGo } from "../Nav";
 import { useHUD } from "../Shell";
-import { doom, profile, stats } from "@/data/portfolio";
+import { profile, stats } from "@/data/portfolio";
 import SocialButtons from "../ui/SocialButtons";
+import { sfx } from "@/lib/sfx";
 
 const Reactor3D = dynamic(() => import("../three/Reactor3D"), { ssr: false, loading: () => <div className="h-full w-full" /> });
-const DoomMask3D = dynamic(() => import("../three/DoomMask3D"), { ssr: false, loading: () => <div className="h-full w-full" /> });
+
+// Fonts the visitor can try on the headline's accent word.
+const FONTS = [
+  { name: "Instrument Serif", css: "var(--font-serif)", italic: true },
+  { name: "Chakra Petch", css: "var(--font-display)", italic: false },
+  { name: "JetBrains Mono", css: "var(--font-mono)", italic: false },
+  { name: "Inter", css: "var(--font-inter)", italic: false },
+  { name: "Georgia", css: "Georgia, serif", italic: true },
+  { name: "Impact", css: "Impact, 'Arial Narrow Bold', sans-serif", italic: false },
+];
 
 function Rotator() {
   const [i, setI] = useState(0);
@@ -29,84 +41,111 @@ function Rotator() {
   );
 }
 
+const pop = (d: number, show: boolean) => ({
+  initial: { opacity: 0, y: 24 },
+  animate: show ? { opacity: 1, y: 0 } : {},
+  transition: { delay: d, duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
+});
+
 export default function Hero() {
   const go = useGo();
-  const { introDone, mode } = useHUD();
-  const isDoom = mode === "doom";
-  const words = (isDoom ? doom.headline : profile.headline).split(" ");
-  const accentFrom = words.length - (isDoom ? doom.accentWords : 1);
+  const { introDone, mode, toggleMode, narrate } = useHUD();
+  const [font, setFont] = useState(0);
+  const [hoverFont, setHoverFont] = useState<number | null>(null);
+  const words = profile.headline.split(" ");
   const show = introDone;
+  const f = FONTS[hoverFont ?? font];
 
   return (
-    <section id="top" className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pb-10 pt-24">
-      <div className="grid-bg pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
-      <div className="pointer-events-none absolute -right-40 top-10 h-[640px] w-[640px] rounded-full bg-hot/[0.10] blur-3xl" />
-      <div className="pointer-events-none absolute -left-40 bottom-0 h-[420px] w-[420px] rounded-full bg-gold/[0.06] blur-3xl" />
-
-      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-6 px-4 md:px-8 lg:grid-cols-[1.1fr_1fr]">
-        <div className="relative z-10 order-2 lg:order-1">
-          <motion.div initial={{ opacity: 0 }} animate={show ? { opacity: 1 } : {}} transition={{ delay: 0.2 }} className="mb-7 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[11px] uppercase tracking-[0.25em] text-gold">
+    <section id="top" className="relative px-3 pb-6 pt-20 md:px-6">
+      <div className="mx-auto grid max-w-[1400px] gap-3 lg:grid-cols-12">
+        {/* headline + narrator intro */}
+        <motion.div {...pop(0.1, show)} className="tile flex flex-col justify-between p-6 md:p-10 lg:col-span-7">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[11px] uppercase tracking-[0.25em] text-gold">
             <span className="flex items-center gap-2 text-ok"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ok" /> online</span>
             <span>{profile.location}</span>
-            <span className="text-steel-200"><Clock /> IST</span>
-          </motion.div>
+          </div>
 
-          <h1 className="font-display text-[2.9rem] font-bold leading-[0.98] tracking-tight text-[#f3e6cf] sm:text-6xl xl:text-[5.2rem]">
+          <h1 className="mt-10 font-display text-[2.7rem] font-bold leading-[0.98] tracking-tight text-[#f3e6cf] sm:text-6xl xl:text-[4.6rem]">
             {words.map((w, i) => {
-              const last = i >= accentFrom;
+              const last = i === words.length - 1;
               return (
-                <motion.span key={`${mode}-${i}`} initial={{ opacity: 0, y: 40, filter: "blur(10px)" }} animate={show ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+                <motion.span key={i} initial={{ opacity: 0, y: 40, filter: "blur(10px)" }} animate={show ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
                   transition={{ delay: 0.3 + i * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className={`mr-[0.22em] inline-block ${last ? "gold-text pr-2 font-serif font-normal italic" : ""}`}>
+                  className={`mr-[0.22em] inline-block ${last ? "gold-text pr-2 font-normal" : ""}`}
+                  style={last ? { fontFamily: f.css, fontStyle: f.italic ? "italic" : "normal", transition: "font-family .2s" } : undefined}>
                   {w}
                 </motion.span>
               );
             })}
           </h1>
 
-          <motion.p initial={{ opacity: 0, y: 16 }} animate={show ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.9 }} className="mt-7 font-mono text-sm md:text-lg">
-            <span className="text-[#f3e6cf]">{profile.name}</span> <span className="text-hot">//</span> <Rotator />
-          </motion.p>
+          <p className="mt-8 max-w-2xl text-base leading-relaxed text-steel-300 md:text-lg">
+            <Typewriter start={show}
+              text={`Hey there! I'm ${profile.name}. I build full-stack products and then armor them: containers, Kubernetes, autoscaling, and AI agents that patch production incidents on their own. I als`}
+              after={<button onClick={() => { sfx.click(); narrate("Pilot muted. He was about to talk about Kubernetes again."); }} className="ml-1 rounded border border-gold/40 px-1.5 font-mono text-sm text-gold hover:bg-gold/10">[ muted ]</button>} />
+          </p>
+          <p className="mt-2 font-mono text-xs text-steel-500">J.A.R.V.I.S.: that was the short version of him.</p>
 
-          <motion.p initial={{ opacity: 0, y: 16 }} animate={show ? { opacity: 1, y: 0 } : {}} transition={{ delay: 1 }} className="mt-5 max-w-xl text-base leading-relaxed text-steel-300 md:text-lg">
-            {isDoom ? doom.intro : profile.intro}
-          </motion.p>
-
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={show ? { opacity: 1, y: 0 } : {}} transition={{ delay: 1.1 }} className="mt-9 flex flex-wrap gap-3">
-            <button onClick={() => go("armor")} className="btn-primary">{isDoom ? doom.heroCta : "Enter the Hall of Armor →"}</button>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <button onClick={() => go("armor")} className="btn-primary">See the work →</button>
             <button onClick={() => go("contact")} className="btn-ghost">Open a comm channel</button>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0 }} animate={show ? { opacity: 1 } : {}} transition={{ delay: 1.3 }} className="mt-10 flex flex-wrap gap-2">
-            {profile.roles.map((r) => (
-              <span key={r} className="rounded-full border border-gold/40 bg-gold/[0.06] px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-gold">{r}</span>
-            ))}
-          </motion.div>
-
-          <div className="mt-8"><SocialButtons /></div>
-        </div>
-
-        <div className="relative order-1 mx-auto w-full max-w-[540px] lg:order-2">
-          <div className="relative aspect-square w-full">{introDone && (isDoom ? <DoomMask3D /> : <Reactor3D />)}</div>
-          <motion.figure initial={{ opacity: 0, x: 30 }} animate={show ? { opacity: 1, x: 0 } : {}} transition={{ delay: 1.2, duration: 0.8 }}
-            className="relative -mt-10 hidden rounded-2xl border border-white/10 border-l-hot bg-void-900/80 p-6 backdrop-blur md:block" style={{ borderLeftWidth: 3 }}>
-            <blockquote className="font-serif text-2xl italic leading-snug text-[#f3e6cf] xl:text-3xl">
-              {isDoom ? `“${doom.quoteCard.text}”` : "“I told you, I don’t want to join your super secret boy band.”"}
-            </blockquote>
-            <figcaption className="mt-4 font-mono text-[10px] uppercase tracking-[0.25em] text-gold">{isDoom ? doom.quoteCard.by : "Tony Stark · Iron Man 2"}</figcaption>
-          </motion.figure>
-        </div>
-      </div>
-
-      <motion.dl initial={{ opacity: 0, y: 20 }} animate={show ? { opacity: 1, y: 0 } : {}} transition={{ delay: 1.4, duration: 0.8 }}
-        className="relative mx-auto mt-14 grid w-full max-w-7xl grid-cols-2 border-y border-white/[0.08] px-4 md:grid-cols-4 md:px-8">
-        {stats.map((st, i) => (
-          <div key={st.label} className={`flex flex-col-reverse py-7 pl-4 ${i % 2 ? "border-l border-white/[0.08]" : ""} ${i > 0 ? "md:border-l md:border-white/[0.08]" : ""} ${i < 2 ? "border-b border-white/[0.08] md:border-b-0" : ""}`}>
-            <dt className="mt-2 text-sm text-steel-400">{isDoom ? doom.stats[st.label] ?? st.label : st.label}</dt>
-            <dd className="gold-text font-display text-4xl font-bold md:text-5xl">{st.value}</dd>
           </div>
+
+          <div className="mt-8 flex flex-wrap items-end justify-between gap-4 border-t border-white/[0.06] pt-5">
+            <div className="font-mono text-sm"><span className="text-[#f3e6cf]">{profile.name}</span> <span className="text-hot">//</span> <Rotator /></div>
+            <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-steel-400">local time <span className="text-white"><Clock /></span> · <span className="text-gold">GMT +05:30</span></div>
+          </div>
+        </motion.div>
+
+        {/* the reactor */}
+        <motion.div {...pop(0.2, show)} className="tile relative min-h-[360px] overflow-hidden p-0 lg:col-span-5">
+          <div className="absolute left-5 top-5 z-10 tile-label">arc reactor · drag the mouse</div>
+          <div className="absolute inset-0">{introDone && <Reactor3D />}</div>
+          <div className="absolute inset-x-5 bottom-5 z-10 flex flex-wrap gap-2">
+            {profile.roles.map((r) => (
+              <span key={r} className="rounded-full border border-gold/40 bg-void/70 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-gold backdrop-blur">{r}</span>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* restyle the headline */}
+        <motion.div {...pop(0.3, show)} className="tile lg:col-span-4" data-lock>
+          <div className="flex items-center justify-between">
+            <span className="tile-label">restyle the headline</span>
+            <span className="font-mono text-[10px] text-steel-500">{FONTS[font].name}</span>
+          </div>
+          <ul className="mt-4 grid grid-cols-2 gap-1.5" onMouseLeave={() => setHoverFont(null)}>
+            {FONTS.map((x, i) => (
+              <li key={x.name}>
+                <button onMouseEnter={() => setHoverFont(i)} onClick={() => { sfx.tick(); setFont(i); }}
+                  className={`w-full truncate rounded-lg border px-3 py-2 text-left text-lg transition-colors ${i === font ? "border-gold/60 bg-gold/10 text-gold" : "border-white/[0.06] text-steel-200 hover:border-gold/30"}`}
+                  style={{ fontFamily: x.css, fontStyle: x.italic ? "italic" : "normal" }}>
+                  {x.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 flex items-center justify-between border-t border-white/[0.06] pt-4">
+            <span className="tile-label">suit finish</span>
+            <button onClick={toggleMode} className="rounded-full border border-white/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-steel-200 hover:border-gold/60">
+              {mode === "mark" ? "● red & gold" : "● war machine"} ⇄
+            </button>
+          </div>
+        </motion.div>
+
+        {/* stats as dot-matrix readouts */}
+        {stats.map((st, i) => (
+          <motion.div key={st.label} {...pop(0.35 + i * 0.06, show)} className="tile flex flex-col justify-between gap-6 lg:col-span-2">
+            <span className="tile-label">{st.label}</span>
+            <DotMatrix value={st.value} dot={7} className="max-w-full" />
+          </motion.div>
         ))}
-      </motion.dl>
+
+        <motion.div {...pop(0.6, show)} className="tile flex items-center lg:col-span-12">
+          <SocialButtons />
+        </motion.div>
+      </div>
     </section>
   );
 }

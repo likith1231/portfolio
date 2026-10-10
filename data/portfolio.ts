@@ -350,17 +350,9 @@ export const missions: { label: string; state: "done" | "running" | "queued" }[]
   { label: "Deploy ResilientCommerce on AWS EKS", state: "queued" },
 ];
 
-// Famous lines from the Iron Man films, used as interstitials around the site.
-export const quotes = {
-  intro: { text: "Sometimes you gotta run before you can walk.", by: "Tony Stark", film: "Iron Man (2008)" },
-  hero: { text: "I am Iron Man.", by: "Tony Stark", film: "Iron Man (2008)" },
-  armor: { text: "Heroes are made by the path they choose, not the powers they are graced with.", by: "Tony Stark", film: "Iron Man (2008)" },
-  suit: { text: "If you're nothing without the suit, then you shouldn't have it.", by: "Tony Stark", film: "Spider-Man: Homecoming (2017)" },
-  lab: { text: "Part of the journey is the end.", by: "Tony Stark", film: "Avengers: Endgame (2019)" },
-  heart: { text: "Proof that Tony Stark has a heart.", by: "Pepper Potts", film: "Iron Man (2008)" },
-  footer: { text: "I love you 3000.", by: "Morgan Stark", film: "Avengers: Endgame (2019)" },
-  notfound: { text: "I think I need to sleep now.", by: "J.A.R.V.I.S.", film: "Iron Man 3 (2013)" },
-};
+// The one line from the films on this site, chosen because it is how he works: ship first, then armor it.
+// It appears in the interlude tile and at the end of the Snap.
+export const quote = { text: "Sometimes you gotta run before you can walk.", by: "Tony Stark", film: "Iron Man (2008)" };
 
 // What J.A.R.V.I.S. says while the suit boots.
 export const bootLines = [
@@ -370,7 +362,7 @@ export const bootLines = [
   "Calibrating repulsors…",
   "Polishing the Mark 85 faceplate…",
   "Asking Happy to bring the car around…",
-  "Power at 400%… and climbing.",
+  "All systems green.",
 ];
 
 // 3D models used on the site, all CC BY 4.0. They were repainted to match the site,
@@ -485,97 +477,3 @@ export const flightLog: { when: string; title: string; where: string; body: stri
   { when: "2026", title: "The Mark 85 year", where: "GhostOps · Orbit IDE · ResilientCommerce", body: "Shipped an autonomous AIOps platform, a self-verifying cloud IDE and a load-tested Kubernetes stack. Earned AWS AI Practitioner, AWS Cloud Practitioner and Oracle Agentic AI." },
   { when: "2027", title: "Graduation (expected)", where: "Looking for roles now", body: "Ready to bring all of this to an engineering team as a DevOps, Full Stack or AI/ML engineer." },
 ];
-
-// ─── The Doom universe ───────────────────────────────────────────────────────
-// The site has two universes that never coexist: Tony Stark's and Doctor Doom's.
-// Doom mode re-skins everything and reframes the copy in Doom's voice (third person).
-// The facts never change: same projects, same numbers, same three roles. Only the framing does.
-export type Universe = "stark" | "doom";
-
-export const doom = {
-  headline: "Doom builds systems that need no one.",
-  accentWords: 2, // "no one." is set in the accent face
-  intro:
-    "Agents that mend production by themselves, an IDE whose AI must prove its code before it is shown, and a booking fortress that raises new walls when the crowd storms the gates. Built first, then armored in iron.",
-  // Real lines from the comics (sources checked), plus his catchphrase.
-  quoteCard: { text: "Ordinary men tremble at the mention of my name! The entire civilized world fears the menace of Doctor Doom!", by: "Doctor Doom · The Amazing Spider-Man #5 (1963)" },
-  heroCta: "Enter the Throne Room →",
-  // Doom has one armor, so his side has no suits: the projects are listed as his works, in his voice.
-  works: {
-    ghostops: "Doom's machines repair themselves. Failure is not tolerated.",
-    "orbit-ide": "Code that proves itself worthy before Doom looks at it.",
-    "resilient-commerce": "A fortress that does not fall, no matter how many come.",
-    sahayak: "Doom feeds his people.",
-    "project-management": "Every subject, every task, accounted for.",
-    greencart: "Even Doom's first work delivered.",
-  } as Record<string, string>,
-  // Section headings by their code in <SectionHead>.
-  sections: {
-    "01": { kicker: "the throne room", title: "One mask. Six works." },
-    "02": { kicker: "doom's designs · the war plans", title: "Doom's Designs" },
-    "03": { kicker: "threats to the realm · incident drill", title: "Defy Doom" },
-    "04": { kicker: "the siege · rush lab", title: "Storm the gates" },
-    "05": { kicker: "the trials · mini game", title: "Purge the vermin" },
-    "06": { kicker: "the latverian network · live", title: "The realm answers" },
-    "07": { kicker: "the sovereign", title: "Behind the iron" },
-    "08": { kicker: "the chronicle of doom", title: "Every conquest, recorded" },
-    "09": { kicker: "royal decrees · verified at the source", title: "Decrees of Latveria" },
-    "10": { kicker: "petition the throne", title: "Doom will hear you" },
-  } as Record<string, { kicker: string; title: string }>,
-  nav: { armor: "Throne", schematics: "Designs", drill: "Threats", lab: "Siege", training: "Trials", status: "Network", about: "Sovereign", log: "Chronicle", certs: "Decrees", contact: "Petition" } as Record<string, string>,
-  quotes: {
-    intro: { text: "From this moment on, I shall be known as Doctor Doom!", by: "Victor von Doom", film: "his origin" },
-    armor: { text: "Fool, Doctor Doom does as he pleases!", by: "Doctor Doom", film: "Spidey Super Stories #53 (1981)" },
-    suit: { text: "From this moment on, I shall be known as Doctor Doom!", by: "Victor von Doom", film: "his origin" },
-    footer: { text: "Kneel before Doom!", by: "Doctor Doom", film: "his catchphrase" },
-  } as Record<string, { text: string; by: string; film: string }>,
-  ai: "The Codex",
-  bootLines: [
-    "The Codex wakes. Latveria awaits its master.",
-    "Drawing power from Castle Doom…",
-    "Binding the runes to the iron…",
-    "Raising the walls of Castle Doom…",
-    "The Latverian network bows to its master.",
-    "Forging the mask…",
-    "Doom has arrived.",
-  ],
-  idle: [
-    "The Latverian network bows to its master.",
-    "Castle patrol: the eastern border is quiet.",
-    "Runes recharged. Sorcery reserves at full strength.",
-    "A visitor approaches the throne. Doom permits it.",
-    "Every system in the realm reports. None dare fail.",
-    "The Codex has checked GitHub for new decrees from the sovereign.",
-    "Castle Doom's defences re-armed. Nobody asked. Doom ordered it.",
-  ],
-  // Doom's features, standing in for Tony's: mystic bolts instead of repulsors, "Kneel" instead
-  // of the Unibeam, a time stasis instead of the EMP, the Time Platform instead of a suit reboot.
-  kneel: "Kneel before Doom!",
-  stats: { "suits built": "works forged", "PRs opened by my AI": "PRs opened by Doom's AI" } as Record<string, string>,
-  logIntro: "From pre-university to the works on this site. Every stop is another conquest.",
-  ranks: [[0, "Peasant"], [80, "Squire"], [200, "Knight"], [350, "Baron"], [550, "Count"], [700, "Regent"], [900, "Sovereign"]] as [number, string][],
-  schematicsIntro: "The three greatest works, laid open. Each diagram is the real pipeline inside the project.",
-  // The pilot's ID badge becomes a royal seal of Castle Doom.
-  badge: {
-    issuer: "Castle Doom · Royal seal",
-    rows: [
-      ["Flagship work", "GhostOps"],
-      ["Power source", "Science and sorcery"],
-      ["Nemesis", "A pager alert at 3 a.m."],
-      ["Servants", "None needed. The systems obey."],
-    ] as [string, string][],
-    stamp: "By royal decree",
-  },
-  narration: {
-    armor: "A visitor enters the throne room. Doom presents six works.",
-    schematics: "Unrolling the war plans of three great works.",
-    drill: "Threats to the realm may be summoned. Doom permits it.",
-    lab: "The siege engine is ready: 2–8 pods @ 60% CPU.",
-    training: "The trials begin. Vermin approach the walls.",
-    status: "Every outpost of the Latverian network reports in.",
-    about: "The sovereign's record is unsealed.",
-    log: "Reading the chronicle, from the first work onward.",
-    certs: "Royal decrees on file. Each one verifiable at the source.",
-    contact: "The throne will hear a petition.",
-  } as Record<string, string>,
-};
