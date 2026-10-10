@@ -7,8 +7,15 @@ import { doom } from "@/data/portfolio";
 
 // A cinematic interstitial: a famous line from the films, drifting with scroll.
 // Pass `doomKey` to swap in a line in Doom's voice when the Doom universe is active.
-export default function QuoteBand({ doomKey, ...stark }: { text: string; by: string; film?: string; doomKey?: keyof typeof doom.quotes }) {
-  const { text, by, film } = useHUD().mode === "doom" && doomKey ? doom.quotes[doomKey] : stark;
+// In Doom mode a band with no Doom line is left out: only real lines from the comics are shown.
+export default function QuoteBand({ doomKey, ...stark }: { text: string; by: string; film?: string; doomKey?: string }) {
+  const isDoom = useHUD().mode === "doom";
+  const alt = isDoom && doomKey ? doom.quotes[doomKey] : undefined;
+  if (isDoom && !alt) return null;
+  return <Band {...(alt ?? stark)} />;
+}
+
+function Band({ text, by, film }: { text: string; by: string; film?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const x = useTransform(scrollYProgress, [0, 1], ["6%", "-6%"]);

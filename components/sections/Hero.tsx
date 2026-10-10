@@ -12,20 +12,6 @@ import SocialButtons from "../ui/SocialButtons";
 const Reactor3D = dynamic(() => import("../three/Reactor3D"), { ssr: false, loading: () => <div className="h-full w-full" /> });
 const DoomMask3D = dynamic(() => import("../three/DoomMask3D"), { ssr: false, loading: () => <div className="h-full w-full" /> });
 
-const SPARKS = Array.from({ length: 22 }, (_, i) => ({
-  left: (i * 37) % 100, w: 2 + (i % 3), d: 7 + ((i * 13) % 9), delay: (i * 0.7) % 9, dx: ((i % 5) - 2) * 25,
-}));
-
-function Sparks() {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-      {SPARKS.map((p, i) => (
-        <span key={i} className="spark" style={{ left: `${p.left}%`, ["--w" as string]: `${p.w}px`, ["--d" as string]: `${p.d}s`, ["--delay" as string]: `${p.delay}s`, ["--dx" as string]: `${p.dx}px` }} />
-      ))}
-    </div>
-  );
-}
-
 function Rotator() {
   const [i, setI] = useState(0);
   useEffect(() => {
@@ -54,7 +40,6 @@ export default function Hero() {
   return (
     <section id="top" className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden pb-10 pt-24">
       <div className="grid-bg pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]" />
-      <Sparks />
       <div className="pointer-events-none absolute -right-40 top-10 h-[640px] w-[640px] rounded-full bg-hot/[0.10] blur-3xl" />
       <div className="pointer-events-none absolute -left-40 bottom-0 h-[420px] w-[420px] rounded-full bg-gold/[0.06] blur-3xl" />
 
@@ -117,7 +102,7 @@ export default function Hero() {
         className="relative mx-auto mt-14 grid w-full max-w-7xl grid-cols-2 border-y border-white/[0.08] px-4 md:grid-cols-4 md:px-8">
         {stats.map((st, i) => (
           <div key={st.label} className={`flex flex-col-reverse py-7 pl-4 ${i % 2 ? "border-l border-white/[0.08]" : ""} ${i > 0 ? "md:border-l md:border-white/[0.08]" : ""} ${i < 2 ? "border-b border-white/[0.08] md:border-b-0" : ""}`}>
-            <dt className="mt-2 text-sm text-steel-400">{st.label}</dt>
+            <dt className="mt-2 text-sm text-steel-400">{isDoom ? doom.stats[st.label] ?? st.label : st.label}</dt>
             <dd className="gold-text font-display text-4xl font-bold md:text-5xl">{st.value}</dd>
           </div>
         ))}

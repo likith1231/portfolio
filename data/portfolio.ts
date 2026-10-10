@@ -497,7 +497,8 @@ export const doom = {
   accentWords: 2, // "no one." is set in the accent face
   intro:
     "Agents that mend production by themselves, an IDE whose AI must prove its code before it is shown, and a booking fortress that raises new walls when the crowd storms the gates. Built first, then armored in iron.",
-  quoteCard: { text: "Doom does not ask whether the system will hold. Doom decrees it.", by: "Victor von Doom · sovereign of Latveria" },
+  // Real lines from the comics (sources checked), plus his catchphrase.
+  quoteCard: { text: "Ordinary men tremble at the mention of my name! The entire civilized world fears the menace of Doctor Doom!", by: "Doctor Doom · The Amazing Spider-Man #5 (1963)" },
   heroCta: "Enter the Throne Room →",
   // Doom has one armor, so his side has no suits: the projects are listed as his works, in his voice.
   works: {
@@ -522,13 +523,12 @@ export const doom = {
     "10": { kicker: "petition the throne", title: "Doom will hear you" },
   } as Record<string, { kicker: string; title: string }>,
   nav: { armor: "Throne", schematics: "Designs", drill: "Threats", lab: "Siege", training: "Trials", status: "Network", about: "Sovereign", log: "Chronicle", certs: "Decrees", contact: "Petition" } as Record<string, string>,
-  // Original lines in Doom's voice for the interstitials.
   quotes: {
-    armor: { text: "Doom builds one army. Each soldier is a machine that does not tire.", by: "Victor von Doom", film: "Latveria" },
-    suit: { text: "Iron is not worn for protection. It is worn so that nothing may be asked of me.", by: "Victor von Doom", film: "Latveria" },
-    lab: { text: "Others hope their systems hold. Doom tests his until they cannot fail.", by: "Victor von Doom", film: "Latveria" },
-    footer: { text: "Doom is eternal.", by: "Victor von Doom", film: "Latveria" },
-  },
+    intro: { text: "From this moment on, I shall be known as Doctor Doom!", by: "Victor von Doom", film: "his origin" },
+    armor: { text: "Fool, Doctor Doom does as he pleases!", by: "Doctor Doom", film: "Spidey Super Stories #53 (1981)" },
+    suit: { text: "From this moment on, I shall be known as Doctor Doom!", by: "Victor von Doom", film: "his origin" },
+    footer: { text: "Kneel before Doom!", by: "Doctor Doom", film: "his catchphrase" },
+  } as Record<string, { text: string; by: string; film: string }>,
   ai: "The Codex",
   bootLines: [
     "The Codex wakes. Latveria awaits its master.",
@@ -548,7 +548,12 @@ export const doom = {
     "The Codex has checked GitHub for new decrees from the sovereign.",
     "Castle Doom's defences re-armed. Nobody asked. Doom ordered it.",
   ],
-  snapEnd: "Doom is eternal.",
+  // Doom's features, standing in for Tony's: mystic bolts instead of repulsors, "Kneel" instead
+  // of the Unibeam, a time stasis instead of the EMP, the Time Platform instead of a suit reboot.
+  kneel: "Kneel before Doom!",
+  stats: { "suits built": "works forged", "PRs opened by my AI": "PRs opened by Doom's AI" } as Record<string, string>,
+  logIntro: "From pre-university to the works on this site. Every stop is another conquest.",
+  ranks: [[0, "Peasant"], [80, "Squire"], [200, "Knight"], [350, "Baron"], [550, "Count"], [700, "Regent"], [900, "Sovereign"]] as [number, string][],
   schematicsIntro: "The three greatest works, laid open. Each diagram is the real pipeline inside the project.",
   // The pilot's ID badge becomes a royal seal of Castle Doom.
   badge: {

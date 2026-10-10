@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import SectionHead from "../ui/SectionHead";
+import { useHUD } from "../Shell";
 import Reveal from "../ui/Reveal";
 import { arsenal, diagnostics, education, principles, profile } from "@/data/portfolio";
 import IdBadge from "../IdBadge";
@@ -12,6 +13,7 @@ import { sfx } from "@/lib/sfx";
 const GRADE = { S: 1, A: 0.8, B: 0.6 } as const;
 
 function Radar() {
+  const isDoom = useHUD().mode === "doom";
   const [hover, setHover] = useState(0);
   const n = diagnostics.length, c = 150, r = 105;
   const pt = (i: number, k: number) => {
@@ -22,7 +24,7 @@ function Radar() {
 
   return (
     <div className="hud-panel hud-corners p-5">
-      <div className="hud-label mb-2 flex justify-between"><span>suit diagnostics</span><span className="text-gold">scan complete</span></div>
+      <div className="hud-label mb-2 flex justify-between"><span>{isDoom ? "sovereign diagnostics" : "suit diagnostics"}</span><span className="text-gold">scan complete</span></div>
       <div className="grid items-center gap-4 sm:grid-cols-[1fr_1fr]">
         <svg viewBox="-40 -10 380 320" className="mx-auto w-full max-w-[360px]" role="img" aria-label="Diagnostics radar chart">
           {[0.25, 0.5, 0.75, 1].map((k) => (

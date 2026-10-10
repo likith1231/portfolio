@@ -5,17 +5,21 @@ import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
 import { sfx } from "@/lib/sfx";
 import { useHUD } from "../Shell";
+import { doom } from "@/data/portfolio";
 
 const BUGS = ["NullPointer", "MemoryLeak", "HTTP 500", "CORS", "Race cond.", "N+1 query", "Flaky test", "OOMKilled", "Deadlock", "Timeout"];
 const ROUND = 30;
 const RANKS: [number, string][] = [[0, "DUM-E"], [80, "Mark 1"], [200, "Mark 7"], [350, "War Machine"], [550, "Hulkbuster"], [700, "Mark 85"], [900, "Iron Legion"]];
-const rankFor = (s: number) => [...RANKS].reverse().find(([min]) => s >= min)![1];
+// Doom's trials rank you by title instead of by suit.
+const rankFor = (s: number, isDoom = false) => [...(isDoom ? doom.ranks : RANKS)].reverse().find(([min]) => s >= min)![1];
+const isDoomNow = () => typeof document !== "undefined" && document.documentElement.dataset.mode === "doom";
 
 type Drone = { x: number; y: number; vx: number; vy: number; r: number; label: string; hp: number; boss: boolean; hit: number };
 type Burst = { x: number; y: number; t: number; big: boolean };
 
 export default function TrainingRoom() {
-  const { narrate } = useHUD();
+  const { narrate, mode } = useHUD();
+  const isDoom = mode === "doom";
   const narrateRef = useRef(narrate);
   narrateRef.current = narrate;
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -63,10 +67,10 @@ export default function TrainingRoom() {
       // production core
       const cx = w / 2, cy = h - 40;
       ctx.save();
-      ctx.shadowColor = "#8fefff"; ctx.shadowBlur = 30;
+      ctx.shadowColor = isDoomNow() ? "#3cff9a" : "#8fefff"; ctx.shadowBlur = 30;
       ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(cx, cy, 14, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
-      ctx.strokeStyle = "rgba(232,176,74,.7)"; ctx.lineWidth = 2;
+      ctx.strokeStyle = isDoomNow() ? "rgba(176,141,60,.7)" : "rgba(232,176,74,.7)"; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(cx, cy, 26, 0, Math.PI * 2); ctx.stroke();
       ctx.fillStyle = "rgba(207,200,195,.6)"; ctx.font = "10px monospace"; ctx.textAlign = "center";
       ctx.fillText("PRODUCTION", cx, cy + 44 > h ? cy - 34 : cy + 44);
@@ -88,7 +92,7 @@ export default function TrainingRoom() {
           g.running = false;
           setState("over");
           sfx[g.lives <= 0 ? "alert" : "success"]();
-          narrateRef.current(g.lives <= 0 ? `Training failed: production went down at ${g.score} points.` : `Training complete: ${g.score} points, rank ${rankFor(g.score)}.`, g.lives <= 0 ? "bad" : "ok");
+          narrateRef.current(g.lives <= 0 ? `Training failed: production went down at ${g.score} points.` : `Training complete: ${g.score} points, rank ${rankFor(g.score, isDoomNow())}.`, g.lives <= 0 ? "bad" : "ok");
           try { const b = Number(localStorage.getItem("training-best") || 0); if (g.score > b) { localStorage.setItem("training-best", String(g.score)); setBest(g.score); } } catch {}
         }
       }
@@ -109,8 +113,8 @@ export default function TrainingRoom() {
         ctx.beginPath();
         for (let k = 0; k < 6; k++) { const aa = (k / 6) * Math.PI * 2; ctx.lineTo(Math.cos(aa) * d.r, Math.sin(aa) * d.r); }
         ctx.closePath();
-        ctx.fillStyle = d.hit > 0 ? "#ffffff" : d.boss ? "rgba(204,26,42,.9)" : "rgba(204,26,42,.55)";
-        ctx.strokeStyle = d.boss ? "#e8b04a" : "rgba(255,120,120,.9)";
+        ctx.fillStyle = d.hit > 0 ? "#ffffff" : isDoomNow() ? (d.boss ? "rgba(90,40,120,.9)" : "rgba(90,40,120,.55)") : d.boss ? "rgba(204,26,42,.9)" : "rgba(204,26,42,.55)";
+        ctx.strokeStyle = isDoomNow() ? (d.boss ? "#b08d3c" : "rgba(200,150,255,.9)") : d.boss ? "#e8b04a" : "rgba(255,120,120,.9)";
         ctx.lineWidth = d.boss ? 3 : 1.5;
         ctx.fill(); ctx.stroke();
         ctx.restore();
@@ -130,7 +134,7 @@ export default function TrainingRoom() {
         const k = (t - b.t) / 450;
         ctx.save();
         ctx.globalAlpha = 1 - k;
-        ctx.strokeStyle = "#ffffff"; ctx.shadowColor = "#8fefff"; ctx.shadowBlur = 20; ctx.lineWidth = 3;
+        ctx.strokeStyle = "#ffffff"; ctx.shadowColor = isDoomNow() ? "#3cff9a" : "#8fefff"; ctx.shadowBlur = 20; ctx.lineWidth = 3;
         ctx.beginPath(); ctx.arc(b.x, b.y, 8 + k * (b.big ? 70 : 40), 0, Math.PI * 2); ctx.stroke();
         ctx.restore();
       }
@@ -177,14 +181,17 @@ export default function TrainingRoom() {
     }
     g.drones = g.drones.filter((d) => d.hp > 0);
     setScore(g.score); setCombo(g.combo);
-    hit ? sfx.boom() : sfx.repulsor();
+    if (isDoomNow()) hit ? sfx.hexBig() : sfx.hex();
+    else hit ? sfx.boom() : sfx.repulsor();
   };
 
   return (
     <section id="training" className="relative border-y border-white/[0.05] bg-void-900/40 py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
         <SectionHead code="05" kicker="training room · mini game" title="Shoot the bugs">
-          Bug-drones are heading for production. Click or tap to fire your repulsors. Bosses take three hits. You have thirty seconds and three lives.
+          {isDoom
+            ? "Vermin are storming the castle's production servers. Click or tap to cast mystic bolts. Bosses take three hits. You have thirty seconds and three wards."
+            : "Bug-drones are heading for production. Click or tap to fire your repulsors. Bosses take three hits. You have thirty seconds and three lives."}
         </SectionHead>
 
         <Reveal>
@@ -204,16 +211,16 @@ export default function TrainingRoom() {
                       <>
                         <div className="hud-label text-gold">{lives <= 0 ? "production is down" : "round complete"}</div>
                         <div className="mt-2 font-display text-6xl font-bold text-white">{score}</div>
-                        <div className="mt-2 font-mono text-sm text-steel-300">rank: <span className="text-gold">{rankFor(score)}</span>{score >= best && score > 0 ? " · new best!" : ""}</div>
+                        <div className="mt-2 font-mono text-sm text-steel-300">rank: <span className="text-gold">{rankFor(score, isDoom)}</span>{score >= best && score > 0 ? " · new best!" : ""}</div>
                       </>
                     ) : (
                       <>
                         <div className="hud-label">simulation ready</div>
-                        <div className="mt-2 font-display text-3xl font-bold uppercase text-white">Repulsor training</div>
-                        <div className="mt-2 font-mono text-xs text-steel-400">ranks: DUM-E → Mark 1 → Mark 7 → War Machine → Hulkbuster → Mark 85 → Iron Legion</div>
+                        <div className="mt-2 font-display text-3xl font-bold uppercase text-white">{isDoom ? "The trials of Doom" : "Repulsor training"}</div>
+                        <div className="mt-2 font-mono text-xs text-steel-400">ranks: {(isDoom ? doom.ranks : RANKS).map(([, r]) => r).join(" → ")}</div>
                       </>
                     )}
-                    <button onClick={start} className="btn-hot mt-6">{state === "over" ? "Run it again" : "▶ Start training"}</button>
+                    <button onClick={start} className="btn-hot mt-6">{state === "over" ? "Run it again" : isDoom ? "▶ Begin the trials" : "▶ Start training"}</button>
                   </div>
                 </div>
               )}

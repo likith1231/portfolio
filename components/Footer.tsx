@@ -50,8 +50,8 @@ export default function Footer() {
             <div>Built with Next.js, Three.js and Framer Motion. Set in {isDoom ? "Cinzel" : "Chakra Petch"}, Inter and {isDoom ? "JetBrains Mono" : "Instrument Serif"}.</div>
           </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-3 uppercase tracking-[0.18em]">
-            <button onClick={emp} disabled={empActive} className="border border-danger/50 px-3 py-1.5 text-danger hover:bg-danger/10 disabled:opacity-40" title="Freeze every animation for 5 seconds">⚡ Fire EMP</button>
-            <button onClick={replayIntro} className="hover:text-gold">Replay intro</button>
+            <button onClick={emp} disabled={empActive} className={`border px-3 py-1.5 disabled:opacity-40 ${isDoom ? "border-gold/50 text-gold hover:bg-gold/10" : "border-danger/50 text-danger hover:bg-danger/10"}`} title="Freeze every animation for 5 seconds">{isDoom ? "⧗ Halt time" : "⚡ Fire EMP"}</button>
+            <button onClick={replayIntro} className="hover:text-gold">{isDoom ? "Time Platform ↺" : "Replay intro"}</button>
             <button onClick={() => setJarvisOpen(true)} className="hover:text-gold">{isDoom ? doom.ai : "J.A.R.V.I.S."}</button>
             <a href={socials.github} target="_blank" rel="noreferrer" className="hover:text-gold">GitHub</a>
             <a href={socials.linkedin} target="_blank" rel="noreferrer" className="hover:text-gold">LinkedIn</a>
@@ -70,7 +70,9 @@ export default function Footer() {
           </ul>
           <p className="mt-3">Iron Man, Doctor Doom and related characters are owned by Marvel. This is a non-commercial fan tribute; the Doom mask on this site is an original design, not Marvel artwork.</p>
         </details>
-        <p className="mt-8 font-mono text-[10px] text-steel-500/60">psst: try the gauntlet in the corner · ↑ ↑ ↓ ↓ ← → ← → B A · or hold the mouse on empty space, then let go</p>
+        <p className="mt-8 font-mono text-[10px] text-steel-500/60">{isDoom
+          ? "psst: press Doom's seal in the corner · ↑ ↑ ↓ ↓ ← → ← → B A · or hold the mouse on empty space to charge a mystic bolt"
+          : "psst: try the gauntlet in the corner · ↑ ↑ ↓ ↓ ← → ← → B A · or hold the mouse on empty space, then let go"}</p>
       </div>
     </footer>
   );

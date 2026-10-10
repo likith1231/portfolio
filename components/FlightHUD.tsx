@@ -21,7 +21,7 @@ const NARRATION: Record<string, string> = {
 // Flight instruments on the left edge: altitude follows the scroll, speed follows scroll velocity.
 // Updated straight on the DOM (no React re-renders) and only on wide screens where it shows.
 export default function FlightHUD() {
-  const { narrate, introDone } = useHUD();
+  const { narrate, introDone, mode } = useHUD();
   const path = usePathname();
   const altEl = useRef<HTMLSpanElement>(null);
   const spdEl = useRef<HTMLSpanElement>(null);
@@ -61,6 +61,8 @@ export default function FlightHUD() {
     return () => { clearTimeout(t); io.disconnect(); };
   }, [introDone, path, narrate]);
 
+  // Flight instruments are Tony's; in Doom's universe they are hidden.
+  if (mode === "doom") return null;
   return (
     <div className="pointer-events-none fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 select-none font-mono text-[10px] text-steel-500 2xl:block" aria-hidden>
       <div className="mb-1 tracking-[0.2em] text-gold">ALT</div>

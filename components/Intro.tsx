@@ -135,7 +135,10 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   const finish = () => {
     if (done.current) return;
     done.current = true;
-    try { sessionStorage.setItem("suited", "1"); } catch {}
+    try {
+      sessionStorage.setItem("suited", "1");
+      sessionStorage.setItem(`entered-${document.documentElement.dataset.mode === "doom" ? "doom" : "stark"}`, "1");
+    } catch {}
     document.documentElement.style.overflow = "";
     setPhase("off");
     onDone();
@@ -170,10 +173,10 @@ export default function Intro({ onDone }: { onDone: () => void }) {
 
   const suitUp = (withSound: boolean) => {
     sound.set(withSound);
-    if (withSound) sfx.ignite();
+    if (withSound) (isDoom ? sfx.toll : sfx.ignite)();
     setPhase("close");
-    setTimeout(() => sfx.faceplate(), 80);
-    setTimeout(() => { setPhase("open"); sfx.servo(); }, 1250);
+    setTimeout(() => (isDoom ? sfx.hex : sfx.faceplate)(), 80);
+    setTimeout(() => { setPhase("open"); (isDoom ? sfx.hexBig : sfx.servo)(); }, 1250);
     setTimeout(finish, 2150);
   };
 
@@ -234,7 +237,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
                     </div>
                     {mobile && <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-steel-500">Best on desktop. The suit still fits your phone.</p>}
                     {isDoom
-                      ? <p className="font-serif text-base text-steel-400">“Doom does not wait. Doom arrives.” <span className="text-steel-500">— Victor von Doom</span></p>
+                      ? <p className="font-serif text-base text-steel-400">“{doom.quotes.intro.text}” <span className="text-steel-500">— {doom.quotes.intro.by}, {doom.quotes.intro.film}</span></p>
                       : <p className="font-serif text-base italic text-steel-400">“{quotes.intro.text}” <span className="not-italic text-steel-500">— {quotes.intro.by}</span></p>}
                   </motion.div>
                 )}
@@ -244,34 +247,53 @@ export default function Intro({ onDone }: { onDone: () => void }) {
         )}
       </AnimatePresence>
 
+      {/* Doom's entry: the mask rushes at the viewer, its eyes flare, and the site opens through a green flash */}
+      {isDoom && (phase === "close" || phase === "open") && (
+        <motion.div className="absolute inset-0 flex items-center justify-center overflow-hidden bg-[#020403]"
+          initial={{ opacity: 0 }} animate={{ opacity: phase === "close" ? 1 : 0 }} transition={{ duration: phase === "close" ? 0.25 : 0.8, delay: phase === "open" ? 0.15 : 0 }}>
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgb(31_107_71/.45),transparent_60%)]" />
+          <motion.div className="relative h-[min(70vw,420px)] w-[min(70vw,420px)]"
+            initial={{ scale: 0.7, opacity: 0.6 }} animate={phase === "close" ? { scale: [0.7, 1.05, 1.25], opacity: 1 } : { scale: 6, opacity: 0 }}
+            transition={phase === "close" ? { duration: 1.2, times: [0, 0.6, 1], ease: "easeOut" } : { duration: 0.8, ease: [0.7, 0, 0.84, 0] }}>
+            <FormingMask p={100} />
+          </motion.div>
+          <motion.p className="absolute bottom-[14%] font-display text-2xl uppercase tracking-[0.4em] text-white md:text-4xl"
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: phase === "close" ? 1 : 0, y: 0 }} transition={{ delay: 0.45, duration: 0.5 }}
+            style={{ textShadow: "0 0 24px rgb(60 255 154 / .7)" }}>
+            Doom has arrived
+          </motion.p>
+          <motion.div className="pointer-events-none absolute inset-0 bg-[#3cff9a]" initial={{ opacity: 0 }} animate={{ opacity: phase === "open" ? [0, 0.55, 0] : 0 }} transition={{ duration: 0.6 }} />
+        </motion.div>
+      )}
+
       {/* faceplate: closes over the screen, eyes light up, then opens onto the site */}
-      {(phase === "close" || phase === "open") && (
+      {!isDoom && (phase === "close" || phase === "open") && (
         <>
           <motion.div className="absolute inset-x-0 top-0 h-1/2 overflow-hidden"
             initial={{ y: "-100%" }} animate={{ y: phase === "close" ? "0%" : "-105%" }}
             transition={{ duration: phase === "close" ? 0.45 : 0.7, ease: phase === "close" ? [0.7, 0, 0.84, 0] : [0.16, 1, 0.3, 1] }}>
-            <div className="absolute inset-0" style={{ background: isDoom ? "linear-gradient(180deg,#06140d,#0f3d2a 70%,#0a2a1c)" : "linear-gradient(180deg,#5a0a10,rgb(var(--hot)) 70%,#7a0e15)" }} />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,#5a0a10,rgb(var(--hot)) 70%,#7a0e15)" }} />
             <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMax slice" className="absolute inset-0 h-full w-full">
-              <path d="M300 500 L330 230 Q500 140 670 230 L700 500 Z" fill={isDoom ? "#6b6f75" : "rgb(var(--gold))"} />
+              <path d="M300 500 L330 230 Q500 140 670 230 L700 500 Z" fill="rgb(var(--gold))" />
               <path d="M330 230 Q500 140 670 230" fill="none" stroke="#000" strokeOpacity=".35" strokeWidth="4" />
-              <motion.path d="M365 420 L470 438 L462 462 L372 446 Z" fill={isDoom ? "#3cff9a" : "#fff"} initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.7, 1] }} transition={{ delay: 0.45, duration: 0.4 }} style={{ filter: `drop-shadow(0 0 16px ${isDoom ? "#3cff9a" : "#fff"})` }} />
-              <motion.path d="M635 420 L530 438 L538 462 L628 446 Z" fill={isDoom ? "#3cff9a" : "#fff"} initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.7, 1] }} transition={{ delay: 0.45, duration: 0.4 }} style={{ filter: `drop-shadow(0 0 16px ${isDoom ? "#3cff9a" : "#fff"})` }} />
+              <motion.path d="M365 420 L470 438 L462 462 L372 446 Z" fill="#fff" initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.7, 1] }} transition={{ delay: 0.45, duration: 0.4 }} style={{ filter: "drop-shadow(0 0 16px #fff)" }} />
+              <motion.path d="M635 420 L530 438 L538 462 L628 446 Z" fill="#fff" initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.7, 1] }} transition={{ delay: 0.45, duration: 0.4 }} style={{ filter: "drop-shadow(0 0 16px #fff)" }} />
               <line x1="500" y1="150" x2="500" y2="500" stroke="#000" strokeOpacity=".25" strokeWidth="3" />
             </svg>
           </motion.div>
           <motion.div className="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden"
             initial={{ y: "100%" }} animate={{ y: phase === "close" ? "0%" : "105%" }}
             transition={{ duration: phase === "close" ? 0.45 : 0.7, ease: phase === "close" ? [0.7, 0, 0.84, 0] : [0.16, 1, 0.3, 1] }}>
-            <div className="absolute inset-0" style={{ background: isDoom ? "linear-gradient(0deg,#06140d,#0f3d2a 70%,#0a2a1c)" : "linear-gradient(0deg,#5a0a10,rgb(var(--hot)) 70%,#7a0e15)" }} />
+            <div className="absolute inset-0" style={{ background: "linear-gradient(0deg,#5a0a10,rgb(var(--hot)) 70%,#7a0e15)" }} />
             <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMin slice" className="absolute inset-0 h-full w-full">
-              <path d="M300 0 L700 0 L660 210 Q500 300 340 210 Z" fill={isDoom ? "#6b6f75" : "rgb(var(--gold))"} />
+              <path d="M300 0 L700 0 L660 210 Q500 300 340 210 Z" fill="rgb(var(--gold))" />
               <path d="M420 120 L580 120" stroke="#000" strokeOpacity=".4" strokeWidth="6" strokeLinecap="round" />
               <line x1="500" y1="0" x2="500" y2="270" stroke="#000" strokeOpacity=".25" strokeWidth="3" />
             </svg>
           </motion.div>
           <motion.div className="pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-[0.5em] text-white"
             initial={{ opacity: 0 }} animate={{ opacity: phase === "close" ? [0, 0, 1] : 0 }} transition={{ duration: 0.7 }}>
-            {isDoom ? "doom awakens" : "hud online"}
+            hud online
           </motion.div>
         </>
       )}

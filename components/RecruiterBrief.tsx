@@ -8,7 +8,7 @@ import { arsenal as armory, certifications, flagships as projects, profile, soci
 
 // The whole portfolio, condensed to what a recruiter reads in 30 seconds.
 export default function RecruiterBrief() {
-  const { briefOpen, setBriefOpen } = useHUD();
+  const { briefOpen, setBriefOpen, mode } = useHUD();
   const [copied, setCopied] = useState(false);
 
   const summary = [
@@ -36,7 +36,7 @@ export default function RecruiterBrief() {
             className="hud-panel hud-corners w-full max-w-3xl bg-void-900/95 p-6 md:p-9" role="dialog" aria-label="Recruiter brief">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <div className="hud-label text-gold">recruiter mode · 30-second brief for ms. potts</div>
+                <div className="hud-label text-gold">{mode === "doom" ? "recruiter mode · 30-second brief" : "recruiter mode · 30-second brief for ms. potts"}</div>
                 <h2 className="mt-3 font-display text-3xl font-bold uppercase text-white md:text-4xl">{profile.name}</h2>
                 <p className="mt-1 text-steel-300">{profile.role}</p>
                 <p className="mt-1 text-sm text-steel-500">{profile.location} · {profile.education}</p>

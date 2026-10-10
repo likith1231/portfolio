@@ -110,3 +110,8 @@ html.emp body { filter: grayscale(.85) contrast(1.1); }
   radial-gradient(1100px 600px at 85% -10%, rgb(31 107 71 / .32), transparent 60%),
   radial-gradient(900px 500px at 0% 30%, rgb(60 255 154 / .05), transparent 60%),
   var(--bg); background-attachment: fixed; }
+/* Kneel before Doom: the page bows forward and sinks, then rises. */
+main { transition: transform .9s cubic-bezier(.16,1,.3,1), filter .9s; transform-origin: 50% 0; }
+main.kneeling { transform: perspective(1200px) rotateX(9deg) translateY(6vh) scale(.94); filter: brightness(.55) saturate(.7); }
+/* Doom's time stasis tints the frozen page green instead of draining it grey. */
+html.emp[data-mode="doom"] body { filter: saturate(.5) hue-rotate(35deg) brightness(.85); }

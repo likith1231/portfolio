@@ -12,6 +12,8 @@ import Jarvis from "./Jarvis";
 import RecruiterBrief from "./RecruiterBrief";
 import Snap from "./Snap";
 import Portal from "./Portal";
+import Kneel from "./Kneel";
+import Embers from "./ui/Embers";
 import { sfx, sound } from "@/lib/sfx";
 
 export type Mode = "stark" | "doom";
@@ -45,6 +47,7 @@ const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "Ar
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<Mode>("stark");
+  const [kneelN, setKneelN] = useState(0);
   const [portal, setPortal] = useState<{ n: number; to: Mode } | null>(null);
   const [soundOn, setSoundOn] = useState(false);
   const [jarvisOpen, setJarvisOpen] = useState(false);
@@ -79,10 +82,23 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     sfx.portal();
     setPortal((p) => ({ n: (p?.n ?? 0) + 1, to }));
     setTimeout(() => setMode(to), 480);
-    setTimeout(() => { setPortal(null); busy.current = false; }, 1250);
+    setTimeout(() => {
+      setPortal(null);
+      busy.current = false;
+      // The first visit to each universe in a session plays its entry: the suit-up for Stark,
+      // the forming of the mask for Doom.
+      let seen = true;
+      try { seen = !!sessionStorage.getItem(`entered-${to}`); } catch {}
+      if (!seen) replayRef.current();
+    }, 1250);
   }, []);
   const setSound = useCallback((v: boolean) => sound.set(v), []);
-  const unibeam = useCallback(() => { sfx.ignite(); setBeam((b) => b + 1); }, []);
+  // Tony fires the Unibeam; in Doom's universe the same trigger makes the page kneel.
+  const unibeam = useCallback(() => {
+    if (document.documentElement.dataset.mode === "doom") { sfx.toll(); setKneelN((n) => n + 1); return; }
+    sfx.ignite();
+    setBeam((b) => b + 1);
+  }, []);
 
   const emp = useCallback(() => {
     if (document.documentElement.classList.contains("emp")) return;
@@ -104,6 +120,8 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     setIntroDone(false);
     setIntroKey((k) => k + 1);
   }, []);
+  const replayRef = useRef(replayIntro);
+  replayRef.current = replayIntro;
 
   useEffect(() => {
     let seq: string[] = [];
@@ -131,19 +149,20 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       <Intro key={introKey} onDone={() => setIntroDone(true)} />
       <ScrollProgress />
       <Reticle />
+      <Embers />
       <Repulsors />
       <FlightHUD />
       <Nav />
       {children}
       <Jarvis />
-      <Snap />
+      {mode === "doom" ? <Kneel n={kneelN} onKneel={unibeam} /> : <Snap />}
       <RecruiterBrief />
       {portal && <Portal key={portal.n} to={portal.to} />}
 
       {empActive && (
         <div className="pointer-events-none fixed inset-x-0 top-20 z-[85] flex justify-center">
-          <div className="border border-danger/60 bg-void/90 px-5 py-2 font-mono text-xs uppercase tracking-[0.25em] text-danger">
-            ⚡ EMP discharged · all systems frozen · rebooting in 5s
+          <div className={`border bg-void/90 px-5 py-2 font-mono text-xs uppercase tracking-[0.25em] ${mode === "doom" ? "border-gold/60 text-gold" : "border-danger/60 text-danger"}`}>
+            {mode === "doom" ? "⧗ Time halted by Doom's Time Platform · resuming in 5s" : "⚡ EMP discharged · all systems frozen · rebooting in 5s"}
           </div>
         </div>
       )}
