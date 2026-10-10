@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
-import { arsenal, diagnostics, principles, profile } from "@/data/portfolio";
+import { arsenal, diagnostics, education, principles, profile } from "@/data/portfolio";
+import IdBadge from "../IdBadge";
 import ReactorActivity from "../ReactorActivity";
 import { sfx } from "@/lib/sfx";
 
@@ -23,7 +24,7 @@ function Radar() {
     <div className="hud-panel hud-corners p-5">
       <div className="hud-label mb-2 flex justify-between"><span>suit diagnostics</span><span className="text-gold">scan complete</span></div>
       <div className="grid items-center gap-4 sm:grid-cols-[1fr_1fr]">
-        <svg viewBox="-40 -10 380 320" className="w-full" role="img" aria-label="Diagnostics radar chart">
+        <svg viewBox="-40 -10 380 320" className="mx-auto w-full max-w-[360px]" role="img" aria-label="Diagnostics radar chart">
           {[0.25, 0.5, 0.75, 1].map((k) => (
             <polygon key={k} points={diagnostics.map((_, i) => pt(i, k).join(",")).join(" ")} fill="none" className="stroke-white/10" />
           ))}
@@ -76,40 +77,52 @@ export default function About() {
       <div className="mx-auto max-w-7xl px-4 md:px-8">
         <SectionHead code="07" kicker="pilot profile" title="Behind the mask" />
 
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr]">
+        <div className="grid items-start gap-14 lg:grid-cols-[440px_1fr]">
+          <IdBadge />
           <Reveal>
-            <div className="space-y-5 text-base leading-relaxed text-steel-300 md:text-lg">
-              <p>
-                I'm <span className="text-white">{profile.name}</span>, a computer science engineer in {profile.location.split(",")[0]} who likes the part of software most people avoid: what happens <em className="font-serif text-xl text-gold">after</em> it ships.
+            <p className="font-serif text-2xl leading-relaxed text-[#f3e6cf] md:text-[1.7rem]">
+              A computer science engineer from {profile.location.split(",")[0]} who likes the part of software most people avoid: what happens <em className="gold-text">after</em> it ships.
+            </p>
+            <p className="mt-5 text-base leading-relaxed text-steel-300 md:text-lg">
+              I build full-stack products, then armor them: containers, Kubernetes, GitOps, autoscaling, tracing. Lately I've been giving that infrastructure a brain, with AI agents that diagnose incidents and patch them, but only after a sandbox and a policy agree.
+            </p>
+
+            <div className="mt-8 rounded-2xl border border-white/10 bg-void-900/70 p-6">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold">Currently studying at</p>
+              <p className="mt-2 font-display text-xl font-semibold text-[#f3e6cf]">{education.school}</p>
+              <p className="mt-1 text-steel-400">{education.degree} · {education.years}</p>
+              <p className="mt-4 flex items-center gap-3 text-steel-200">
+                CGPA <span className="gold-text font-display text-2xl font-bold">{education.cgpa}</span>
               </p>
-              <p>
-                I build full-stack products, then armor them: containers, Kubernetes, GitOps, autoscaling, tracing. Lately I've been giving that infrastructure a brain, with AI agents that diagnose incidents and patch them, but only after a sandbox and a policy agree.
-              </p>
-              <p>The model proposes. The tests decide. A human merges.</p>
             </div>
-            <dl className="mt-8 grid grid-cols-1 gap-px bg-white/[0.06] sm:grid-cols-2">
-              {[["Education", profile.education], ["Focus", profile.focus], ["Based", `${profile.location} · UTC+5:30`], ["Up next", profile.next]].map(([k, v]) => (
-                <div key={k} className="bg-void p-4">
-                  <dt className="hud-label">{k}</dt>
-                  <dd className="mt-1 text-sm text-steel-100">{v}</dd>
-                </div>
+
+            <ul className="mt-8 space-y-4">
+              {principles.map((p) => (
+                <li key={p.n} className="flex gap-4 text-steel-300">
+                  <span className="mt-1 text-gold">✦</span>
+                  <span><strong className="text-[#f3e6cf]">{p.title}.</strong> {p.body}</span>
+                </li>
               ))}
-            </dl>
+            </ul>
           </Reveal>
-          <Reveal delay={0.15}><Radar /></Reveal>
         </div>
 
-        <Reveal className="mt-16"><ReactorActivity /></Reveal>
+        <div className="mt-20 flex flex-col gap-6 lg:flex-row [&>*:empty]:hidden [&>*]:min-w-0 [&>*]:flex-1">
+          <Reveal><Radar /></Reveal>
+          <Reveal delay={0.1}><ReactorActivity /></Reveal>
+        </div>
+
+
 
         <Reveal className="mt-20">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
             <div>
               <div className="hud-label flex items-center gap-3"><span className="text-hot">◆</span> war machine arsenal</div>
-              <h3 className="mt-2 font-display text-3xl font-bold uppercase text-white">Weapon systems</h3>
+              <h3 className="mt-2 font-display text-4xl font-bold text-[#f3e6cf]">Weapon <span className="gold-text font-serif font-normal italic">systems</span></h3>
             </div>
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-steel-500">hover or tap a system to arm it</p>
           </div>
-          <div className="grid gap-px bg-white/[0.06] sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.06] sm:grid-cols-2 lg:grid-cols-4">
             {arsenal.map((g, i) => (
               <motion.button key={g.group} type="button" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
                 onMouseEnter={() => { if (armed !== i) { setArmed(i); sfx.lock(); } }} onClick={() => { setArmed(i); sfx.servo(); }}
@@ -138,18 +151,6 @@ export default function About() {
           </div>
         </div>
 
-        <Reveal className="mt-20">
-          <div className="hud-label mb-6 flex items-center gap-3"><span className="text-hot">◆</span> operating protocols</div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {principles.map((p) => (
-              <div key={p.n} className="hud-panel hud-corners p-6">
-                <div className="font-display text-5xl font-bold text-hot/80">{p.n}</div>
-                <h3 className="mt-3 font-display text-xl font-semibold uppercase text-white">{p.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-steel-400">{p.body}</p>
-              </div>
-            ))}
-          </div>
-        </Reveal>
       </div>
     </section>
   );
