@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 // Space, Mind, Reality, Power, Time, Soul
 export const STONES = ["#4f8dff", "#ffd23f", "#ff3b3b", "#b45cff", "#3ddc84", "#ff8a1f"];
 
+// In the Doom universe the gauntlet holds green mystic energy instead of the stones.
+export const RUNES = ["#3cff9a", "#5dffad", "#2ee68a", "#7affc0", "#1fd67a", "#a8ffd6"];
+
 export type SnapPhase = "idle" | "charge" | "snap" | "dust" | "reform" | "final";
 
 // Start the snap. Pass the element that was clicked so the charge glow starts from it.
@@ -27,30 +30,31 @@ export function useSnapState() {
 
 // The Iron Man nano-gauntlet with the six stones. `lit` stones glow; `pulse` makes idle stones breathe.
 // Drawn in SVG with gradients so it stays crisp at any size.
-export default function Gauntlet({ lit = 0, pulse = false, className = "h-9 w-9" }: { lit?: number; pulse?: boolean; className?: string }) {
+export default function Gauntlet({ lit = 0, pulse = false, className = "h-9 w-9", doom = false }: { lit?: number; pulse?: boolean; className?: string; doom?: boolean }) {
+  const gems = doom ? RUNES : STONES;
   // Space, Mind, Reality, Power on the knuckles, Time on the thumb, Soul in the palm
   const spots: [number, number, number][] = [[19.2, 11.5, 1.7], [24, 8.5, 1.7], [28.9, 9.5, 1.7], [33.8, 12.5, 1.6], [10.6, 25.2, 1.7], [25, 26, 2.6]];
   return (
     <svg viewBox="0 0 48 48" className={className} aria-hidden>
       <defs>
         <linearGradient id="g-red" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#e3283a" />
-          <stop offset="55%" stopColor="#a5121e" />
-          <stop offset="100%" stopColor="#5e0a11" />
+          <stop offset="0%" stopColor={doom ? "#a3a8ae" : "#e3283a"} />
+          <stop offset="55%" stopColor={doom ? "#6b6f75" : "#a5121e"} />
+          <stop offset="100%" stopColor={doom ? "#2c2f33" : "#5e0a11"} />
         </linearGradient>
         <linearGradient id="g-gold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ffe3a3" />
-          <stop offset="50%" stopColor="#e8b04a" />
-          <stop offset="100%" stopColor="#9c6a1f" />
+          <stop offset="0%" stopColor={doom ? "#d9c27e" : "#ffe3a3"} />
+          <stop offset="50%" stopColor={doom ? "#b08d3c" : "#e8b04a"} />
+          <stop offset="100%" stopColor={doom ? "#6b5420" : "#9c6a1f"} />
         </linearGradient>
-        {STONES.map((c, i) => (
+        {gems.map((c, i) => (
           <radialGradient key={i} id={`g-stone-${i}`} cx="35%" cy="30%" r="75%">
             <stop offset="0%" stopColor="#ffffff" />
             <stop offset="35%" stopColor={c} />
             <stop offset="100%" stopColor="#120808" />
           </radialGradient>
         ))}
-        {STONES.map((c, i) => (
+        {gems.map((c, i) => (
           <radialGradient key={`h${i}`} id={`g-halo-${i}`}>
             <stop offset="0%" stopColor={c} stopOpacity="0.9" />
             <stop offset="100%" stopColor={c} stopOpacity="0" />

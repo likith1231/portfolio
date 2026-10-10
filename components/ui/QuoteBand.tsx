@@ -2,9 +2,13 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { useHUD } from "../Shell";
+import { doom } from "@/data/portfolio";
 
 // A cinematic interstitial: a famous line from the films, drifting with scroll.
-export default function QuoteBand({ text, by, film }: { text: string; by: string; film?: string }) {
+// Pass `doomKey` to swap in a line in Doom's voice when the Doom universe is active.
+export default function QuoteBand({ doomKey, ...stark }: { text: string; by: string; film?: string; doomKey?: keyof typeof doom.quotes }) {
+  const { text, by, film } = useHUD().mode === "doom" && doomKey ? doom.quotes[doomKey] : stark;
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const x = useTransform(scrollYProgress, [0, 1], ["6%", "-6%"]);

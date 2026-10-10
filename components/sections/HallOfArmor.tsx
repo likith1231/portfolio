@@ -7,9 +7,10 @@ import { useEffect, useRef, useState } from "react";
 import SectionHead from "../ui/SectionHead";
 import LiveBadge from "../ui/LiveBadge";
 import { useHUD } from "../Shell";
-import { suits } from "@/data/portfolio";
+import { doom, suits } from "@/data/portfolio";
 import { sfx } from "@/lib/sfx";
 
+const DoomMask3D = dynamic(() => import("../three/DoomMask3D"), { ssr: false, loading: () => <div className="grid h-full place-items-center hud-label">the mask is forming…</div> });
 const Hall3D = dynamic(() => import("../three/Hall3D"), { ssr: false, loading: () => <div className="grid h-full place-items-center hud-label">powering up the hall…</div> });
 
 // Strongest first: Mark 85 down to Mark 1.
@@ -17,9 +18,11 @@ const order = [...suits].sort((a, b) => b.mark - a.mark);
 
 export default function HallOfArmor() {
   const [i, setI] = useState(0);
-  const { narrate } = useHUD();
+  const { narrate, mode } = useHUD();
+  const isDoom = mode === "doom";
   const drag = useRef<number | null>(null);
   const s = order[i];
+  const ROMAN = ["I", "II", "III", "IV", "V", "VI"];
 
   const go = (d: number) => {
     sfx.servo();
@@ -41,7 +44,7 @@ export default function HallOfArmor() {
 
   useEffect(() => {
     if (i === 0) return;
-    narrate(`Hall of Armor: ${s.suit} on the stand for ${s.name}. Power rating ${s.power}.`);
+    narrate(isDoom ? `Throne room: Doom presents ${s.name}. Power rating ${s.power}.` : `Hall of Armor: ${s.suit} on the stand for ${s.name}. Power rating ${s.power}.`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i]);
 
@@ -49,11 +52,37 @@ export default function HallOfArmor() {
     <section id="armor" className="relative py-28">
       <div className="mx-auto max-w-7xl px-4 md:px-8">
         <SectionHead code="01" kicker="the hall of armor" title="Six suits. One engineer.">
-          Every project wears a suit from the films. The more advanced the build, the higher the Mark. Drag, use the arrows, or pick a suit.
+          {isDoom
+            ? "Doom wears one armor and needs no other. His works are listed before the throne, strongest first. Choose one, or use the arrows."
+            : "Every project wears a suit from the films. The more advanced the build, the higher the Mark. Drag, use the arrows, or pick a suit."}
         </SectionHead>
       </div>
 
       <div className="relative mx-auto max-w-[1400px]">
+        {isDoom ? (
+          // Doom has one armor: a single mask on the throne, with his works listed beside it.
+          <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 md:px-8 lg:grid-cols-[1fr_1fr]">
+            <div className="relative mx-auto aspect-square w-full max-w-[520px]">
+              <div className="pointer-events-none absolute inset-x-[15%] bottom-[4%] h-10 rounded-[50%] bg-gold/25 blur-2xl" />
+              <DoomMask3D />
+            </div>
+            <ol className="space-y-2">
+              {order.map((x, k) => (
+                <li key={x.slug}>
+                  <button onClick={() => { sfx.click(); setI(k); }}
+                    className={`flex w-full items-baseline gap-4 rounded-xl border px-5 py-4 text-left transition-colors ${k === i ? "border-trim/60 bg-hot/20" : "border-white/[0.07] hover:border-trim/40"}`}>
+                    <span className="w-8 shrink-0 font-display text-lg text-trim">{ROMAN[k]}</span>
+                    <span className="min-w-0">
+                      <span className={`block font-display text-xl font-bold uppercase ${k === i ? "text-white" : "text-steel-200"}`}>{x.name}</span>
+                      <span className="block truncate text-sm text-steel-400">{doom.works[x.slug] ?? x.tagline}</span>
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ) : (
+          <>
         <div
           className="relative h-[460px] touch-pan-y select-none md:h-[560px]"
           onPointerDown={(e) => { drag.current = e.clientX; }}
@@ -75,16 +104,18 @@ export default function HallOfArmor() {
           ))}
         </div>
 
+          </>
+        )}
         <div className="mx-auto mt-10 max-w-7xl px-4 md:px-8">
           <AnimatePresence mode="wait">
             <motion.div key={s.slug} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }}
               className="hud-panel hud-corners grid gap-8 p-6 md:grid-cols-[1.2fr_1fr] md:p-8">
               <div>
                 <div className="hud-label flex flex-wrap items-center gap-3">
-                  <span className="text-hot">{s.suit}</span><span>· rank {7 - s.mark} of 6</span><LiveBadge live={s.live} />
+                  <span className="text-hot">{isDoom ? `Work ${ROMAN[i]}` : s.suit}</span><span>· rank {7 - s.mark} of 6</span><LiveBadge live={s.live} />
                 </div>
                 <h3 className="mt-3 font-display text-4xl font-bold uppercase text-white md:text-5xl">{s.name}</h3>
-                <p className="mt-2 font-serif text-xl italic text-gold">{s.tagline}</p>
+                <p className="mt-2 font-serif text-xl italic text-gold">{isDoom ? doom.works[s.slug] ?? s.tagline : s.tagline}</p>
                 <p className="mt-4 leading-relaxed text-steel-300">{s.summary}</p>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link href={`/work/${s.slug}`} className="btn-primary">Open schematic →</Link>

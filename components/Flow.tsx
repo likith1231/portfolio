@@ -25,7 +25,7 @@ export default function Flow({ nodes, title, note }: { nodes: FlowNode[]; title:
               className={`relative z-10 w-full border bg-void-800 px-3 py-2.5 md:w-[92%] ${tone(n.tone)}`}
             >
               <div className="font-mono text-[10px] text-steel-500">0{i + 1}</div>
-              <div className="font-display text-sm font-semibold leading-tight">{n.label}</div>
+              <div className="break-words font-display text-sm font-semibold leading-tight [hyphens:auto]">{n.label}</div>
               {n.sub && <div className="mt-0.5 text-[11px] leading-snug text-steel-400">{n.sub}</div>}
             </motion.div>
             {i < nodes.length - 1 && (

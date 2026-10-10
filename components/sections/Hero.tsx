@@ -6,10 +6,11 @@ import { useEffect, useState } from "react";
 import Clock from "../ui/Clock";
 import { useGo } from "../Nav";
 import { useHUD } from "../Shell";
-import { profile, stats } from "@/data/portfolio";
+import { doom, profile, stats } from "@/data/portfolio";
 import SocialButtons from "../ui/SocialButtons";
 
 const Reactor3D = dynamic(() => import("../three/Reactor3D"), { ssr: false, loading: () => <div className="h-full w-full" /> });
+const DoomMask3D = dynamic(() => import("../three/DoomMask3D"), { ssr: false, loading: () => <div className="h-full w-full" /> });
 
 const SPARKS = Array.from({ length: 22 }, (_, i) => ({
   left: (i * 37) % 100, w: 2 + (i % 3), d: 7 + ((i * 13) % 9), delay: (i * 0.7) % 9, dx: ((i % 5) - 2) * 25,
@@ -44,8 +45,10 @@ function Rotator() {
 
 export default function Hero() {
   const go = useGo();
-  const { introDone } = useHUD();
-  const words = profile.headline.split(" ");
+  const { introDone, mode } = useHUD();
+  const isDoom = mode === "doom";
+  const words = (isDoom ? doom.headline : profile.headline).split(" ");
+  const accentFrom = words.length - (isDoom ? doom.accentWords : 1);
   const show = introDone;
 
   return (
@@ -65,9 +68,9 @@ export default function Hero() {
 
           <h1 className="font-display text-[2.9rem] font-bold leading-[0.98] tracking-tight text-[#f3e6cf] sm:text-6xl xl:text-[5.2rem]">
             {words.map((w, i) => {
-              const last = i === words.length - 1;
+              const last = i >= accentFrom;
               return (
-                <motion.span key={i} initial={{ opacity: 0, y: 40, filter: "blur(10px)" }} animate={show ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+                <motion.span key={`${mode}-${i}`} initial={{ opacity: 0, y: 40, filter: "blur(10px)" }} animate={show ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
                   transition={{ delay: 0.3 + i * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   className={`mr-[0.22em] inline-block ${last ? "gold-text pr-2 font-serif font-normal italic" : ""}`}>
                   {w}
@@ -81,11 +84,11 @@ export default function Hero() {
           </motion.p>
 
           <motion.p initial={{ opacity: 0, y: 16 }} animate={show ? { opacity: 1, y: 0 } : {}} transition={{ delay: 1 }} className="mt-5 max-w-xl text-base leading-relaxed text-steel-300 md:text-lg">
-            {profile.intro}
+            {isDoom ? doom.intro : profile.intro}
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 16 }} animate={show ? { opacity: 1, y: 0 } : {}} transition={{ delay: 1.1 }} className="mt-9 flex flex-wrap gap-3">
-            <button onClick={() => go("armor")} className="btn-primary">Enter the Hall of Armor →</button>
+            <button onClick={() => go("armor")} className="btn-primary">{isDoom ? doom.heroCta : "Enter the Hall of Armor →"}</button>
             <button onClick={() => go("contact")} className="btn-ghost">Open a comm channel</button>
           </motion.div>
 
@@ -99,13 +102,13 @@ export default function Hero() {
         </div>
 
         <div className="relative order-1 mx-auto w-full max-w-[540px] lg:order-2">
-          <div className="relative aspect-square w-full">{introDone && <Reactor3D />}</div>
+          <div className="relative aspect-square w-full">{introDone && (isDoom ? <DoomMask3D /> : <Reactor3D />)}</div>
           <motion.figure initial={{ opacity: 0, x: 30 }} animate={show ? { opacity: 1, x: 0 } : {}} transition={{ delay: 1.2, duration: 0.8 }}
             className="relative -mt-10 hidden rounded-2xl border border-white/10 border-l-hot bg-void-900/80 p-6 backdrop-blur md:block" style={{ borderLeftWidth: 3 }}>
             <blockquote className="font-serif text-2xl italic leading-snug text-[#f3e6cf] xl:text-3xl">
-              “I told you, I don’t want to join your super secret boy band.”
+              {isDoom ? `“${doom.quoteCard.text}”` : "“I told you, I don’t want to join your super secret boy band.”"}
             </blockquote>
-            <figcaption className="mt-4 font-mono text-[10px] uppercase tracking-[0.25em] text-gold">Tony Stark · Iron Man 2</figcaption>
+            <figcaption className="mt-4 font-mono text-[10px] uppercase tracking-[0.25em] text-gold">{isDoom ? doom.quoteCard.by : "Tony Stark · Iron Man 2"}</figcaption>
           </motion.figure>
         </div>
       </div>

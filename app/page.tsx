@@ -17,15 +17,15 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <QuoteBand {...quotes.armor} />
+      <QuoteBand {...quotes.armor} doomKey="armor" />
       <HallOfArmor />
       <Schematics />
-      <QuoteBand {...quotes.suit} />
+      <QuoteBand {...quotes.suit} doomKey="suit" />
       <IncidentDrill />
       <RushLab />
       <TrainingRoom />
       <StatusBoard />
-      <QuoteBand {...quotes.lab} />
+      <QuoteBand {...quotes.lab} doomKey="lab" />
       <About />
       <FlightLog />
       <Certifications />
