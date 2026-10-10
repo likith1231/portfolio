@@ -19,6 +19,7 @@ export const SECTIONS = [
   { id: "training", label: "Training" },
   { id: "status", label: "Status" },
   { id: "about", label: "Pilot" },
+  { id: "log", label: "Log" },
   { id: "certs", label: "Certs" },
   { id: "contact", label: "Contact" },
 ];
@@ -72,13 +73,13 @@ export default function Nav() {
             <span className="absolute inset-1 animate-spin-slow rounded-full border border-dashed border-hot/70" />
             <span className="h-2 w-2 rounded-full bg-reactor shadow-[0_0_10px_#8fefff]" />
           </span>
-          <span className="hidden font-display text-sm font-semibold uppercase tracking-[0.25em] text-white sm:inline">{profile.name}</span>
+          <span className="hidden font-display text-sm font-semibold uppercase tracking-[0.25em] text-white sm:inline xl:hidden 2xl:inline">{profile.name}</span>
         </Link>
 
         <div className="hidden items-center xl:flex">
           {SECTIONS.map((s) => (
             <button key={s.id} onClick={() => { sfx.tick(); go(s.id); }}
-              className={`relative whitespace-nowrap px-2 py-2 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors ${active === s.id ? "text-gold" : "text-steel-300 hover:text-white"}`}>
+              className={`relative whitespace-nowrap px-1.5 py-2 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors 2xl:px-2 ${active === s.id ? "text-gold" : "text-steel-300 hover:text-white"}`}>
               {active === s.id && <motion.span layoutId="nav-dot" className="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-hot" />}
               {s.label}
             </button>

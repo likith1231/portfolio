@@ -457,3 +457,31 @@ export const certifications: Cert[] = [
     why: "Software design and modelling",
   },
 ];
+
+// Headline numbers under the hero. Every one is backed by the résumé, the repos or the certificates.
+export const stats = [
+  { value: "7.74", label: "CGPA · B.E. CSE" },
+  { value: "6", label: "suits built" },
+  { value: "3", label: "certified exams" },
+  { value: "2", label: "PRs opened by my AI" },
+];
+
+export const education = {
+  school: "APS College of Engineering, Bengaluru",
+  degree: "B.E. Computer Science and Engineering",
+  years: "2023 – 2027",
+  cgpa: "7.74 / 10",
+};
+
+// The Flight Log: the journey so far, from the résumé.
+export const flightLog: { when: string; title: string; where: string; body: string }[] = [
+  { when: "2021 – 2023", title: "Pre-university", where: "Jnanodaya PU College · PCMB", body: "Physics, chemistry, maths and biology. Finished with 84.9%." },
+  { when: "2023", title: "Suited up for CSE", where: "APS College of Engineering, Bengaluru", body: "Started a B.E. in Computer Science and Engineering. CGPA so far: 7.74 / 10." },
+  { when: "2024", title: "Leadership training", where: "RYLA 2024 · Rotaract Club of APSCE", body: "Rotary Youth Leadership Award, and community service with the Rotaract Club." },
+  { when: "2024", title: "Namma JobAthon '24", where: "Certificate of Appreciation", body: "Recognised for contributing to the Namma JobAthon hiring event." },
+  { when: "Hackathon", title: "NASA Space Challenge", where: "Dayananda Sagar", body: "Took part in the NASA Space Challenge hackathon." },
+  { when: "Leadership", title: "Coordinator Lead", where: "MEGHAHERTZ Fest", body: "Led coordination for the college fest." },
+  { when: "2026", title: "Machine Learning Intern", where: "CodSoft (virtual)", body: "Built 3 predictive models in Python: credit-card fraud detection, SMS spam detection (NLP) and customer churn prediction." },
+  { when: "2026", title: "The Mark 85 year", where: "GhostOps · Orbit IDE · ResilientCommerce", body: "Shipped an autonomous AIOps platform, a self-verifying cloud IDE and a load-tested Kubernetes stack. Earned AWS AI Practitioner, AWS Cloud Practitioner and Oracle Agentic AI." },
+  { when: "2027", title: "Graduation (expected)", where: "Looking for roles now", body: "Ready to bring all of this to an engineering team as a DevOps, Full Stack or AI/ML engineer." },
+];

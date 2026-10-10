@@ -8,6 +8,7 @@ import StatusBoard from "@/components/sections/StatusBoard";
 import About from "@/components/sections/About";
 import Contact from "@/components/sections/Contact";
 import Certifications from "@/components/sections/Certifications";
+import FlightLog from "@/components/sections/FlightLog";
 import Footer from "@/components/Footer";
 import QuoteBand from "@/components/ui/QuoteBand";
 import { quotes } from "@/data/portfolio";
@@ -26,6 +27,7 @@ export default function Home() {
       <StatusBoard />
       <QuoteBand {...quotes.lab} />
       <About />
+      <FlightLog />
       <Certifications />
       <Contact />
       <Footer />
