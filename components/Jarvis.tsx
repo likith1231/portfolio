@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useHUD, type LogLine } from "./Shell";
 import { SECTIONS } from "./Nav";
-import { suits } from "@/data/portfolio";
+import { doom, suits } from "@/data/portfolio";
 import { sfx } from "@/lib/sfx";
 
 // Background chores J.A.R.V.I.S. reports while the visitor reads. Purely ambient.
@@ -43,6 +43,10 @@ function useFps() {
 // J.A.R.V.I.S. as a running system, not a chatbot: a live log, real gauges, and protocols you can trigger.
 export default function Jarvis() {
   const { jarvisOpen, setJarvisOpen, narrate, log, introDone, toggleMode, mode, emp, empActive, unibeam, replayIntro, setBriefOpen } = useHUD();
+  const isDoom = mode === "doom";
+  const ai = isDoom ? doom.ai : "J.A.R.V.I.S.";
+  const doomRef = useRef(isDoom);
+  doomRef.current = isDoom;
   const fps = useFps();
   const [loadMs, setLoadMs] = useState<number | null>(null);
   const [visited, setVisited] = useState<Set<string>>(new Set());
@@ -57,7 +61,7 @@ export default function Jarvis() {
     const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
     const ms = nav ? Math.round(nav.domContentLoadedEventEnd) : null;
     setLoadMs(ms);
-    narrate("J.A.R.V.I.S. online. All suit systems green.", "ok");
+    narrate(doomRef.current ? "The Codex wakes. Every system in Latveria answers to Doom." : "J.A.R.V.I.S. online. All suit systems green.", "ok");
     if (ms) setTimeout(() => narrate(`Page assembled in ${ms} ms`, "ok"), 900);
     setTimeout(() => narrate(`${suits.length} suits registered. ${suits.filter((s) => s.live).length} live, ${suits.filter((s) => !s.live && s.flagship).length} awaiting cloud deploy.`, "info"), 1800);
   }, [introDone, narrate]);
@@ -65,7 +69,7 @@ export default function Jarvis() {
   // idle chores
   useEffect(() => {
     if (!introDone) return;
-    const id = setInterval(() => { if (document.visibilityState === "visible") narrate(IDLE[Math.floor(Math.random() * IDLE.length)]()); }, 9000);
+    const id = setInterval(() => { if (document.visibilityState === "visible") narrate(doomRef.current ? doom.idle[Math.floor(Math.random() * doom.idle.length)] : IDLE[Math.floor(Math.random() * IDLE.length)]()); }, 9000);
     return () => clearInterval(id);
   }, [introDone, narrate]);
 
@@ -124,16 +128,16 @@ export default function Jarvis() {
           {ticker && !jarvisOpen && (
             <motion.button key={ticker.id} onClick={() => setJarvisOpen(true)} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
               className="hidden max-w-[340px] border border-white/10 bg-void/90 px-3 py-2 text-left backdrop-blur md:block">
-              <span className="block font-mono text-[9px] uppercase tracking-[0.25em] text-gold">J.A.R.V.I.S. · {hhmmss(ticker.at)}</span>
+              <span className="block font-mono text-[9px] uppercase tracking-[0.25em] text-gold">{ai} · {hhmmss(ticker.at)}</span>
               <span className={`block truncate font-mono text-[11px] ${toneClass(ticker.tone)}`}>{ticker.text}</span>
             </motion.button>
           )}
         </AnimatePresence>
-        <button onClick={() => { sfx.lock(); setJarvisOpen(!jarvisOpen); }} aria-label="J.A.R.V.I.S. systems"
+        <button onClick={() => { sfx.lock(); setJarvisOpen(!jarvisOpen); }} aria-label={`${ai} systems`}
           className="relative grid h-14 w-14 shrink-0 place-items-center rounded-full border border-gold/60 bg-void/90 shadow-[0_0_30px_rgb(var(--hot)/0.35)] backdrop-blur">
           <span className="absolute inset-1.5 animate-spin-slow rounded-full border border-dashed border-gold/60" />
           <span className="absolute inset-3 rounded-full border border-hot/50" style={{ animation: "spin 6s linear infinite reverse" }} />
-          <span className="h-3.5 w-3.5 rounded-full bg-white shadow-[0_0_16px_6px_#8fefff]" />
+          <span className="h-3.5 w-3.5 rounded-full bg-white shadow-[0_0_16px_6px_rgb(var(--reactor))]" />
         </button>
       </div>
 
@@ -141,16 +145,16 @@ export default function Jarvis() {
         {jarvisOpen && (
           <motion.aside initial={{ opacity: 0, y: 20, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: 0.96 }}
             className="hud-panel hud-corners fixed bottom-24 right-4 z-[77] flex max-h-[min(620px,76vh)] w-[min(440px,calc(100vw-2rem))] flex-col bg-void/95 shadow-[0_0_80px_rgb(var(--hot)/0.25)]"
-            aria-label="J.A.R.V.I.S. systems">
+            aria-label={`${ai} systems`}>
             <div className="flex items-center justify-between border-b border-white/[0.07] px-4 py-3">
               <div className="flex items-center gap-3">
                 <span className="relative grid h-9 w-9 place-items-center rounded-full border border-gold/50">
                   <span className="absolute inset-1 animate-spin-slow rounded-full border border-dashed border-hot/60" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_10px_3px_#8fefff]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_10px_3px_rgb(var(--reactor))]" />
                 </span>
                 <div>
-                  <div className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-white">J.A.R.V.I.S.</div>
-                  <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-steel-500">just a rather very intelligent system</div>
+                  <div className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-white">{ai}</div>
+                  <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-steel-500">{isDoom ? "the mind of castle doom" : "just a rather very intelligent system"}</div>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -192,7 +196,7 @@ export default function Jarvis() {
             <div className="border-t border-white/[0.07] p-3">
               <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] text-steel-500">protocols</div>
               <div className="grid grid-cols-2 gap-2">
-                <button onClick={() => protocol(mode === "mark" ? "War Machine protocol" : "Classic Mark protocol", toggleMode, "info")} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">⬢ {mode === "mark" ? "War Machine" : "Classic red & gold"}</button>
+                <button onClick={() => protocol(mode === "stark" ? "Crossing into Latveria" : "Returning to Stark Industries", toggleMode, "info")} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">⬢ {mode === "stark" ? "Doom universe" : "Stark universe"}</button>
                 <button onClick={() => protocol("Unibeam", unibeam)} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">◉ Unibeam</button>
                 <button onClick={() => protocol("EMP discharge", emp, "bad")} disabled={empActive} className="chip py-2 text-left hover:border-danger/50 hover:text-danger disabled:opacity-40">⚡ EMP</button>
                 <button onClick={() => protocol("Clean Slate: suit reboot", () => { setJarvisOpen(false); replayIntro(); })} className="chip py-2 text-left hover:border-gold/50 hover:text-gold">↻ Reboot suit</button>

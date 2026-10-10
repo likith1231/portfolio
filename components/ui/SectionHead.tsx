@@ -1,7 +1,15 @@
+"use client";
+
 import Reveal from "./Reveal";
+import { useHUD } from "../Shell";
+import { doom } from "@/data/portfolio";
 
 // Editorial section heading: numbered badge, kicker, a big title whose last word is set in italic gold.
-export default function SectionHead({ code, title, kicker, children }: { code: string; title: string; kicker: string; children?: React.ReactNode }) {
+// In the Doom universe the kicker and title come from `doom.sections`, keyed by the section code.
+export default function SectionHead({ code, title: starkTitle, kicker: starkKicker, children }: { code: string; title: string; kicker: string; children?: React.ReactNode }) {
+  const alt = useHUD().mode === "doom" ? doom.sections[code] : undefined;
+  const title = alt?.title ?? starkTitle;
+  const kicker = alt?.kicker ?? starkKicker;
   const words = title.trim().split(" ");
   const last = words.pop();
   return (

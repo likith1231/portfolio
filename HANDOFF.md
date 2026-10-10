@@ -38,7 +38,15 @@ Next.js 14 + TypeScript + Tailwind + Framer Motion + React Three Fiber. All cont
   - Always **show a screenshot preview before opening a PR**, then open the PR and merge it into `main`.
   - Credit every CC BY model in the footer (`modelCredits`).
 
-## Next task: replace War Machine mode with a DOOM universe
+## Done: the DOOM universe (replaced War Machine mode)
+
+Shipped: `[ STARK | DOOM ]` switch with a portal/glitch transition (`components/Portal.tsx`), saved in localStorage and applied before first paint (inline script in `app/layout.tsx`). Doom palette + Cinzel via CSS variables in `app/globals.css`. An original 3D iron mask hero built in code (`components/three/DoomMask3D.tsx`, no model download). Doom intro, Doom copy for headings, nav, quotes, the AI log ("The Codex"), Snap ("Doom is eternal."), ID badge (royal seal) and certifications (Royal Decree with wax seal). All Doom copy lives in `doom` in `data/portfolio.ts`.
+
+**Owner decision:** no Doombots. Doom's side of the Hall ("The Throne Room") shows one mask and lists the six projects as his works. Doom's own armour model is not needed.
+
+Still Stark-only in Doom mode: the body text of Threats / Siege / Trials / Network / Chronicle / Contact sections, and the `/work/[slug]` pages.
+
+## Original brief for the Doom task (kept for reference)
 
 The owner wants two universes that never coexist, Tony Stark's and Doctor Doom's, switchable like the current mode toggle. **War Machine mode is removed** and replaced by Doom. (The War Machine *suit* in the Hall stays, as Sahayak's suit.)
 

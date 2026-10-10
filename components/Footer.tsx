@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Clock from "./ui/Clock";
 import { useHUD } from "./Shell";
-import { modelCredits, profile, quotes, socials } from "@/data/portfolio";
+import { doom, modelCredits, profile, quotes, socials } from "@/data/portfolio";
 
 // Flight time counts only while the tab is visible.
 function FlightTime() {
@@ -33,24 +33,26 @@ function Scanned() {
 }
 
 export default function Footer() {
-  const { setJarvisOpen, emp, empActive, replayIntro } = useHUD();
+  const { setJarvisOpen, emp, empActive, replayIntro, mode } = useHUD();
+  const isDoom = mode === "doom";
+  const q = isDoom ? doom.quotes.footer : quotes.footer;
   return (
     <footer className="relative border-t border-white/[0.06] px-4 pb-28 pt-14 md:px-8">
       <div className="mx-auto max-w-7xl">
-        <p className="font-serif text-3xl italic text-white md:text-4xl">“{quotes.footer.text}”</p>
-        <p className="hud-label mt-2">{quotes.footer.by} · {quotes.footer.film}</p>
+        <p className="font-serif text-3xl italic text-white md:text-4xl">“{q.text}”</p>
+        <p className="hud-label mt-2">{q.by} · {q.film}</p>
 
         <div className="mt-10 flex flex-col gap-6 font-mono text-[11px] text-steel-500 md:flex-row md:items-end md:justify-between">
           <div className="space-y-1">
-            <div className="text-steel-300">{profile.name} © {new Date().getFullYear()} · Stark-grade engineering, minus the billions</div>
+            <div className="text-steel-300">{profile.name} © {new Date().getFullYear()} · {isDoom ? "Latverian-grade engineering, by decree" : "Stark-grade engineering, minus the billions"}</div>
             <div>flight time <FlightTime /> · 0 incidents · it's <span className="text-steel-300"><Clock seconds={false} /></span> in Bengaluru</div>
             <div>you've scanned about <Scanned /> words of this page</div>
-            <div>Built with Next.js, Three.js and Framer Motion. Set in Chakra Petch, Inter and Instrument Serif.</div>
+            <div>Built with Next.js, Three.js and Framer Motion. Set in {isDoom ? "Cinzel" : "Chakra Petch"}, Inter and {isDoom ? "JetBrains Mono" : "Instrument Serif"}.</div>
           </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-3 uppercase tracking-[0.18em]">
             <button onClick={emp} disabled={empActive} className="border border-danger/50 px-3 py-1.5 text-danger hover:bg-danger/10 disabled:opacity-40" title="Freeze every animation for 5 seconds">⚡ Fire EMP</button>
             <button onClick={replayIntro} className="hover:text-gold">Replay intro</button>
-            <button onClick={() => setJarvisOpen(true)} className="hover:text-gold">J.A.R.V.I.S.</button>
+            <button onClick={() => setJarvisOpen(true)} className="hover:text-gold">{isDoom ? doom.ai : "J.A.R.V.I.S."}</button>
             <a href={socials.github} target="_blank" rel="noreferrer" className="hover:text-gold">GitHub</a>
             <a href={socials.linkedin} target="_blank" rel="noreferrer" className="hover:text-gold">LinkedIn</a>
             <a href="#top" className="hover:text-gold">Back to top ↑</a>
@@ -66,7 +68,7 @@ export default function Footer() {
               </li>
             ))}
           </ul>
-          <p className="mt-3">Iron Man and related characters are owned by Marvel. This is a non-commercial fan tribute.</p>
+          <p className="mt-3">Iron Man, Doctor Doom and related characters are owned by Marvel. This is a non-commercial fan tribute; the Doom mask on this site is an original design, not Marvel artwork.</p>
         </details>
         <p className="mt-8 font-mono text-[10px] text-steel-500/60">psst: try the gauntlet in the corner · ↑ ↑ ↓ ↓ ← → ← → B A · or hold the mouse on empty space, then let go</p>
       </div>
