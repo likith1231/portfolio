@@ -5,16 +5,14 @@ import Flow from "../Flow";
 import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
 import LiveBadge from "../ui/LiveBadge";
-import { doom, flagships } from "@/data/portfolio";
-import { useHUD } from "../Shell";
+import { flagships } from "@/data/portfolio";
 
 // The three flagship suits, opened up: what's inside and how the parts connect.
 export default function Schematics() {
-  const isDoom = useHUD().mode === "doom";
   return (
     <section id="schematics" className="relative mx-auto max-w-7xl px-4 py-28 md:px-8">
       <SectionHead code="02" kicker="blueprints · flagship suits" title="Schematics">
-        {isDoom ? doom.schematicsIntro : "The three heaviest suits, opened up. Each diagram is the real pipeline inside the project."}
+        The three heaviest suits, opened up. Each diagram is the real pipeline inside the project.
       </SectionHead>
 
       <div className="space-y-24">
@@ -22,10 +20,10 @@ export default function Schematics() {
           <article key={p.slug} className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-12">
             <Reveal className={idx % 2 ? "lg:order-2" : ""}>
               <div className="hud-label flex flex-wrap items-center gap-3">
-                <span className="text-hot">{isDoom ? `Work ${["I", "II", "III"][idx]}` : p.suit}</span><LiveBadge live={p.live} />
+                <span className="text-hot">{p.suit}</span><LiveBadge live={p.live} />
               </div>
               <h3 className="mt-4 font-display text-4xl font-bold uppercase text-white md:text-5xl">{p.name}</h3>
-              <p className="mt-2 font-serif text-2xl italic text-gold">{isDoom ? doom.works[p.slug] ?? p.tagline : p.tagline}</p>
+              <p className="mt-2 font-serif text-2xl italic text-gold">{p.tagline}</p>
               <p className="mt-5 leading-relaxed text-steel-300">{p.problem}</p>
               <ul className="mt-6 space-y-2 font-mono text-[13px]">
                 {p.highlights.slice(0, 3).map((h) => (

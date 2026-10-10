@@ -7,12 +7,11 @@ const config: Config = {
       colors: {
         void: { DEFAULT: "#050404", 900: "#0a0808", 800: "#110d0d", 700: "#181313", 600: "#221a1a" },
         steel: { 100: "#efeae6", 200: "#cfc8c3", 300: "#a39b96", 400: "#77706c", 500: "#524c49" },
-        // Accent tokens. Stark universe: hot-rod red + gold. Doom universe: emerald + sorcerous green.
+        // Accent tokens. Classic mode: hot-rod red + gold. War Machine mode: gunmetal + silver.
         gold: "rgb(var(--gold) / <alpha-value>)",
         hot: "rgb(var(--hot) / <alpha-value>)",
-        // Blue lives only in the arc reactor (green in the Doom universe).
-        reactor: "rgb(var(--reactor) / <alpha-value>)",
-        trim: "rgb(var(--trim) / <alpha-value>)",
+        // Blue lives only in the arc reactor.
+        reactor: "#8fefff",
         ok: "#4ade80",
         danger: "#ff4d4d",
         caution: "#f2b84b",

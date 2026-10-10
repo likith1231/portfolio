@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useHUD } from "./Shell";
-import { doom } from "@/data/portfolio";
 
 const NARRATION: Record<string, string> = {
   armor: "Visitor entered the Hall of Armor. 6 suits on display, Mark 85 powered.",
@@ -53,7 +52,7 @@ export default function FlightHUD() {
       for (const e of entries) {
         if (e.isIntersecting && !said.current.has(e.target.id) && NARRATION[e.target.id]) {
           said.current.add(e.target.id);
-          narrate(document.documentElement.dataset.mode === "doom" ? doom.narration[e.target.id] ?? NARRATION[e.target.id] : NARRATION[e.target.id]);
+          narrate(NARRATION[e.target.id]);
         }
       }
     }, { threshold: 0.25 });

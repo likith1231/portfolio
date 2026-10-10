@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import SectionHead from "../ui/SectionHead";
 import Reveal from "../ui/Reveal";
-import { arsenal, diagnostics, education, principles, profile } from "@/data/portfolio";
+import { arsenal, diagnostics, education, missions, principles, profile } from "@/data/portfolio";
 import IdBadge from "../IdBadge";
 import ReactorActivity from "../ReactorActivity";
 import { sfx } from "@/lib/sfx";
@@ -73,34 +73,66 @@ export default function About() {
   const all = arsenal.flatMap((g) => g.items);
   const [armed, setArmed] = useState<number | null>(null);
   return (
-    <section id="about" className="relative py-28">
-      <div className="mx-auto max-w-7xl px-4 md:px-8">
-        <SectionHead code="07" kicker="pilot profile" title="Behind the mask" />
+    <section id="about" className="relative px-3 py-20 md:px-6">
+      <div className="mx-auto max-w-[1400px]">
+        <div className="tile mb-3 px-6 py-8 md:px-10">
+          <SectionHead code="07" kicker="about" title="Behind the mask" compact />
+        </div>
 
-        <div className="grid items-start gap-14 lg:grid-cols-[440px_1fr]">
-          <IdBadge />
-          <Reveal>
-            <p className="font-serif text-2xl leading-relaxed text-[#f3e6cf] md:text-[1.7rem]">
-              A computer science engineer from {profile.location.split(",")[0]} who likes the part of software most people avoid: what happens <em className="gold-text">after</em> it ships.
+        <div className="grid gap-3 lg:grid-cols-12">
+          <Reveal className="tile p-6 md:p-10 lg:col-span-8">
+            <span className="tile-label">objective</span>
+            <p className="mt-6 font-display text-3xl font-bold leading-snug text-[#f3e6cf] md:text-[2.6rem]">
+              Ever since I first broke a server, I&apos;ve wanted to build systems that <em className="gold-text font-serif font-normal">fix themselves</em> before anyone gets <em className="font-serif font-normal italic text-steel-300">paged</em>.
             </p>
-            <p className="mt-5 text-base leading-relaxed text-steel-300 md:text-lg">
-              I build full-stack products, then armor them: containers, Kubernetes, GitOps, autoscaling, tracing. Lately I've been giving that infrastructure a brain, with AI agents that diagnose incidents and patch them, but only after a sandbox and a policy agree.
+          </Reveal>
+
+          <Reveal delay={0.08} className="px-4 py-2 sm:px-8 lg:col-span-4 lg:row-span-2 lg:px-2"><IdBadge /></Reveal>
+
+          <Reveal className="tile p-6 md:p-10 lg:col-span-8">
+            <span className="tile-label">descriptive</span>
+            <p className="mt-5 leading-relaxed text-steel-300">
+              <span className="text-gold">[ pilot&apos;s intro ]</span> He&apos;s {profile.name}, a computer science engineer <span className="text-gold">[ {education.degree.replace("B.E. Computer Science and Engineering", "B.E. CSE")} · {education.years} ]</span> from {profile.location.split(",")[0]} who likes the part of software most people avoid: what happens <em className="gold-text">after</em> it ships.
             </p>
-
-            <div className="mt-8 rounded-2xl border border-white/10 bg-void-900/70 p-6">
-              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-gold">Currently studying at</p>
-              <p className="mt-2 font-display text-xl font-semibold text-[#f3e6cf]">{education.school}</p>
-              <p className="mt-1 text-steel-400">{education.degree} · {education.years}</p>
-              <p className="mt-4 flex items-center gap-3 text-steel-200">
-                CGPA <span className="gold-text font-display text-2xl font-bold">{education.cgpa}</span>
-              </p>
-            </div>
-
-            <ul className="mt-8 space-y-4">
+            <p className="mt-4 leading-relaxed text-steel-300">
+              He builds full-stack products, then armors them: containers, Kubernetes, GitOps, autoscaling, tracing. Lately he&apos;s been giving that infrastructure a brain, with AI agents that diagnose incidents and patch them, but only after a sandbox and a policy agree.
+            </p>
+            <ul className="mt-6 grid gap-3 md:grid-cols-3">
               {principles.map((p) => (
-                <li key={p.n} className="flex gap-4 text-steel-300">
-                  <span className="mt-1 text-gold">✦</span>
-                  <span><strong className="text-[#f3e6cf]">{p.title}.</strong> {p.body}</span>
+                <li key={p.n} className="rounded-xl border border-white/[0.06] p-4 text-sm text-steel-300">
+                  <span className="font-mono text-[10px] text-gold">{p.n}</span>
+                  <strong className="mt-1 block text-[#f3e6cf]">{p.title}</strong>
+                  {p.body}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          <Reveal className="tile lg:col-span-4">
+            <span className="tile-label">currently studying at</span>
+            <p className="mt-4 font-display text-xl font-semibold text-[#f3e6cf]">{education.school}</p>
+            <p className="mt-1 text-sm text-steel-400">{education.degree} · {education.years}</p>
+            <p className="mt-4 flex items-center gap-3 text-steel-200">CGPA <span className="gold-text font-display text-2xl font-bold">{education.cgpa}</span></p>
+          </Reveal>
+
+          <Reveal delay={0.06} className="tile lg:col-span-4">
+            <span className="tile-label">things he&apos;s building now</span>
+            <ul className="mt-4 space-y-3 text-steel-200">
+              {[profile.building, profile.next, `Looking for: ${profile.available.replace(/^Open to /, "")}`].map((t) => (
+                <li key={t} className="flex gap-3"><span className="text-gold">✦</span>{t}</li>
+              ))}
+            </ul>
+          </Reveal>
+
+          <Reveal delay={0.12} className="tile lg:col-span-4">
+            <span className="tile-label">things he hopes to complete</span>
+            <ul className="mt-4 space-y-3">
+              {missions.map((m) => (
+                <li key={m.label} className={`flex gap-3 ${m.state === "done" ? "text-steel-200" : "text-steel-400"}`}>
+                  <span className={`mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded border text-[10px] ${m.state === "done" ? "border-gold bg-gold text-void" : m.state === "running" ? "border-gold/60 text-gold" : "border-white/20"}`} aria-hidden>
+                    {m.state === "done" ? "✓" : m.state === "running" ? "•" : ""}
+                  </span>
+                  <span>{m.label}{m.state === "running" && <span className="ml-2 font-mono text-[10px] uppercase text-gold">in progress</span>}</span>
                 </li>
               ))}
             </ul>

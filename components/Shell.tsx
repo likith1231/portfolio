@@ -11,10 +11,10 @@ import Repulsors from "./Repulsors";
 import Jarvis from "./Jarvis";
 import RecruiterBrief from "./RecruiterBrief";
 import Snap from "./Snap";
-import Portal from "./Portal";
+import Embers from "./ui/Embers";
 import { sfx, sound } from "@/lib/sfx";
 
-export type Mode = "stark" | "doom";
+export type Mode = "mark" | "warmachine";
 export type LogLine = { id: number; at: number; text: string; tone?: "ok" | "warn" | "bad" | "info" };
 type HUD = {
   mode: Mode;
@@ -44,8 +44,7 @@ export const useHUD = () => {
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 
 export default function Shell({ children }: { children: React.ReactNode }) {
-  const [mode, setMode] = useState<Mode>("stark");
-  const [portal, setPortal] = useState<{ n: number; to: Mode } | null>(null);
+  const [mode, setMode] = useState<Mode>("mark");
   const [soundOn, setSoundOn] = useState(false);
   const [jarvisOpen, setJarvisOpen] = useState(false);
   const [briefOpen, setBriefOpen] = useState(false);
@@ -59,8 +58,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("hud-mode");
-      // Older visits saved "mark" / "warmachine"; War Machine mode is gone, so both land on Stark.
-      if (saved === "doom") setMode("doom");
+      if (saved === "mark" || saved === "warmachine") setMode(saved);
     } catch {}
     return sound.subscribe(setSoundOn);
   }, []);
@@ -70,17 +68,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     try { localStorage.setItem("hud-mode", mode); } catch {}
   }, [mode]);
 
-  // Switching universes plays a glitch/portal transition; the skin swaps while the screen is covered.
-  const busy = useRef(false);
-  const toggleMode = useCallback(() => {
-    if (busy.current) return;
-    busy.current = true;
-    const to: Mode = document.documentElement.dataset.mode === "doom" ? "stark" : "doom";
-    sfx.portal();
-    setPortal((p) => ({ n: (p?.n ?? 0) + 1, to }));
-    setTimeout(() => setMode(to), 480);
-    setTimeout(() => { setPortal(null); busy.current = false; }, 1250);
-  }, []);
+  const toggleMode = useCallback(() => { sfx.servo(); setMode((m) => (m === "mark" ? "warmachine" : "mark")); }, []);
   const setSound = useCallback((v: boolean) => sound.set(v), []);
   const unibeam = useCallback(() => { sfx.ignite(); setBeam((b) => b + 1); }, []);
 
@@ -131,6 +119,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       <Intro key={introKey} onDone={() => setIntroDone(true)} />
       <ScrollProgress />
       <Reticle />
+      <Embers />
       <Repulsors />
       <FlightHUD />
       <Nav />
@@ -138,7 +127,6 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       <Jarvis />
       <Snap />
       <RecruiterBrief />
-      {portal && <Portal key={portal.n} to={portal.to} />}
 
       {empActive && (
         <div className="pointer-events-none fixed inset-x-0 top-20 z-[85] flex justify-center">

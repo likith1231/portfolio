@@ -3,9 +3,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHUD } from "./Shell";
-import { doom } from "@/data/portfolio";
+import { quote } from "@/data/portfolio";
 import { sfx } from "@/lib/sfx";
-import Gauntlet, { RUNES, STONES, triggerSnap, type SnapPhase } from "./Gauntlet";
+import Gauntlet, { STONES, triggerSnap, type SnapPhase } from "./Gauntlet";
 
 
 const DUSTABLE = [
@@ -44,10 +44,7 @@ function dustColors(el: Element): [number, number, number][] {
 
 // Endgame: half the page turns to dust, comes back, and ends on the line.
 export default function Snap() {
-  const { narrate, introDone, mode } = useHUD();
-  const isDoom = mode === "doom";
-  const doomRef = useRef(isDoom);
-  doomRef.current = isDoom;
+  const { narrate, introDone } = useHUD();
   const [phase, setPhase] = useState<Phase>("idle");
   const [lit, setLit] = useState(0);
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -71,7 +68,7 @@ export default function Snap() {
 
     // 1. the stones light up
     setPhase("charge");
-    narrate(doomRef.current ? "Mystic energy gathers in the gauntlet. Doom's will is absolute." : "Infinity Stones detected in the gauntlet. Power levels off the chart.", "warn");
+    narrate("Infinity Stones detected in the gauntlet. Power levels off the chart.", "warn");
     for (let i = 1; i <= 6; i++) { setLit(i); sfx.stone(i); await wait(140); }
     await wait(250);
 
@@ -183,7 +180,7 @@ export default function Snap() {
     // 5. the line
     setPhase("final");
     sfx.ignite();
-    narrate(doomRef.current ? doom.snapEnd : "I am Iron Man.", "ok");
+    narrate(quote.text, "ok");
     await wait(3600);
 
     setPhase("idle");
@@ -206,7 +203,7 @@ export default function Snap() {
       {/* the gauntlet, tucked in the corner */}
       <button onClick={(e) => triggerSnap(e.currentTarget)} disabled={phase !== "idle"} data-snap-ignore aria-label="Snap the Infinity Gauntlet" title="Snap"
         className={`group fixed bottom-5 left-5 z-[76] grid h-14 w-14 place-items-center rounded-full border border-gold/60 bg-void/90 shadow-[0_0_30px_rgb(var(--hot)/0.35)] backdrop-blur transition-opacity ${introDone ? "opacity-100" : "opacity-0"}`}>
-        <Gauntlet lit={lit} className="h-9 w-9" doom={isDoom} />
+        <Gauntlet lit={lit} className="h-9 w-9" />
         <span className="pointer-events-none absolute left-16 hidden whitespace-nowrap border border-white/10 bg-void/90 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-gold group-hover:block">snap</span>
       </button>
 
@@ -216,7 +213,7 @@ export default function Snap() {
       <AnimatePresence>
         {phase === "charge" && (
           <motion.div key="charge" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pointer-events-none fixed inset-0 z-[90]"
-            style={{ background: `radial-gradient(circle at ${origin.x}px ${origin.y}px, ${(isDoom ? RUNES : STONES)[Math.max(0, lit - 1)]}66, transparent 55%)` }} />
+            style={{ background: `radial-gradient(circle at ${origin.x}px ${origin.y}px, ${STONES[Math.max(0, lit - 1)]}66, transparent 55%)` }} />
         )}
         {phase === "snap" && (
           <motion.div key="flash" initial={{ opacity: 1 }} animate={{ opacity: 0 }} transition={{ duration: 0.5 }} className="pointer-events-none fixed inset-0 z-[93] bg-white" />
@@ -224,16 +221,16 @@ export default function Snap() {
         {phase === "final" && (
           <motion.div key="final" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}
             className="pointer-events-none fixed inset-0 z-[93] flex items-center justify-center bg-black/85">
-            <div className="absolute h-[50vmin] w-[50vmin] rounded-full blur-3xl" style={{ background: `radial-gradient(circle, ${isDoom ? "#3cff9a55" : "#9ff3ff55"}, transparent 70%)` }} />
+            <div className="absolute h-[50vmin] w-[50vmin] rounded-full blur-3xl" style={{ background: "radial-gradient(circle, #9ff3ff55, transparent 70%)" }} />
             <div className="relative text-center">
-              <p className="font-serif text-5xl italic text-white md:text-8xl">
-                {(isDoom ? doom.snapEnd.split(" ") : ["I", "am", "Iron", "Man."]).map((w, i) => (
-                  <motion.span key={w} initial={{ opacity: 0, y: 20, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    transition={{ delay: 0.3 + i * 0.35, duration: 0.7 }} className="mr-[0.25em] inline-block">{w}</motion.span>
+              <p className="max-w-5xl px-4 font-serif text-5xl italic text-white md:text-7xl">
+                {quote.text.split(" ").map((w, i) => (
+                  <motion.span key={i} initial={{ opacity: 0, y: 20, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    transition={{ delay: 0.3 + i * 0.18, duration: 0.7 }} className="mr-[0.25em] inline-block">{w}</motion.span>
                 ))}
               </p>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.9 }} className="hud-label mt-6 text-gold">
-                {isDoom ? "Victor von Doom · Latveria" : "Tony Stark · Avengers: Endgame (2019)"}
+                {quote.by} · {quote.film}
               </motion.p>
             </div>
           </motion.div>

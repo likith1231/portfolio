@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { quotes } from "@/data/portfolio";
 
 export default function NotFound() {
   return (
@@ -8,8 +7,7 @@ export default function NotFound() {
       <div className="relative text-center">
         <div className="hud-label text-danger">● signal lost · suit off course</div>
         <h1 className="mt-4 font-display text-8xl font-bold text-white md:text-9xl">4<span className="gold-text">0</span>4</h1>
-        <p className="mt-4 font-serif text-2xl italic text-steel-300">“{quotes.notfound.text}”</p>
-        <p className="hud-label mt-2">{quotes.notfound.by} · {quotes.notfound.film}</p>
+        <p className="mt-4 font-serif text-2xl italic text-steel-300">This page flew off the radar.</p>
         <Link href="/" className="btn-hot mt-8">Return to the workshop →</Link>
       </div>
     </main>
