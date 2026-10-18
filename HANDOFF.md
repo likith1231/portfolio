@@ -48,7 +48,7 @@ Next.js 14 + TypeScript + Tailwind + Framer Motion + React Three Fiber. All cont
   - `Interlude`: the site's single movie line plus a live "time spent on this website" counter.
   - About, Contact and Footer rebuilt as bento tiles (objective, descriptive, building now, mission checklist, big email tile, nav/social tiles, studded plate).
   - Nav shows five code-tag links: `<HOME/> <WORK/> <LAB/> <ABOUT/> <CONTACT/>`.
-- **One movie line only:** `quote` in `data/portfolio.ts` ("Sometimes you gotta run before you can walk.", Tony Stark, Iron Man 2008), chosen to match the owner's "ship first, then armor it" approach. It is shown in the interlude and at the end of the Snap. All other film quotes were removed.
+- **One movie line only:** `quote` in `data/portfolio.ts` ("Sometimes you gotta run before you can walk.", Tony Stark, Iron Man 2008), chosen to match the owner's "ship first, then armor it" approach. It is shown in the interlude. The Snap ends on "I am Iron Man." (Endgame), set as `FINAL_LINE` in `components/Snap.tsx`. All other film quotes were removed.
 - Floating embers drift behind the whole site (`components/ui/Embers.tsx`).
 
 ## Other open items
