@@ -14,7 +14,7 @@ export const profile = {
   education: "B.E. Computer Science · APS College of Engineering",
   focus: "DevOps · Full Stack · AI/ML",
   available: "Open to DevOps, Full Stack and AI/ML engineering roles and internships",
-  building: "Putting Orbit IDE, GhostOps and ResilientCommerce on the cloud",
+  building: "Putting Orbit IDE and ResilientCommerce on the cloud (GhostOps is live)",
   next: "Making GhostOps handle more kinds of incidents",
   email: "likithlu3@gmail.com",
   // Drop a PDF into /public and set this to "/your-file.pdf" to show the Resume links.
@@ -68,11 +68,11 @@ export const suits: Suit[] = [
     tagline: "Production incidents, patched on their own.",
     summary:
       "An autonomous AIOps platform that acts like an on-call SRE: it detects a real incident, finds the root cause, writes a minimal patch, proves it in a sandbox, and only then opens a pull request for a human.",
-    stat: { value: "2", label: "real incidents fixed end to end, each with a validated PR: a memory leak and a failing CI test." },
+    stat: { value: "4", label: "of 17 catalogued failure types fixed end to end by the platform itself: a memory leak, a failing CI test, a crash on an empty value, and a bad release rolled back. 530 automated tests." },
     power: 98,
     stack: ["CrewAI", "Claude API", "FastAPI", "Kubernetes", "Prometheus", "OPA / Gatekeeper", "Vault", "Chaos Mesh", "ArgoCD"],
     repo: "https://github.com/likith1231/ghostops",
-    live: null,
+    live: "https://ghostops.140-245-208-207.sslip.io",
     flagship: true,
     flowTitle: "How an incident moves through GhostOps",
     flow: [
@@ -91,10 +91,13 @@ export const suits: Suit[] = [
       "Three CrewAI agents, powered by Claude, run in sequence: a Diagnostic Reasoner reads logs, metrics, source and past incidents; a Patch Generator writes the smallest fix it can; a Validation Officer applies it.",
       "The patch is tested in an ephemeral Docker sandbox with pytest, and checked against OPA / Gatekeeper policies.",
       "Only if both pass does GhostOps open a real GitHub PR, with the explanation and evidence attached. Secrets live in Vault.",
+      "Around that core sit more gates: a prompt-injection shield for untrusted logs, a blast-radius check, a regression test proven to fail before the fix, counterfactual replay, a canary of the fix on a real pod, a risk score, Ed25519-signed evidence, and a kill switch with a hash-chained audit trail.",
     ],
     highlights: [
-      "Memory leak: found an unbounded cache in app.py and capped it (PR #3)",
-      "CI failure: traced a `+` that should have been `*` in math_utils.py (PR #4)",
+      "Live on an Oracle Cloud Arm VM (k3s, Caddy, systemd). The public demo runs in a free mock mode with no keys; the real Claude pipeline runs privately",
+      "Memory leak: found an unbounded list in the sample app, wrote the fix, proved it with a regression test and a canary, and opened the PR",
+      "CI failure: traced a `+` that should have been `*` in math_utils.py, fixed on Claude Sonnet 5.5 in about 30 seconds",
+      "Found and fixed its own failure modes while going live: stale incidents swallowing alerts, malformed model diffs, a canary that assumed one cluster type",
       "Chaos Mesh used to cause real failures instead of faking alerts",
       "OpenTelemetry + Jaeger tracing across the whole pipeline",
     ],
@@ -346,7 +349,7 @@ export const missions: { label: string; state: "done" | "running" | "queued" }[]
   { label: "Get an AI agent to fix a real production incident, end to end", state: "done" },
   { label: "Survive a simulated booking rush on Kubernetes", state: "done" },
   { label: "Deploy Orbit IDE to the cloud", state: "running" },
-  { label: "Deploy GhostOps to the cloud", state: "queued" },
+  { label: "Deploy GhostOps to the cloud", state: "done" },
   { label: "Deploy ResilientCommerce on AWS EKS", state: "queued" },
 ];
 
