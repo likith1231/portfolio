@@ -14,7 +14,7 @@ export const profile = {
   education: "B.E. Computer Science · APS College of Engineering",
   focus: "DevOps · Full Stack · AI/ML",
   available: "Open to DevOps, Full Stack and AI/ML engineering roles and internships",
-  building: "Putting Orbit IDE and ResilientCommerce on the cloud (GhostOps is live)",
+  building: "Putting ResilientCommerce on the cloud (GhostOps and Orbit IDE are live)",
   next: "Making GhostOps handle more kinds of incidents",
   email: "likithlu3@gmail.com",
   // Drop a PDF into /public and set this to "/your-file.pdf" to show the Resume links.
@@ -120,7 +120,7 @@ export const suits: Suit[] = [
     power: 95,
     stack: ["React 19", "Node.js", "Claude API", "Docker", "PostgreSQL", "Yjs", "Socket.IO", "Caddy"],
     repo: "https://github.com/likith1231/Orbit-IDE",
-    live: null,
+    live: "https://orbit-ide-rho.vercel.app",
     flagship: true,
     flowTitle: "The proof loop",
     flow: [
@@ -140,6 +140,7 @@ export const suits: Suit[] = [
       "If it fails, the real error goes back to Claude, which fixes its own work. You get a Verified badge or the full log.",
     ],
     highlights: [
+      "Live: React frontend on Vercel, backend on an Oracle Cloud Arm VM (Docker terminals, Postgres, Caddy HTTPS) that it shares with GhostOps",
       "Real-time collaboration with Yjs",
       "Chaos testing: memory limits, CPU throttling, network cuts → resilience score",
       "One-click deploy with a shareable URL",
@@ -348,7 +349,7 @@ export const principles = [
 export const missions: { label: string; state: "done" | "running" | "queued" }[] = [
   { label: "Get an AI agent to fix a real production incident, end to end", state: "done" },
   { label: "Survive a simulated booking rush on Kubernetes", state: "done" },
-  { label: "Deploy Orbit IDE to the cloud", state: "running" },
+  { label: "Deploy Orbit IDE to the cloud", state: "done" },
   { label: "Deploy GhostOps to the cloud", state: "done" },
   { label: "Deploy ResilientCommerce on AWS EKS", state: "queued" },
 ];
