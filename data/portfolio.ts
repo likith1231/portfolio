@@ -14,7 +14,7 @@ export const profile = {
   education: "B.E. Computer Science · APS College of Engineering",
   focus: "DevOps · Full Stack · AI/ML",
   available: "Open to DevOps, Full Stack and AI/ML engineering roles and internships",
-  building: "Putting ResilientCommerce on the cloud (GhostOps and Orbit IDE are live)",
+  building: "The same stack on AWS EKS (GhostOps, Orbit IDE and ResilientCommerce are live on Oracle Cloud)",
   next: "Making GhostOps handle more kinds of incidents",
   email: "likithlu3@gmail.com",
   // Drop a PDF into /public and set this to "/your-file.pdf" to show the Resume links.
@@ -171,7 +171,7 @@ export const suits: Suit[] = [
     power: 92,
     stack: ["Next.js", "Prisma", "PostgreSQL", "Docker", "Kubernetes", "Terraform", "AWS EKS", "ArgoCD", "k6", "Sentry", "OpenTelemetry"],
     repo: "https://github.com/likith1231/Aethermed",
-    live: null,
+    live: "https://aethermed.140-245-208-207.sslip.io",
     flagship: true,
     flowTitle: "From git push to a scaled-out cluster",
     flow: [
@@ -191,6 +191,7 @@ export const suits: Suit[] = [
       "Prometheus, Grafana, Sentry, Jaeger and OpenTelemetry trace every request; Terraform defines the AWS EKS setup.",
     ],
     highlights: [
+      "Live on an Oracle Cloud Arm VM: Kubernetes (k3s) with an autoscaler and ArgoCD GitOps, sharing the machine with GhostOps and Orbit IDE. In a 150 s test it served 13,067 requests with 0 errors and scaled 2 → 4 pods",
       "First load test hit a prerendered page: 0% CPU, HPA never moved",
       "Pointed k6 at the DB-backed /api/slots route to create real load",
       "Prisma's default pool queued requests: p95 18.89s at 0% CPU",
@@ -351,6 +352,7 @@ export const missions: { label: string; state: "done" | "running" | "queued" }[]
   { label: "Survive a simulated booking rush on Kubernetes", state: "done" },
   { label: "Deploy Orbit IDE to the cloud", state: "done" },
   { label: "Deploy GhostOps to the cloud", state: "done" },
+  { label: "Run ResilientCommerce on Kubernetes with autoscaling and GitOps (Oracle Cloud, k3s + ArgoCD)", state: "done" },
   { label: "Deploy ResilientCommerce on AWS EKS", state: "queued" },
 ];
 
