@@ -33,7 +33,7 @@ export default function HallOfArmor() {
     <section id="armor" className="relative px-3 py-20 md:px-6">
       <div className="mx-auto max-w-[1400px]">
         <div className="tile mb-3 px-6 py-8 md:px-10">
-          <SectionHead code="01" kicker="works" title="Six suits. One engineer." compact>
+          <SectionHead code="01" kicker="works" title="Seven suits. One engineer." compact>
             Every project wears a suit from the films: the more advanced the build, the higher the Mark. Hover or tap a project to put its suit on the stand.
           </SectionHead>
         </div>
@@ -64,7 +64,7 @@ export default function HallOfArmor() {
             <div className="tile overflow-hidden p-0 lg:sticky lg:top-20">
               <div className="relative h-[380px] md:h-[460px]">
                 <SuitViewer suit={s} />
-                <div className="pointer-events-none absolute left-5 top-5 tile-label">on the stand · rank {7 - s.mark} of 6</div>
+                <div className="pointer-events-none absolute left-5 top-5 tile-label">on the stand · rank {suits.length + 1 - s.mark} of {suits.length}</div>
               </div>
               <AnimatePresence mode="wait">
                 <motion.div key={s.slug} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}

@@ -9,9 +9,10 @@ Next.js 14 + TypeScript + Tailwind + Framer Motion + React Three Fiber. All cont
 - **Theme:** Iron Man. Red/gold/black, with blue used only in the arc reactor. Editorial look: italic gold accent words, pill buttons, rounded cards.
 - **Intro:** the arc reactor assembles as the loader, then a faceplate transition.
 - **Hero:** a 3D arc reactor model, the headline "I build systems that fix *themselves*", a Tony quote card and a stats row.
-- **Hall of Armor:** six realistic 3D suits (CC BY Sketchfab models, repainted and compressed in `public/models/`), ranked by project strength:
+- **Hall of Armor:** seven realistic 3D suits (CC BY Sketchfab models, repainted and compressed in `public/models/`), ranked by project strength:
   - Mark 85 = GhostOps
   - Mark 50 = Orbit IDE
+  - Mark 33 Silver Centurion = BillGuard (chrome silver + red, the one suit without gold)
   - Mark 44 Hulkbuster = ResilientCommerce
   - War Machine = Sahayak
   - Mark 7 = Project Management

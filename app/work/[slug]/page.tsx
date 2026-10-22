@@ -36,7 +36,7 @@ export default function CaseStudy({ params }: { params: { slug: string } }) {
         <div className="mt-8 grid items-center gap-8 lg:grid-cols-[1.2fr_1fr]">
           <Reveal>
             <div className="hud-label flex flex-wrap items-center gap-3">
-              <span className="text-hot">{p.suit}</span><span>· rank {7 - p.mark} of 6</span><LiveBadge live={p.live} />
+              <span className="text-hot">{p.suit}</span><span>· rank {suits.length + 1 - p.mark} of {suits.length}</span><LiveBadge live={p.live} />
             </div>
             <h1 className="mt-4 font-display text-5xl font-bold uppercase text-white md:text-7xl">{p.name}</h1>
             <p className="mt-3 font-serif text-2xl italic text-gold md:text-3xl">{p.tagline}</p>
