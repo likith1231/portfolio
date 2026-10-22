@@ -7,12 +7,12 @@ import Reveal from "../ui/Reveal";
 import LiveBadge from "../ui/LiveBadge";
 import { flagships } from "@/data/portfolio";
 
-// The three flagship suits, opened up: what's inside and how the parts connect.
+// The flagship suits, opened up: what's inside and how the parts connect.
 export default function Schematics() {
   return (
     <section id="schematics" className="relative mx-auto max-w-7xl px-4 py-28 md:px-8">
       <SectionHead code="02" kicker="blueprints · flagship suits" title="Schematics">
-        The three heaviest suits, opened up. Each diagram is the real pipeline inside the project.
+        The {flagships.length} heaviest suits, opened up. Each diagram is the real pipeline inside the project.
       </SectionHead>
 
       <div className="space-y-24">

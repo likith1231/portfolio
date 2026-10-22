@@ -32,7 +32,7 @@ export type FlowNode = { label: string; sub?: string; tone?: "red" | "gold" | "s
 
 export type Suit = {
   slug: string;
-  mark: number; // Strength rank, 6 = strongest. Decides the order in the Hall of Armor.
+  mark: number; // Strength rank, highest = strongest. Decides the order in the Hall of Armor.
   suit: string; // The armor this project wears, e.g. "Mark 85"
   short: string; // Short label for buttons
   model: string; // 3D model in /public/models
@@ -60,7 +60,7 @@ export type Suit = {
 export const suits: Suit[] = [
   {
     slug: "ghostops",
-    mark: 6,
+    mark: 7,
     suit: "Mark 85",
     short: "Mk 85",
     model: "/models/mark85.glb",
@@ -108,7 +108,7 @@ export const suits: Suit[] = [
   },
   {
     slug: "orbit-ide",
-    mark: 5,
+    mark: 6,
     suit: "Mark 50",
     short: "Mk 50",
     model: "/models/mark50.glb",
@@ -155,6 +155,56 @@ export const suits: Suit[] = [
       { src: "/suits/orbit-proof-live.webp", alt: "A proof running live in the agent panel" },
       { src: "/suits/orbit-run-tests.webp", alt: "Running tests from Run & Debug" },
       { src: "/suits/orbit-preview.webp", alt: "Live preview of a dev server" },
+    ],
+  },
+  {
+    slug: "billguard",
+    mark: 5,
+    suit: "Mark 33 Silver Centurion",
+    short: "Centurion",
+    model: "/models/billguard.glb",
+    name: "BillGuard",
+    tagline: "Every rupee on your bill, cross-examined.",
+    summary:
+      "An AI auditor for Indian hospital bills and insurance claims. It reads the bill, the insurer's settlement letter and the policy, flags overcharges and wrongful deductions with evidence quoted from your own documents, and drafts the dispute letter for you.",
+    stat: { value: "₹63,451", label: "recoverable on the sample case: 11 findings across 14 flagged bill lines, each with the evidence behind it." },
+    power: 93,
+    stack: ["Next.js 16", "React 19", "TypeScript", "Claude API", "Zod", "Tailwind v4", "React Three Fiber", "Vitest"],
+    repo: "https://github.com/likith1231/billguard",
+    live: null,
+    flagship: true,
+    flowTitle: "How a bill gets cross-examined",
+    flow: [
+      { label: "Upload", sub: "bill · insurer letter · policy" },
+      { label: "Claude", sub: "extract + judge, Zod schema", tone: "gold" },
+      { label: "Rules engine", sub: "maths · duplicates · MRP · stay", tone: "red" },
+      { label: "Merge & rank", sub: "dedupe · severity · totals" },
+      { label: "Dispute letter", sub: "streamed, editable", tone: "gold" },
+    ],
+    flowNote: "No API key? Manual mode runs the same rules engine in your browser on typed or CSV bill lines.",
+    problem:
+      "Hospital bills in India are long, coded and easy to pad, and insurer deductions cite “policy terms” without naming them. Most patients pay the difference because checking every line against the policy and IRDAI rules takes hours they don't have.",
+    how: [
+      "The bill, settlement letter and policy (PDFs, phone photos or text) go to Claude in one call with a Zod schema as structured output: every line item, every deduction, and a first judgement.",
+      "A deterministic rules engine re-checks everything: arithmetic, exact duplicates, bed-days vs length of stay, above-MRP drugs, benchmark outliers, settlement maths, co-pay and proportionate cuts.",
+      "Findings are merged, deduplicated and ranked by severity and amount, each tagged hospital or insurer and marked AI or Rule so you can see where it came from.",
+      "A second Claude call streams a formal dispute letter, in English, हिन्दी or ಕನ್ನಡ, using only the findings you selected.",
+    ],
+    highlights: [
+      "11 checks: unbundling, duplicates, above-MRP, billing beyond stay, co-pay errors, settlement gaps and more",
+      "Recovery plan: insurer → Bima Bharosa → Ombudsman → Consumer Commission, with real dates",
+      "Late-settlement interest calculator and NPPA routing for above-MRP drugs",
+      "PDF report, Excel-ready CSV and JSON export; cases saved only in your browser",
+    ],
+    lesson: {
+      title: "Let the model read, let rules do the maths",
+      body: "Claude is great at reading messy bills and policy wording, but a refund claim needs numbers that are always right. So the AI extracts and judges, and plain code checks every sum.",
+    },
+    gallery: [
+      { src: "/suits/billguard-hero.webp", alt: "BillGuard landing page with the 3D holographic bill and shield" },
+      { src: "/suits/billguard-report.webp", alt: "Audit report: ₹63,451 recoverable, with evidence cards" },
+      { src: "/suits/billguard-letter.webp", alt: "Dispute letter drafted and ready to edit" },
+      { src: "/suits/billguard-plan.webp", alt: "Recovery plan: where the money went and escalation deadlines" },
     ],
   },
   {
@@ -338,7 +388,7 @@ export const diagnostics: { stat: string; grade: "S" | "A" | "B"; why: string }[
   { stat: "Automation", grade: "S", why: "Agents and CI own the routine; the judgment stays with him" },
   { stat: "Range", grade: "A", why: "From Terraform on EKS to the React screen" },
   { stat: "Observability", grade: "A", why: "Prometheus, Grafana, OpenTelemetry, Jaeger, Sentry" },
-  { stat: "Output", grade: "A", why: "Six full-stack projects, all in public on GitHub" },
+  { stat: "Output", grade: "A", why: "Seven full-stack projects, built end to end" },
 ];
 
 export const principles = [
@@ -354,6 +404,7 @@ export const missions: { label: string; state: "done" | "running" | "queued" }[]
   { label: "Deploy GhostOps to the cloud", state: "done" },
   { label: "Run ResilientCommerce on Kubernetes with autoscaling and GitOps (Oracle Cloud, k3s + ArgoCD)", state: "done" },
   { label: "Deploy ResilientCommerce on AWS EKS", state: "queued" },
+  { label: "Deploy BillGuard to the cloud", state: "queued" },
 ];
 
 // The one line from the films on this site, chosen because it is how he works: ship first, then armor it.
@@ -378,6 +429,7 @@ export const modelCredits = [
   { title: "Iron Man (Infinity) (Textured) (Rigged)", author: "CAPTAAINR", url: "https://sketchfab.com/3d-models/iron-man-infinity-textured-rigged-7434cf03a4b34b4ca232a141fadad976", usedFor: "Mark 50" },
   { title: "War Machine (Textured) (Rigged)", author: "CAPTAAINR", url: "https://sketchfab.com/3d-models/war-machinetexturedrigged-ed775c63303c4d358394d40dc9d0be19", usedFor: "War Machine, Hulkbuster" },
   { title: "Iron Man MK7", author: "CHANG747", url: "https://sketchfab.com/3d-models/iron-man-mk7-ad4776eea8184283a3e49cf5487df754", usedFor: "Mark 7" },
+  { title: "War Machine (Iron Patriot)", author: "Shivam.Yadav", url: "https://sketchfab.com/3d-models/war-machine-iron-patriot-4de8ae0585a94d849eeea7c10ba42f83", usedFor: "Mark 33 Silver Centurion" },
   { title: "Iron Man (Mark-I) (Textured) (Rigged)", author: "CAPTAAINR", url: "https://sketchfab.com/3d-models/iron-man-mark-i-textured-rigged-5664593af9d94c2e97c1365788b88202", usedFor: "Mark 1" },
   { title: "Arc Reactor", author: "Ludus101", url: "https://sketchfab.com/3d-models/arc-reactor-7daf892988e54cdcb8bfd7dff3ed5d23", usedFor: "Arc reactor" },
 ];
@@ -459,7 +511,7 @@ export const certifications: Cert[] = [
 // Headline numbers under the hero. Every one is backed by the résumé, the repos or the certificates.
 export const stats = [
   { value: "7.74", label: "CGPA · B.E. CSE" },
-  { value: "6", label: "suits built" },
+  { value: "7", label: "suits built" },
   { value: "3", label: "certified exams" },
   { value: "2", label: "PRs opened by my AI" },
 ];
@@ -480,6 +532,6 @@ export const flightLog: { when: string; title: string; where: string; body: stri
   { when: "Hackathon", title: "NASA Space Challenge", where: "Dayananda Sagar", body: "Took part in the NASA Space Challenge hackathon." },
   { when: "Leadership", title: "Coordinator Lead", where: "MEGHAHERTZ Fest", body: "Led coordination for the college fest." },
   { when: "2026", title: "Machine Learning Intern", where: "CodSoft (virtual)", body: "Built 3 predictive models in Python: credit-card fraud detection, SMS spam detection (NLP) and customer churn prediction." },
-  { when: "2026", title: "The Mark 85 year", where: "GhostOps · Orbit IDE · ResilientCommerce", body: "Shipped an autonomous AIOps platform, a self-verifying cloud IDE and a load-tested Kubernetes stack. Earned AWS AI Practitioner, AWS Cloud Practitioner and Oracle Agentic AI." },
+  { when: "2026", title: "The Mark 85 year", where: "GhostOps · Orbit IDE · BillGuard · ResilientCommerce", body: "Shipped an autonomous AIOps platform, a self-verifying cloud IDE, an AI auditor for hospital bills and a load-tested Kubernetes stack. Earned AWS AI Practitioner, AWS Cloud Practitioner and Oracle Agentic AI." },
   { when: "2027", title: "Graduation (expected)", where: "Looking for roles now", body: "Ready to bring all of this to an engineering team as a DevOps, Full Stack or AI/ML engineer." },
 ];
