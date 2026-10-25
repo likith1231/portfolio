@@ -171,7 +171,7 @@ export const suits: Suit[] = [
     power: 93,
     stack: ["Next.js 16", "React 19", "TypeScript", "Claude API", "Zod", "Tailwind v4", "React Three Fiber", "Vitest"],
     repo: "https://github.com/likith1231/billguard",
-    live: null,
+    live: "https://billguard-gilt.vercel.app",
     flagship: true,
     flowTitle: "How a bill gets cross-examined",
     flow: [
@@ -404,7 +404,7 @@ export const missions: { label: string; state: "done" | "running" | "queued" }[]
   { label: "Deploy GhostOps to the cloud", state: "done" },
   { label: "Run ResilientCommerce on Kubernetes with autoscaling and GitOps (Oracle Cloud, k3s + ArgoCD)", state: "done" },
   { label: "Deploy ResilientCommerce on AWS EKS", state: "queued" },
-  { label: "Deploy BillGuard to the cloud", state: "queued" },
+  { label: "Deploy BillGuard to the cloud (Vercel)", state: "done" },
 ];
 
 // The one line from the films on this site, chosen because it is how he works: ship first, then armor it.
